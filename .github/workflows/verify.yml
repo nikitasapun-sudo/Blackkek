@@ -27,6 +27,7 @@ jobs:
           node --check tests/depleted_oracle.cjs
           node --check tests/integrity.cjs
           node --check tests/pwa_offline.cjs
+          node --check tests/update_recovery.cjs
           node --check tests/worker_watchdog.cjs
           node --check tests/performance.cjs
           node --check tests/offline_actions.cjs
@@ -69,6 +70,7 @@ jobs:
         run: |
           node tests/integrity.cjs
           node tests/pwa_offline.cjs
+          node tests/update_recovery.cjs
       - name: Worker lifecycle and performance smoke
         run: |
           node tests/worker_watchdog.cjs
