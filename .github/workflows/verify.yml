@@ -48,6 +48,7 @@ jobs:
           node --check tests/full_shoe_numerical_invariants.cjs
           node --check tests/ui_state_consistency.cjs
           node --check tests/browser_upgrade.cjs
+          node --check tests/browser_update_recovery.cjs
           node --check tests/browser_storage.cjs
           node --check tests/browser_tabs.cjs
           node --check tests/strategy_edge.cjs
