@@ -42,6 +42,8 @@ jobs:
           node tests/user_split_repro.cjs
           node tests/dealer_hotpath.cjs
           node tests/julius_rational_oracle.cjs
+          node tests/julius_hit_charlie_oracle.cjs
+          node tests/julius_boundary_oracle.cjs
       - name: Stage static-only PWA
         run: |
           mkdir -p _site/icons
