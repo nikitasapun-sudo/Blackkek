@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0c1b24"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icons/icon.svg"><title>Blackjack Omega II v3.19 · Offline EV</title>
+<meta name="theme-color" content="#0c1b24"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icons/icon.svg"><title>Blackjack Omega II v3.20 · Offline EV</title>
 <style>
 :root{color-scheme:dark;--bg:#0a1720;--panel:#132832;--border:#35515d;--ink:#eff9f8;--muted:#b1c7cc;--mint:#60dfbb;--gold:#ffda91;--red:#ff969d}*{box-sizing:border-box}body{margin:0;font:15px/1.45 system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:radial-gradient(ellipse at 45% -10%,#22545b 0%,#0b202b 40%,var(--bg) 80%)}button,input,select{font:inherit}button{color:var(--ink);background:#24424d;border:1px solid #52717a;border-radius:11px;padding:9px 11px;cursor:pointer;font-weight:700;touch-action:manipulation}button:hover{border-color:#9edfcc}button:focus-visible,select:focus-visible{outline:2px solid var(--mint);outline-offset:2px}button:disabled{opacity:.35;cursor:not-allowed}select{color:var(--ink);background:#102c36;border:1px solid var(--border);padding:8px;border-radius:9px;max-width:100%}.wrap{max-width:880px;margin:auto;padding:14px 12px 44px}header{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin:2px 0 12px}header h1{margin:0;font-size:clamp(21px,4.5vw,28px);letter-spacing:-.5px}header p{margin:3px 0 0;color:var(--muted);font-size:12px}.pill{font-size:11px;font-weight:800;background:#1d4846;border:1px solid #397768;color:#caffea;border-radius:999px;padding:5px 9px;white-space:nowrap}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.stat{background:#0f2a35;border:1px solid #315260;border-radius:12px;padding:10px 12px}.stat label{display:block;color:var(--muted);font-size:11px}.stat strong{display:block;font-size:clamp(19px,4vw,25px);line-height:1.22;margin:5px 0;font-variant-numeric:tabular-nums}.panel{background:linear-gradient(140deg,#152e38,#11232d);border:1px solid var(--border);border-radius:15px;padding:14px;margin-bottom:10px}.panel h2{font-size:16px;margin:0 0 9px}.hint,.small{font-size:12px;color:var(--muted)}.muted{color:var(--muted)}.modes{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.modes button{flex:1 0 auto;padding:7px;font-size:12px}.modes button.active{border-color:var(--mint);background:#286153;color:#fff}.cards{display:flex;gap:7px;flex-wrap:wrap;min-height:39px;margin:9px 0}.chip{position:relative;display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:46px;padding:0 8px;border-radius:9px;background:#f0f9f5;color:#17404a;border:1px solid #d4f2e4;font-size:18px;font-weight:900}.chip button{position:absolute;top:-8px;right:-8px;border:0;background:#3b5861;font-size:13px;padding:0;width:20px;height:20px;border-radius:50%}.ranks{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:4px}.ranks button{padding:10px 0;font-size:13px;border-radius:7px}.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.row button{font-size:12px}.row .spacer{flex:1}.signal{padding:12px;background:#123c38;border:1px solid #377d69;border-radius:12px}.signal b{font-size:19px;color:#c6ffe3}.explainer{margin-top:5px;font-size:13px;color:#d4f3e9}.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}.action{border:1px solid #375663;background:#112c38;border-radius:12px;padding:10px}.action b{font-size:14px}.action .status{display:inline-block;margin-left:5px;font-size:10px;font-weight:800;color:#aff4dc}.action .status.off{color:#edabb0}.action p{font-size:12px;color:#c4d8dc;margin:4px 0 0}.action ul{margin:7px 0 0;padding-left:18px}.action li+li{margin-top:4px}.numbers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.number{padding:9px;border:1px solid #2d4b55;border-radius:11px;background:#0e2630}.number strong{display:block;font-size:20px;font-variant-numeric:tabular-nums}.number span{font-size:11px;color:var(--muted)}.disclose{margin-top:13px;border-top:1px solid #36545e;padding-top:10px}summary{font-weight:700;cursor:pointer}.ranktable{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}.ranktable td{padding:6px;border-bottom:1px solid #2d4852}.ranktable td:last-child{text-align:right;font-variant-numeric:tabular-nums}.warn{background:#3e3426;color:#fbe5ac;border-left:3px solid var(--gold);border-radius:8px;padding:9px 10px;margin-top:10px;font-size:12px}.footer{font-size:12px;color:var(--muted);margin-top:17px}.inline-select{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.inline-select label{font-size:12px;color:var(--muted)}@media(max-width:500px){.wrap{padding:10px 8px 30px}.panel{padding:11px}.stats{gap:5px}.stat{padding:8px}.ranks{grid-template-columns:repeat(7,minmax(0,1fr))}.actions{grid-template-columns:1fr 1fr}.action{padding:8px}.numbers{gap:5px}.number{padding:7px}.number strong{font-size:17px}}
 
@@ -11,7 +11,7 @@
 .rule-accordion>summary{font-size:16px;line-height:1.5;color:var(--ink);padding:2px 0}.rule-accordion[open]>summary{margin-bottom:10px}.evsettings{grid-template-columns:repeat(2,minmax(0,1fr))}.evbutton{flex:1}.evresult .evtable{min-width:0}.evnote{font-size:12px;padding:10px;background:#0e303b;border:1px solid #42616e;border-radius:10px;margin-top:10px}.evpass{color:#9ef0d2}.evlimit{color:#ffdca1}@media(max-width:440px){.evsettings{grid-template-columns:1fr 1fr}.evsettings label{min-height:28px}.evtable td:last-child{max-width:115px}}
 </style></head>
 <body><main class="wrap">
-<header><div><h1>♠ Blackjack Omega II <span class="muted">· v3.19</span></h1><p>Учебная finite-shoe модель · SPLIT без resplit · 8 колод</p></div><span class="pill">ОФЛАЙН · БЕЗ ДЕНЕГ</span></header>
+<header><div><h1>♠ Blackjack Omega II <span class="muted">· v3.20</span></h1><p>Учебная finite-shoe модель · SPLIT без resplit · 8 колод</p></div><span class="pill">ОФЛАЙН · БЕЗ ДЕНЕГ</span></header>
 <div class="stats"><div class="stat"><label>Omega II RC</label><strong id="rc">0</strong></div><div class="stat"><label>True Count*</label><strong id="tc">0,00</strong></div><div class="stat"><label>Карт осталось</label><strong id="remaining">416</strong></div></div>
 <div class="warn" id="tabConflictNotice" role="status" aria-live="polite" hidden>Карты или правила изменены в другой вкладке. Старый расчёт очищен; сохранение из этой вкладки остановлено. Загрузка заменит её текущие данные сохранёнными.<button type="button" id="tabConflictReload">Загрузить сохранённые данные</button></div>
 <div class="warn" id="storageNotice" role="status" aria-live="polite" hidden></div>
@@ -75,9 +75,10 @@
 <div class="evnote"><b>Практическое правило:</b> если хотя бы одно ключевое условие неизвестно, считай ожидание неопределённым и пропускай раздачу. Сначала проверь карты, правила и завершённый расчёт, затем сверяйся с личным лимитом.</div>
 <details class="disclose" open><summary>Тренажёр стратегии по составу и счёту</summary>
 <p class="small">Сравнение использует конкретные карты, текущий остаток, S17/H17, peek, surrender и Charlie. Для готового сценария учитываются карты из истории и «Остальные», а показанные карты руки заменяются выбранным примером. Базовая линия — та же модель на свежем восьмиколодном башмаке; это учебная точка сравнения, а не универсальная таблица казино.</p>
-<div class="row"><label class="small" for="strategyScenario">Сценарий:</label><select id="strategyScenario"><option value="current">Текущая раздача</option><option value="hard16v10">10+6 против 10</option><option value="hard12v6">10+2 против 6</option><option value="soft18v9">A+7 против 9</option><option value="pair88v10">8+8 против 10</option><option value="hard11v6">5+6 против 6</option></select><label class="small" for="strategyAnswer">Мой ответ:</label><select id="strategyAnswer"><option value="">Выбери действие до проверки</option><option value="stand">Остановиться</option><option value="hit">Добор</option><option value="double">Удвоение</option><option value="surrender">Сдача</option><option value="splitTwoCardStop">SPLIT</option></select><button type="button" id="strategyCheck">Проверить ответ и сравнить</button><button type="button" id="edgeCompute">Рассчитать edge по составу башмака</button></div>
-<div id="strategyStatus" class="evstatus" role="status">Выбери сценарий и действие, затем проверь ответ.</div>
+<div class="row"><button type="button" id="strategyNew">Новая случайная задача</button><label class="small" for="strategyScenario">Сценарий:</label><select id="strategyScenario"><option value="random">Случайная задача</option><option value="current">Текущая раздача</option><option value="hard16v10">10+6 против 10</option><option value="hard12v6">10+2 против 6</option><option value="soft18v9">A+7 против 9</option><option value="pair88v10">8+8 против 10</option><option value="hard11v6">5+6 против 6</option><option value="hard10v9">5+5 против 9</option><option value="soft17v2">A+6 против 2</option><option value="pair99v7">9+9 против 7</option></select><label class="small" for="strategyAnswer">Моя попытка:</label><select id="strategyAnswer"><option value="">Не отвечать</option><option value="stand">Остановиться</option><option value="hit">Добор</option><option value="double">Удвоение</option><option value="surrender">Сдача</option><option value="splitTwoCardStop">SPLIT</option></select><button type="button" id="strategyCheck">Проверить попытку</button><button type="button" id="edgeCompute">Рассчитать edge по составу башмака</button></div>
+<div id="strategyStatus" class="evstatus" role="status">Подсказка появится сразу после выбора сценария или нажатия «Новая случайная задача».</div>
 <div id="strategyResult" class="evresult"></div>
+<div id="strategyStats" class="evnote" role="status">Попыток: 0 · верно: 0 · среднее отставание EV: 0,000000</div>
 <p class="evfoot">Edge усредняет оптимальное одиночное решение по всем возможным двум картам игрока и upcard из текущего остатка. Карты текущей руки считаются уже изъятыми; для оценки следующей раздачи нажми «Новая рука». Edge учитывает момент до проверки дилера, количество оставшихся карт и выбранные правила; полный SPLIT в этот показатель не входит и считается отдельным режимом. Универсального порога True Count нет: edge пересчитывается по фактическому остатку, проникновению и правилам.</p>
 </details>
 </section>
@@ -637,6 +638,7 @@ const RANKS=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
 const TAG={A:0,'2':1,'3':1,'4':2,'5':2,'6':2,'7':1,'8':0,'9':-1,'10':-2,J:-2,Q:-2,K:-2};
 const KEY='omega-mini-edu-v1';
 const RULE_KEY='omega-mini-edu-ev-rules-v1';
+const STRATEGY_STATS_KEY='omega-mini-strategy-stats-v1';
 const SAVED_RULE_OPTIONS={
  evPeek:['yes','no'],evSoft:['s17','h17'],evCharlie:['0','6','7'],
  evDoublePolicy:['any2','9-11','10-11'],
@@ -718,6 +720,25 @@ function saveEVSettings(){
 const $=id=>document.getElementById(id);
 const initial=()=>({player:[],dealer:[],other:[],history:[],selected:'player',surrender:false,splitPolicy:'rank'});
 let state=initial();let undoStack=[];
+let strategyTask=null;
+let strategyStats=loadStrategyStats();
+function loadStrategyStats(){
+ try{
+  const raw=localStorage.getItem(STRATEGY_STATS_KEY);if(!raw)return {attempts:0,correct:0,gap:0};
+  const value=JSON.parse(raw);
+  if(!value||!Number.isInteger(value.attempts)||!Number.isInteger(value.correct)||!Number.isFinite(value.gap)||value.attempts<0||value.correct<0||value.correct>value.attempts||value.gap<0)throw Error('format');
+  return {attempts:value.attempts,correct:value.correct,gap:value.gap};
+ }catch(e){return {attempts:0,correct:0,gap:0};}
+}
+function saveStrategyStats(){
+ try{localStorage.setItem(STRATEGY_STATS_KEY,JSON.stringify(strategyStats));}catch(e){}
+}
+function renderStrategyStats(){
+ const box=$('strategyStats');if(!box)return;
+ const avg=strategyStats.attempts?strategyStats.gap/strategyStats.attempts:0;
+ box.textContent='Попыток: '+strategyStats.attempts+' · верно: '+strategyStats.correct+' · среднее отставание EV: '+fmt(avg,6);
+}
+renderStrategyStats();
 function restoreCards(){
  const raw=readSaved(KEY);
  if(raw===undefined){cardsNeedReset=true;return;}
@@ -927,29 +948,46 @@ const STRATEGY_SCENARIOS={
  hard12v6:{label:'10+2 против 6',player:['10','2'],up:'6'},
  soft18v9:{label:'A+7 против 9',player:['A','7'],up:'9'},
  pair88v10:{label:'8+8 против 10',player:['8','8'],up:'10'},
- hard11v6:{label:'5+6 против 6',player:['5','6'],up:'6'}
+ hard11v6:{label:'5+6 против 6',player:['5','6'],up:'6'},
+ hard10v9:{label:'5+5 против 9',player:['5','5'],up:'9'},
+ soft17v2:{label:'A+6 против 2',player:['A','6'],up:'2'},
+ pair99v7:{label:'9+9 против 7',player:['9','9'],up:'7'}
 };
 function strategyRules(){return {resplit:false,s17:$('evSoft').value==='s17',doublePolicy:$('evDoublePolicy').value,dealerBJSettlement:$('evDealerBJSettlement').value,blackjackPayout:Number($('evBJPayout').value),peek:$('evPeek').value==='yes',charlieCards:Number($('evCharlie').value),surrender:state.surrender,surrenderTiming:$('surrenderTiming').value,splitPolicy:state.splitPolicy==='value'?'sameValue':'sameRank',doubleAfterSplit:$('evDAS').value==='yes',splitAcesOneCard:$('evSplitAces').value==='one',charlieAfterSplit:$('evCharlieSplit').value==='yes'};}
 function strategyScenario(){
  const id=$('strategyScenario').value;
+ if(id==='random'){
+  if(strategyTask?.scenario?.random)return strategyTask.scenario;
+  const base=[...state.history,...state.other];
+  const candidates=Object.entries(STRATEGY_SCENARIOS).filter(([,preset])=>{
+   try{window.OmegaFiniteEV.makeCounts([...base,...preset.player,preset.up]);return true;}catch(e){return false;}
+  });
+  if(!candidates.length)throw Error('В текущем остатке нет подходящей случайной задачи. Нажми «Тасовка» или убери лишние карты.');
+  const [randomId,preset]=candidates[Math.floor(Math.random()*candidates.length)];
+  return {id:randomId,label:preset.label,player:[...preset.player],up:preset.up,visible:[...base,...preset.player,preset.up],random:true};
+ }
  if(id==='current')return {id,label:'Текущая раздача',player:[...state.player],up:state.dealer[0],visible:allKnown()};
  const preset=STRATEGY_SCENARIOS[id];
  if(!preset)throw Error('Неизвестный тренировочный сценарий');
  return {id,label:preset.label,player:[...preset.player],up:preset.up,visible:[...state.history,...state.other,...preset.player,preset.up]};
 }
 function strategyActionName(name){return {stand:'Остановиться',hit:'Добор',double:'Удвоение',surrender:'Сдача',splitTwoCardStop:'SPLIT (ограниченный)'}[name]||'Неизвестное действие';}
-function invalidateStrategyExercise(message='Выбери сценарий и действие, затем проверь ответ.',clearAnswer=true){
+function invalidateStrategyExercise(message='Подсказка появится сразу после выбора сценария.',clearAnswer=true){
  const answer=$('strategyAnswer'),result=$('strategyResult'),status=$('strategyStatus');
  if(answer&&clearAnswer)answer.value='';
  if(result)result.innerHTML='';
+ if(clearAnswer)strategyTask=null;
  if(status&&!tabConflict)status.textContent=message;
 }
 function renderStrategyComparison(v,answer,scenario){
  const m=v.metrics,a=v.compositionBest,b=v.baselineBest;
- const available=answer!=='splitTwoCardStop'&&Number.isFinite(v.currentActions?.[answer]);
+ const attempted=Boolean(answer)&&answer!=='splitTwoCardStop';
+ const available=attempted&&Number.isFinite(v.currentActions?.[answer]);
  const difference=available?a.value-v.currentActions[answer]:null;
  const correct=available&&difference<=1e-12;
- const response=!available
+ const response=!attempted
+  ? '<div class="evnote evpass">Подсказка показана сразу. Если хочешь потренироваться, выбери действие и нажми «Проверить попытку».</div>'
+  : !available
   ? '<div class="evnote">Выбранное действие недоступно для этой руки или текущих правил.</div>'
   : correct
    ? '<div class="evnote evpass">Верно: выбранное действие совпало с оптимальным для текущего состава.</div>'
@@ -957,18 +995,27 @@ function renderStrategyComparison(v,answer,scenario){
  const deviation=v.deviates
   ? '<div class="evnote evpass">Есть отклонение от базовой линии: текущий состав меняет оптимальное действие.</div>'
   : '<div class="evnote">Отклонения нет: для этой раздачи оптимальное действие совпало с базовой линией.</div>';
- $('strategyResult').innerHTML=`<p class="small"><b>Сценарий:</b> ${scenario.label}</p>${response}<table class="evtable"><tbody><tr><td>Мой ответ</td><td><strong>${strategyActionName(answer)}</strong></td><td>${available?'EV '+fmt(v.currentActions[answer],6):'—'}</td></tr><tr><td>Отставание от оптимума</td><td><strong>${available?fmt(difference,6):'—'}</strong></td><td>разница EV при текущем составе</td></tr><tr><td>Оптимум текущего состава</td><td><strong>${strategyActionName(a.name)}</strong></td><td>EV ${fmt(a.value,6)}</td></tr><tr><td>Свежий 8-колодный baseline</td><td><strong>${strategyActionName(b.name)}</strong></td><td>EV ${fmt(b.value,6)}</td></tr><tr><td>Изменение EV между составами</td><td><strong>${v.EVDelta>=0?'+':''}${fmt(v.EVDelta,6)}</strong></td><td>${v.splitExcluded?'SPLIT сравнивается отдельно':''}</td></tr></tbody></table>${deviation}<p class="small">Running Count: ${m.runningCount>=0?'+':''}${m.runningCount}; True Count: ${fmt(m.trueCount,2)}; осталось карт: ${m.remaining} (${fmt(m.decksRemaining,2)} колод).</p>`;
+ $('strategyResult').innerHTML=`<p class="small"><b>Сценарий:</b> ${scenario.label}</p>${response}<table class="evtable"><tbody><tr><td>Оптимальное действие</td><td><strong>${strategyActionName(a.name)}</strong></td><td>EV ${fmt(a.value,6)}</td></tr><tr><td>Моя попытка</td><td><strong>${attempted?strategyActionName(answer):'не выбрана'}</strong></td><td>${available?'EV '+fmt(v.currentActions[answer],6):'—'}</td></tr><tr><td>Отставание от оптимума</td><td><strong>${available?fmt(difference,6):'—'}</strong></td><td>разница EV при текущем составе</td></tr><tr><td>Свежий 8-колодный baseline</td><td><strong>${strategyActionName(b.name)}</strong></td><td>EV ${fmt(b.value,6)}</td></tr><tr><td>Изменение EV между составами</td><td><strong>${v.EVDelta>=0?'+':''}${fmt(v.EVDelta,6)}</strong></td><td>${v.splitExcluded?'SPLIT сравнивается отдельно':''}</td></tr></tbody></table>${deviation}<p class="small">Running Count: ${m.runningCount>=0?'+':''}${m.runningCount}; True Count: ${fmt(m.trueCount,2)}; осталось карт: ${m.remaining} (${fmt(m.decksRemaining,2)} колод).</p>`;
 }
 function compareCurrentStrategy(){
  const status=$('strategyStatus'),result=$('strategyResult');result.innerHTML='';
  if(!storageIsCurrent()||cardsNeedReset)return;
  const answer=$('strategyAnswer').value;
- if(!answer){status.textContent='Сначала выбери действие — результат откроется после проверки.';return;}
- if(answer==='splitTwoCardStop'){status.textContent='Для этого упражнения сравниваются только остановка, добор, удвоение и сдача. SPLIT рассчитывается отдельной кнопкой.';return;}
  let scenario;
  try{scenario=strategyScenario();}catch(e){status.textContent=e.message;return;}
  if(scenario.id==='current'&&(scenario.player.length<2||state.dealer.length!==1)){status.textContent='Для текущей раздачи нужны две карты игрока и ровно одна открытая карта дилера.';return;}
- try{const v=window.OmegaFiniteEV.compareStrategy({player:scenario.player,up:scenario.up,visible:scenario.visible,rules:strategyRules(),limitMs:22000});renderStrategyComparison(v,answer,scenario);status.textContent='Ответ проверен: True Count и отклонение от baseline показаны ниже.';}
+ try{
+  const v=window.OmegaFiniteEV.compareStrategy({player:scenario.player,up:scenario.up,visible:scenario.visible,rules:strategyRules(),limitMs:22000});
+  const key=JSON.stringify([scenario.id,scenario.player,scenario.up,scenario.visible]);
+  if(!strategyTask||strategyTask.key!==key)strategyTask={key,scenario,v,recorded:false};
+  if(answer==='splitTwoCardStop')status.textContent='SPLIT рассчитывается отдельной кнопкой; подсказка одиночной руки показана ниже.';
+  else if(answer&&Number.isFinite(v.currentActions?.[answer])&&!strategyTask.recorded){
+   const gap=Math.max(0,v.compositionBest.value-v.currentActions[answer]);
+   strategyStats.attempts++;if(gap<=1e-12)strategyStats.correct++;strategyStats.gap+=gap;strategyTask.recorded=true;saveStrategyStats();renderStrategyStats();
+   status.textContent='Попытка проверена. Подсказка и True Count показаны ниже.';
+  }else status.textContent='Подсказка и True Count показаны ниже. Ответ можно выбрать добровольно.';
+  renderStrategyComparison(v,answer,scenario);
+ }
  catch(e){status.textContent='Сравнение не рассчитано: '+e.message;}
 }
 function calculateEdge(){
@@ -997,6 +1044,7 @@ function updateActionAvailability(){
  $('evSplitCompute').disabled=Boolean(activeWorker)||!ready||remaining<3||!canSplit(state.player);
  $('evCompute').disabled=tabConflict||cardsNeedReset||Boolean(activeWorker);
  $('strategyCheck').disabled=tabConflict||cardsNeedReset||Boolean(activeWorker);
+ $('strategyNew').disabled=tabConflict||cardsNeedReset||Boolean(activeWorker);
  $('edgeCompute').disabled=tabConflict||cardsNeedReset||Boolean(activeWorker);
  $('next').disabled=tabConflict||cardsNeedReset;$('undo').disabled=tabConflict||cardsNeedReset;
  $('reset').disabled=tabConflict;
@@ -1104,8 +1152,9 @@ $('evCompute').addEventListener('click',()=>calculateEV('all'));
 $('evDoubleCompute').addEventListener('click',()=>calculateEV('double'));
 $('evSplitCompute').addEventListener('click',()=>calculateEV('split'));
 $('strategyCheck').addEventListener('click',compareCurrentStrategy);
-$('strategyScenario').addEventListener('change',()=>{invalidateStrategyExercise('Сценарий изменён. Выбери действие и проверь ответ.');});
-$('strategyAnswer').addEventListener('change',()=>{if($('strategyResult').innerHTML)invalidateStrategyExercise('Ответ изменён. Нажми «Проверить ответ и сравнить».',false);});
+$('strategyNew').addEventListener('click',()=>{if(!storageIsCurrent()||cardsNeedReset)return;strategyTask=null;$('strategyScenario').value='random';$('strategyAnswer').value='';compareCurrentStrategy();});
+$('strategyScenario').addEventListener('change',()=>{invalidateStrategyExercise('Считаю подсказку для нового сценария…');compareCurrentStrategy();});
+$('strategyAnswer').addEventListener('change',()=>{if($('strategyResult').innerHTML)$('strategyStatus').textContent='Попытка выбрана. Нажми «Проверить попытку» или продолжай без ответа.';});
 $('edgeCompute').addEventListener('click',calculateEdge);
 $('evCancel').addEventListener('click',()=>cancelEV());
 for(const id of ['evSoft','evPeek','evCharlie','evDAS','evSplitAces','evCharlieSplit','evDoublePolicy','evDealerBJSettlement','evBJPayout'])$(id).addEventListener('change',()=>{

@@ -33,6 +33,7 @@ jobs:
           node tests/pwa_offline.cjs
           node tests/worker_watchdog.cjs
           node tests/strategy_edge.cjs
+          node tests/strategy_trainer.cjs
           node tests/performance.cjs
           node tests/offline_actions.cjs
           node tests/end_of_shoe.cjs
