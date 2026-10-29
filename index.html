@@ -743,7 +743,7 @@ function calculateEV(mode='all'){
     cancelEV('Расчёт завершён. Все числа относятся только к заданной учебной модели.');
     if(lastEVReport)lastEVReport.status='complete';
    }else if(m.type==='error'){
-    cancelEV('Точный расчёт прерван: '+m.message+(basic?' Основные EV уже показаны.':''));
+    cancelEV('Точный расчёт прерван: '+m.message+(basic?(mode==='split'?' Ограниченный SPLIT по одной карте уже показан; полный SPLIT не завершён.':' Основные EV уже показаны.') :''));
     if(lastEVReport){
      lastEVReport.status='error';lastEVReport.error=m.message;
      if(m.diagnostics){lastEVReport.stage=m.diagnostics.stage;lastEVReport.timeoutDiagnostics=m.diagnostics;}
