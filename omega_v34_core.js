@@ -53,7 +53,7 @@ function solve(input){
   const hand=input.player||[],up=R.indexOf(bucket(input.up)),c=inputCounts(input),hv=handValue(hand),N=numCards(c);
   if(hand.length<2||hand.length>21)throw Error('Для EV нужно от 2 до 21 карт игрока');
   if(up<0)throw Error('Выбери открытую карту дилера');
-  if(N<2)throw Error('Недостаточно карт');
+  if(N<1)throw Error('Нет неизвестной закрытой карты дилера');
   const dm=new Map(),pm=new Map(),sm=new Map();
   const stat={dealerStates:0,playerStates:0,settleStates:0,publicBranches:0};
   const dealerKey=(t,s,c)=>t+'|'+s+'|'+c.join(',');
@@ -118,7 +118,7 @@ function solve(input){
   // Bellman continuation under observable information only. No double after first hit.
   function continueEV(t,s,len,c,n){
     if(t>21)return -1;
-    if((len>=rules.charlieCards&&rules.charlie)||t>=21)return standEV(t,s,len,c,n);
+    if((len>=rules.charlieCards&&rules.charlie)||t>=21||n<=1)return standEV(t,s,len,c,n);
     const key=t+'|'+s+'|'+len+'|'+c.join(',');const found=pm.get(key);if(found!==undefined)return found;
     const stop=standEV(t,s,len,c,n);
     let hit=0;
@@ -141,7 +141,7 @@ function solve(input){
     return {actions:{stand:rules.blackjackPayout*(1-pBJ)},dealerBJ:pBJ,status:'natural',stats:stat};
   }
   const actions={stand:standEV(hv.total,hv.acesSoft,hv.number,c,N)};
-  if(hv.total<21&&(!rules.charlie||hv.number<rules.charlieCards)){
+  if(N>1&&hv.total<21&&(!rules.charlie||hv.number<rules.charlieCards)){
     let hit=0,double=0;
     for(const b of publicDraws(c,N)){
       c[b.index]--;const [t,s]=cardAdd(hv.total,hv.acesSoft,b.index);
@@ -201,7 +201,7 @@ function solveSplit(input){
  const policy=rules.splitPolicy;
  if(!(hands[0]===hands[1]||(policy==='sameValue'&&bucket(hands[0])==='10'&&bucket(hands[1])==='10'))){throw Error('Карты не образуют пару по выбранному правилу');}
  const base=R.indexOf(bucket(hands[0]));
- if(N<5)throw Error('Недостаточно неизвестных карт для разделения');
+ if(N<3)throw Error('Для SPLIT нужны минимум две публичные карты и одна скрытая');
  const aceBase=base===9;
  const das=rules.doubleAfterSplit===true, aceOne=rules.splitAcesOneCard!==false;
  const dm=new Map(),firstMemo=new Map(),secondMemo=new Map(),terminalMemo=new Map();
@@ -243,7 +243,7 @@ function solveSplit(input){
  }
  // Terminal first hand is public information when second hand is played.
  function playSecond(t1,len1,bet1,t2,s2,len2,bet2,c,n){
-  if(t2>=21||(rules.charlie&&rules.charlieAfterSplit&&len2>=rules.charlieCards)||(aceBase&&aceOne))return payoff(t1,len1,bet1,t2,len2,bet2,c,n);
+  if(t2>=21||n<=1||(rules.charlie&&rules.charlieAfterSplit&&len2>=rules.charlieCards)||(aceBase&&aceOne))return payoff(t1,len1,bet1,t2,len2,bet2,c,n);
   const key=t1+'|'+len1+'|'+bet1+'|'+t2+'|'+s2+'|'+len2+'|'+bet2+'|'+c.join(',');const old=secondMemo.get(key);if(old!==undefined)return old;
   let value=payoff(t1,len1,bet1,t2,len2,bet2,c,n);
   let hit=0, dbl=0;
@@ -267,7 +267,7 @@ function solveSplit(input){
   return ev;
  }
  function playFirst(t,s,len,bet,c,n){
-  if(t>=21||(rules.charlie&&rules.charlieAfterSplit&&len>=rules.charlieCards)||(aceBase&&aceOne))return startSecond(t,len,bet,c,n);
+  if(t>=21||n<=2||(rules.charlie&&rules.charlieAfterSplit&&len>=rules.charlieCards)||(aceBase&&aceOne))return startSecond(t,len,bet,c,n);
   const key=t+'|'+s+'|'+len+'|'+bet+'|'+c.join(',');const old=firstMemo.get(key);if(old!==undefined)return old;
   let value=startSecond(t,len,bet,c,n);
   let hit=0,dbl=0;
