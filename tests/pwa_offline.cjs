@@ -110,7 +110,7 @@ async function request(url, method = 'GET', mode = 'cors') {
 
   networkOnline = true;
   assert.equal((await request(origin + 'uncached-file.txt')).source, 'network');
-  assert.equal(fetchCalls, 1);
+  assert.equal(fetchCalls, 3, 'Two intentional offline missing paths plus one online fallback');
   assert.ok(html.includes("intro=p.length+' карт без перебора: Charlie.'"),
     'Charlie label must reflect selected six/seven-card rule');
 
