@@ -12,9 +12,14 @@ assert.equal(m.display,'standalone');
 for(const icon of m.icons){assert.ok(fs.existsSync(icon.src),'Missing icon: '+icon.src);}
 const sw=fs.readFileSync('sw.js','utf8');
 new vm.Script(sw);
-for(const f of ['./','./index.html','./manifest.webmanifest','./icons/icon.svg']){
+for(const f of ['./','./index.html','./manifest.webmanifest','./icons/icon.svg','./omega_worker.js','./omega_v34_core.js']){
  assert.ok(sw.includes("'"+f+"'"),'Cache is missing '+f);
 }
 assert.ok(html.includes("navigator.serviceWorker.register('./sw.js')"));
 assert.ok(!html.includes('id="evResplit"'));
+assert.ok(html.includes("new Worker('./omega_worker.js')"));
+assert.ok(html.includes('id="evSplitCompute"') && html.includes('id="evDoubleCompute"'));
+const worker=fs.readFileSync('omega_worker.js','utf8');
+new vm.Script(worker);
+assert.ok(worker.includes("importScripts('./omega_v34_core.js')"));
 console.log('PASS: PWA manifest, service worker, inline scripts, core identity, resplit absent');
