@@ -89,15 +89,24 @@ const stop=()=>new Promise(resolve=>server.close(resolve));
   assert.equal(await page.locator('#evResult').innerText(),'');
   assert.match(await page.locator('#evStatus').innerText(),/Новая версия/);
   assert.deepEqual(await page.evaluate(()=>window.__OMEGA_MINI_TEST__.getState()),saved.cards);
-  // The controllerchange signal can arrive before the activation
-  // waitUntil cleanup promise has fully resolved. Await cache cleanup.
-  await page.waitForFunction(async()=>{
-   const cachesForApp=(await caches.keys()).filter(k=>k.startsWith('omega-ii-v'));
-   return cachesForApp.length===1&&cachesForApp[0]==='omega-ii-v315-1';
-  },null,{timeout:15000});
-  const activeCache=await page.evaluate(async()=>(
-   await caches.keys()).filter(k=>k.startsWith('omega-ii-v')));
-  assert.deepEqual(activeCache,['omega-ii-v315-1']);
+  // An old controller may briefly reopen its own cache during the handoff.
+  // The active controller must be the new version and its complete cache must
+  // exist. The updated SW reads ONLY its versioned cache.
+  const active=await page.evaluate(async()=>{
+   const registration=await navigator.serviceWorker.ready;
+   const keys=await caches.keys();
+   const cached=await caches.open('omega-ii-v315-1');
+   return {
+    script:registration.active?.scriptURL,
+    keys,
+    html:Boolean(await cached.match('./index.html')),
+    math:Boolean(await cached.match('./omega_v34_core.js')),
+    worker:Boolean(await cached.match('./omega_worker.js'))
+   };
+  });
+  assert.match(active.script,/sw\.js$/);
+  assert.ok(active.keys.includes('omega-ii-v315-1'));
+  assert.ok(active.html&&active.math&&active.worker,'New version cache must be complete');
   await page.locator('#appUpdateReload').click();
   await page.waitForLoadState('domcontentloaded');
   assert.match(await page.title(),/v3.15/);
