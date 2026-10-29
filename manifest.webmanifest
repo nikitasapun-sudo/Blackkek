@@ -1,0 +1,20 @@
+{
+  "id": "./",
+  "name": "Blackjack Omega II — Учебная лаборатория",
+  "short_name": "Omega II",
+  "description": "Учебный finite-shoe симулятор, только виртуальные очки",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "lang": "ru",
+  "background_color": "#0a1720",
+  "theme_color": "#0c1b24",
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
