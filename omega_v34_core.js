@@ -213,6 +213,24 @@ function solveSplit(input){
  const aceBase=base===9;
  const das=rules.doubleAfterSplit===true, aceOne=rules.splitAcesOneCard!==false;
  const dm=new Map(),firstMemo=new Map(),secondMemo=new Map(),terminalMemo=new Map();
+ // Bound all four exact-value caches. Eviction only forces recomputation;
+ // it never changes the probabilities, rewards, or Bellman recursion.
+ const defaultCaps={dealer:50000,first:12000,second:35000,terminal:35000};
+ const requestedCap=input.memoLimit;
+ if(requestedCap!==undefined&&(!Number.isInteger(requestedCap)||requestedCap<1||requestedCap>50000))
+  throw Error('Некорректный предел кэша для учебного расчёта SPLIT');
+ const cacheCaps=Object.fromEntries(Object.entries(defaultCaps).map(([kind,max])=>
+  [kind,requestedCap===undefined?max:Math.min(max,requestedCap)]));
+ const cacheEvictions={dealer:0,first:0,second:0,terminal:0};
+ const cachePeak={dealer:0,first:0,second:0,terminal:0};
+ function memoize(map,key,value,kind){
+  if(map.size>=cacheCaps[kind]){
+   map.delete(map.keys().next().value);
+   cacheEvictions[kind]++;
+  }
+  map.set(key,value);
+  if(map.size>cachePeak[kind])cachePeak[kind]=map.size;
+ }
  const counters={first:0,second:0,dealer:0,terminal:0,transitions:0};
  function budget(){if((++counters.transitions&2047)===0 && Date.now()-start>limitMs)throw Error('Превышен лимит вычисления SPLIT (без точного результата). Выбери менее сложный учебный сценарий.');}
  function holeWeights(c,n){const w=new Array(K).fill(0);let denom=0;for(let h=0;h<K;h++)if(c[h]&&!(rules.peek&&dealerBJ(up,h))){w[h]=c[h];denom+=c[h]};if(!denom)throw Error('Нет допустимых скрытых карт');for(let h=0;h<K;h++)w[h]/=denom;return w;}
@@ -220,7 +238,7 @@ function solveSplit(input){
  function dealerDist(t,s,c,n){if(t>21)return [1,0,0,0,0,0];if(t>17||(t===17&&(rules.s17||s===0)))return [0,+(t===17),+(t===18),+(t===19),+(t===20),+(t===21)];
   const key=t+'|'+s+'|'+c.join(',');const cached=dm.get(key);if(cached)return cached; if(n===0)throw Error('Дилеру не хватает карт');const out=[0,0,0,0,0,0];
   for(let i=0;i<K;i++)if(c[i]){const p=c[i]/n;c[i]--;const [nt,ns]=cardAdd(t,s,i),a=dealerDist(nt,ns,c,n-1);for(let j=0;j<6;j++)out[j]+=p*a[j];c[i]++;}
-  dm.set(key,out);counters.dealer++;if(dm.size>500000)throw Error('Лимит памяти кэша дилера SPLIT');if((counters.dealer&2047)===0&&Date.now()-start>limitMs)throw Error('Лимит времени для точного SPLIT: состояние слишком сложно.');return out;
+  memoize(dm,key,out,'dealer');counters.dealer++;if((counters.dealer&2047)===0&&Date.now()-start>limitMs)throw Error('Лимит времени для точного SPLIT: состояние слишком сложно.');return out;
  }
  // Dealer is rolled only once, after both public child hands terminate.
  function payoff(t1,len1,bet1,t2,len2,bet2,c,n){
@@ -247,7 +265,7 @@ function solveSplit(input){
    }
    ev+=w[hole]*v;c[hole]++;
   }
-  terminalMemo.set(k,ev);counters.terminal++;budget();return ev;
+  memoize(terminalMemo,k,ev,'terminal');counters.terminal++;budget();return ev;
  }
  // Terminal first hand is public information when second hand is played.
  function playSecond(t1,len1,bet1,t2,s2,len2,bet2,c,n){
@@ -263,7 +281,7 @@ function solveSplit(input){
   }
   value=Math.max(value,hit);
   if(das&&len2===2&&bet2===1&&doubleAllowed(t2,rules.doublePolicy))value=Math.max(value,dbl);
-  secondMemo.set(key,value);counters.second++;budget();if(secondMemo.size>1000000)throw Error('Превышен лимит памяти для точного SPLIT');return value;
+  memoize(secondMemo,key,value,'second');counters.second++;budget();return value;
  }
  function startSecond(t1,len1,bet1,c,n){
   let ev=0;
@@ -287,7 +305,7 @@ function solveSplit(input){
   }
   value=Math.max(value,hit);
   if(das&&len===2&&bet===1&&doubleAllowed(t,rules.doublePolicy))value=Math.max(value,dbl);
-  firstMemo.set(key,value);counters.first++;budget();return value;
+  memoize(firstMemo,key,value,'first');counters.first++;budget();return value;
  }
  let ev=0;
  for(const [i,p] of branches(c,N)){
@@ -295,7 +313,7 @@ function solveSplit(input){
    ev+=p*playFirst(t,s,2,1,c,N-1);
    c[i]++;
  }
- return {ev,rules,exact:true,assumptions:{resplit:false,afterSplitBlackjackPaysThreeToTwo:false,splitAcesOneCard:aceOne,doubleAfterSplit:das,charlieAfterSplit:rules.charlieAfterSplit},stats:{...counters,memoFirst:firstMemo.size,memoSecond:secondMemo.size,memoDealer:dm.size,ms:Date.now()-start}};
+ return {ev,rules,exact:true,assumptions:{resplit:false,afterSplitBlackjackPaysThreeToTwo:false,splitAcesOneCard:aceOne,doubleAfterSplit:das,charlieAfterSplit:rules.charlieAfterSplit},stats:{...counters,memoFirst:firstMemo.size,memoSecond:secondMemo.size,memoDealer:dm.size,cacheLimits:cacheCaps,cachePeak,cacheEvictions,ms:Date.now()-start}};
 }
 
 // Separate PRE-PEEK educational insurance experiment. Never mix with main-hand EV.

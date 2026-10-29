@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0c1b24"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icons/icon.svg"><title>Blackjack Omega II v3.7 · Offline EV</title>
+<meta name="theme-color" content="#0c1b24"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icons/icon.svg"><title>Blackjack Omega II v3.8 · Offline EV</title>
 <style>
 :root{color-scheme:dark;--bg:#0a1720;--panel:#132832;--border:#35515d;--ink:#eff9f8;--muted:#b1c7cc;--mint:#60dfbb;--gold:#ffda91;--red:#ff969d}*{box-sizing:border-box}body{margin:0;font:15px/1.45 system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:radial-gradient(ellipse at 45% -10%,#22545b 0%,#0b202b 40%,var(--bg) 80%)}button,input,select{font:inherit}button{color:var(--ink);background:#24424d;border:1px solid #52717a;border-radius:11px;padding:9px 11px;cursor:pointer;font-weight:700;touch-action:manipulation}button:hover{border-color:#9edfcc}button:focus-visible,select:focus-visible{outline:2px solid var(--mint);outline-offset:2px}button:disabled{opacity:.35;cursor:not-allowed}select{color:var(--ink);background:#102c36;border:1px solid var(--border);padding:8px;border-radius:9px;max-width:100%}.wrap{max-width:880px;margin:auto;padding:14px 12px 44px}header{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin:2px 0 12px}header h1{margin:0;font-size:clamp(21px,4.5vw,28px);letter-spacing:-.5px}header p{margin:3px 0 0;color:var(--muted);font-size:12px}.pill{font-size:11px;font-weight:800;background:#1d4846;border:1px solid #397768;color:#caffea;border-radius:999px;padding:5px 9px;white-space:nowrap}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.stat{background:#0f2a35;border:1px solid #315260;border-radius:12px;padding:10px 12px}.stat label{display:block;color:var(--muted);font-size:11px}.stat strong{display:block;font-size:clamp(19px,4vw,25px);line-height:1.22;margin:5px 0;font-variant-numeric:tabular-nums}.panel{background:linear-gradient(140deg,#152e38,#11232d);border:1px solid var(--border);border-radius:15px;padding:14px;margin-bottom:10px}.panel h2{font-size:16px;margin:0 0 9px}.hint,.small{font-size:12px;color:var(--muted)}.muted{color:var(--muted)}.modes{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.modes button{flex:1 0 auto;padding:7px;font-size:12px}.modes button.active{border-color:var(--mint);background:#286153;color:#fff}.cards{display:flex;gap:7px;flex-wrap:wrap;min-height:39px;margin:9px 0}.chip{position:relative;display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:46px;padding:0 8px;border-radius:9px;background:#f0f9f5;color:#17404a;border:1px solid #d4f2e4;font-size:18px;font-weight:900}.chip button{position:absolute;top:-8px;right:-8px;border:0;background:#3b5861;font-size:13px;padding:0;width:20px;height:20px;border-radius:50%}.ranks{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:4px}.ranks button{padding:10px 0;font-size:13px;border-radius:7px}.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.row button{font-size:12px}.row .spacer{flex:1}.signal{padding:12px;background:#123c38;border:1px solid #377d69;border-radius:12px}.signal b{font-size:19px;color:#c6ffe3}.explainer{margin-top:5px;font-size:13px;color:#d4f3e9}.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}.action{border:1px solid #375663;background:#112c38;border-radius:12px;padding:10px}.action b{font-size:14px}.action .status{display:inline-block;margin-left:5px;font-size:10px;font-weight:800;color:#aff4dc}.action .status.off{color:#edabb0}.action p{font-size:12px;color:#c4d8dc;margin:4px 0 0}.numbers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.number{padding:9px;border:1px solid #2d4b55;border-radius:11px;background:#0e2630}.number strong{display:block;font-size:20px;font-variant-numeric:tabular-nums}.number span{font-size:11px;color:var(--muted)}.disclose{margin-top:13px;border-top:1px solid #36545e;padding-top:10px}summary{font-weight:700;cursor:pointer}.ranktable{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}.ranktable td{padding:6px;border-bottom:1px solid #2d4852}.ranktable td:last-child{text-align:right;font-variant-numeric:tabular-nums}.warn{background:#3e3426;color:#fbe5ac;border-left:3px solid var(--gold);border-radius:8px;padding:9px 10px;margin-top:10px;font-size:12px}.footer{font-size:12px;color:var(--muted);margin-top:17px}.inline-select{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.inline-select label{font-size:12px;color:var(--muted)}@media(max-width:500px){.wrap{padding:10px 8px 30px}.panel{padding:11px}.stats{gap:5px}.stat{padding:8px}.ranks{grid-template-columns:repeat(7,minmax(0,1fr))}.actions{grid-template-columns:1fr 1fr}.action{padding:8px}.numbers{gap:5px}.number{padding:7px}.number strong{font-size:17px}}
 
@@ -11,7 +11,7 @@
 .rule-accordion>summary{font-size:16px;line-height:1.5;color:var(--ink);padding:2px 0}.rule-accordion[open]>summary{margin-bottom:10px}.evsettings{grid-template-columns:repeat(2,minmax(0,1fr))}.evbutton{flex:1}.evresult .evtable{min-width:0}.evnote{font-size:12px;padding:10px;background:#0e303b;border:1px solid #42616e;border-radius:10px;margin-top:10px}.evpass{color:#9ef0d2}.evlimit{color:#ffdca1}@media(max-width:440px){.evsettings{grid-template-columns:1fr 1fr}.evsettings label{min-height:28px}.evtable td:last-child{max-width:115px}}
 </style></head>
 <body><main class="wrap">
-<header><div><h1>♠ Blackjack Omega II <span class="muted">· v3.7</span></h1><p>Учебная finite-shoe модель · SPLIT без resplit · 8 колод</p></div><span class="pill">ОФЛАЙН · БЕЗ ДЕНЕГ</span></header>
+<header><div><h1>♠ Blackjack Omega II <span class="muted">· v3.8</span></h1><p>Учебная finite-shoe модель · SPLIT без resplit · 8 колод</p></div><span class="pill">ОФЛАЙН · БЕЗ ДЕНЕГ</span></header>
 <div class="stats"><div class="stat"><label>Omega II RC</label><strong id="rc">0</strong></div><div class="stat"><label>True Count*</label><strong id="tc">0,00</strong></div><div class="stat"><label>Карт осталось</label><strong id="remaining">416</strong></div></div>
 <section class="panel"><h2>1. Ввод карт</h2><div class="modes" id="target"><button class="active" data-target="player">Моя рука</button><button data-target="dealer">Дилер</button><button data-target="other">Остальные</button></div>
 <div class="cards" id="cards" aria-live="polite"></div><div class="ranks" id="ranks"></div>
@@ -274,6 +274,24 @@ function solveSplit(input){
  const aceBase=base===9;
  const das=rules.doubleAfterSplit===true, aceOne=rules.splitAcesOneCard!==false;
  const dm=new Map(),firstMemo=new Map(),secondMemo=new Map(),terminalMemo=new Map();
+ // Bound all four exact-value caches. Eviction only forces recomputation;
+ // it never changes the probabilities, rewards, or Bellman recursion.
+ const defaultCaps={dealer:50000,first:12000,second:35000,terminal:35000};
+ const requestedCap=input.memoLimit;
+ if(requestedCap!==undefined&&(!Number.isInteger(requestedCap)||requestedCap<1||requestedCap>50000))
+  throw Error('Некорректный предел кэша для учебного расчёта SPLIT');
+ const cacheCaps=Object.fromEntries(Object.entries(defaultCaps).map(([kind,max])=>
+  [kind,requestedCap===undefined?max:Math.min(max,requestedCap)]));
+ const cacheEvictions={dealer:0,first:0,second:0,terminal:0};
+ const cachePeak={dealer:0,first:0,second:0,terminal:0};
+ function memoize(map,key,value,kind){
+  if(map.size>=cacheCaps[kind]){
+   map.delete(map.keys().next().value);
+   cacheEvictions[kind]++;
+  }
+  map.set(key,value);
+  if(map.size>cachePeak[kind])cachePeak[kind]=map.size;
+ }
  const counters={first:0,second:0,dealer:0,terminal:0,transitions:0};
  function budget(){if((++counters.transitions&2047)===0 && Date.now()-start>limitMs)throw Error('Превышен лимит вычисления SPLIT (без точного результата). Выбери менее сложный учебный сценарий.');}
  function holeWeights(c,n){const w=new Array(K).fill(0);let denom=0;for(let h=0;h<K;h++)if(c[h]&&!(rules.peek&&dealerBJ(up,h))){w[h]=c[h];denom+=c[h]};if(!denom)throw Error('Нет допустимых скрытых карт');for(let h=0;h<K;h++)w[h]/=denom;return w;}
@@ -281,7 +299,7 @@ function solveSplit(input){
  function dealerDist(t,s,c,n){if(t>21)return [1,0,0,0,0,0];if(t>17||(t===17&&(rules.s17||s===0)))return [0,+(t===17),+(t===18),+(t===19),+(t===20),+(t===21)];
   const key=t+'|'+s+'|'+c.join(',');const cached=dm.get(key);if(cached)return cached; if(n===0)throw Error('Дилеру не хватает карт');const out=[0,0,0,0,0,0];
   for(let i=0;i<K;i++)if(c[i]){const p=c[i]/n;c[i]--;const [nt,ns]=cardAdd(t,s,i),a=dealerDist(nt,ns,c,n-1);for(let j=0;j<6;j++)out[j]+=p*a[j];c[i]++;}
-  dm.set(key,out);counters.dealer++;if(dm.size>500000)throw Error('Лимит памяти кэша дилера SPLIT');if((counters.dealer&2047)===0&&Date.now()-start>limitMs)throw Error('Лимит времени для точного SPLIT: состояние слишком сложно.');return out;
+  memoize(dm,key,out,'dealer');counters.dealer++;if((counters.dealer&2047)===0&&Date.now()-start>limitMs)throw Error('Лимит времени для точного SPLIT: состояние слишком сложно.');return out;
  }
  // Dealer is rolled only once, after both public child hands terminate.
  function payoff(t1,len1,bet1,t2,len2,bet2,c,n){
@@ -308,7 +326,7 @@ function solveSplit(input){
    }
    ev+=w[hole]*v;c[hole]++;
   }
-  terminalMemo.set(k,ev);counters.terminal++;budget();return ev;
+  memoize(terminalMemo,k,ev,'terminal');counters.terminal++;budget();return ev;
  }
  // Terminal first hand is public information when second hand is played.
  function playSecond(t1,len1,bet1,t2,s2,len2,bet2,c,n){
@@ -324,7 +342,7 @@ function solveSplit(input){
   }
   value=Math.max(value,hit);
   if(das&&len2===2&&bet2===1&&doubleAllowed(t2,rules.doublePolicy))value=Math.max(value,dbl);
-  secondMemo.set(key,value);counters.second++;budget();if(secondMemo.size>1000000)throw Error('Превышен лимит памяти для точного SPLIT');return value;
+  memoize(secondMemo,key,value,'second');counters.second++;budget();return value;
  }
  function startSecond(t1,len1,bet1,c,n){
   let ev=0;
@@ -348,7 +366,7 @@ function solveSplit(input){
   }
   value=Math.max(value,hit);
   if(das&&len===2&&bet===1&&doubleAllowed(t,rules.doublePolicy))value=Math.max(value,dbl);
-  firstMemo.set(key,value);counters.first++;budget();return value;
+  memoize(firstMemo,key,value,'first');counters.first++;budget();return value;
  }
  let ev=0;
  for(const [i,p] of branches(c,N)){
@@ -356,7 +374,7 @@ function solveSplit(input){
    ev+=p*playFirst(t,s,2,1,c,N-1);
    c[i]++;
  }
- return {ev,rules,exact:true,assumptions:{resplit:false,afterSplitBlackjackPaysThreeToTwo:false,splitAcesOneCard:aceOne,doubleAfterSplit:das,charlieAfterSplit:rules.charlieAfterSplit},stats:{...counters,memoFirst:firstMemo.size,memoSecond:secondMemo.size,memoDealer:dm.size,ms:Date.now()-start}};
+ return {ev,rules,exact:true,assumptions:{resplit:false,afterSplitBlackjackPaysThreeToTwo:false,splitAcesOneCard:aceOne,doubleAfterSplit:das,charlieAfterSplit:rules.charlieAfterSplit},stats:{...counters,memoFirst:firstMemo.size,memoSecond:secondMemo.size,memoDealer:dm.size,cacheLimits:cacheCaps,cachePeak,cacheEvictions,ms:Date.now()-start}};
 }
 
 // Separate PRE-PEEK educational insurance experiment. Never mix with main-hand EV.
