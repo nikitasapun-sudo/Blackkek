@@ -420,7 +420,7 @@ function selectTarget(t){state.selected=t;render()}
 function renderGuide(x){const p=x.p,h=x.h;
  if(p.length<2){$('guide').innerHTML='<div class="small">Для анализа введи минимум две карты игрока. Карта дилера нужна только для обозначения учебного состояния.</div>';return}
  let text='',intro='';if(h.bust){intro='Перебор: учебная рука завершена.';text='Сумма превышает 21, дальнейшие действия не рассматриваются.'}
- else if(Number($('evCharlie').value)>0&&p.length>=Number($('evCharlie').value)){intro='Шесть карт без перебора: Charlie.';text='Рука завершена согласно выбранной учебной модели.'}
+ else if(Number($('evCharlie').value)>0&&p.length>=Number($('evCharlie').value)){intro=p.length+' карт без перебора: Charlie.';text='Рука завершена согласно выбранной учебной модели.'}
  else if(h.natural){intro='Натуральные 21 на первых двух картах.';text='Обычные дополнительные действия не рассматриваются.'}
  else if(h.total===21){intro='Сумма 21.';text='Дополнительная карта может привести к перебору; здесь полезно изучить эффект остановки.'}
  else if(h.total<=11){intro='Сумма '+h.total+': немедленный перебор при одной карте невозможен.';text='Даже карта со значением 10 не превышает 21. Это свойство суммы, а не прогноз результата всей раздачи.'}
