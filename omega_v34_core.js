@@ -212,6 +212,11 @@ function solveSplit(input){
  if(N<3)throw Error('Для SPLIT нужны минимум две публичные карты и одна скрытая');
  const aceBase=base===9;
  const das=rules.doubleAfterSplit===true, aceOne=rules.splitAcesOneCard!==false;
+ // Hand length only affects Charlie or double-after-split eligibility.
+ // For models without either option, lengths are not part of the Bellman state.
+ const splitCharlie=rules.charlie&&rules.charlieAfterSplit;
+ const lengthKey=len=>splitCharlie?len:0;
+ const decisionLengthKey=len=>splitCharlie||das?len:0;
  const dm=new Map(),firstMemo=new Map(),secondMemo=new Map(),terminalMemo=new Map(),publicDealerMemo=new Map();
  // Bound all four exact-value caches. Eviction only forces recomputation;
  // it never changes the probabilities, rewards, or Bellman recursion.
@@ -294,7 +299,7 @@ function solveSplit(input){
  // of expectation lets the same dealer outcome distribution settle both
  // separate virtual hands without losing their shared-shoe dependence.
  function payoff(t1,len1,bet1,t2,len2,bet2,c,n){
-  const key=t1+'|'+len1+'|'+bet1+'|'+t2+'|'+len2+'|'+bet2+'|'+c.join(',');
+  const key=t1+'|'+lengthKey(len1)+'|'+bet1+'|'+t2+'|'+lengthKey(len2)+'|'+bet2+'|'+c.join(',');
   const old=terminalMemo.get(key);if(old!==undefined)return old;
   if(t1>21&&t2>21&&(rules.peek||rules.dealerBJSettlement==='loseAll'))return -bet1-bet2;
   const char1=rules.charlie&&rules.charlieAfterSplit&&len1>=rules.charlieCards&&t1<=21;
@@ -328,7 +333,7 @@ function solveSplit(input){
  // Terminal first hand is public information when second hand is played.
  function playSecond(t1,len1,bet1,t2,s2,len2,bet2,c,n){
   if(t2>=21||n<=1||(rules.charlie&&rules.charlieAfterSplit&&len2>=rules.charlieCards)||(aceBase&&aceOne))return payoff(t1,len1,bet1,t2,len2,bet2,c,n);
-  const key=t1+'|'+len1+'|'+bet1+'|'+t2+'|'+s2+'|'+len2+'|'+bet2+'|'+c.join(',');const old=secondMemo.get(key);if(old!==undefined)return old;
+  const key=t1+'|'+lengthKey(len1)+'|'+bet1+'|'+t2+'|'+s2+'|'+decisionLengthKey(len2)+'|'+bet2+'|'+c.join(',');const old=secondMemo.get(key);if(old!==undefined)return old;
   let value=payoff(t1,len1,bet1,t2,len2,bet2,c,n);
   let hit=0, dbl=0;
   for(const [i,p] of branches(c,n)){
@@ -352,7 +357,7 @@ function solveSplit(input){
  }
  function playFirst(t,s,len,bet,c,n){
   if(t>=21||n<=2||(rules.charlie&&rules.charlieAfterSplit&&len>=rules.charlieCards)||(aceBase&&aceOne))return startSecond(t,len,bet,c,n);
-  const key=t+'|'+s+'|'+len+'|'+bet+'|'+c.join(',');const old=firstMemo.get(key);if(old!==undefined)return old;
+  const key=t+'|'+s+'|'+decisionLengthKey(len)+'|'+bet+'|'+c.join(',');const old=firstMemo.get(key);if(old!==undefined)return old;
   let value=startSecond(t,len,bet,c,n);
   let hit=0,dbl=0;
   for(const [i,p] of branches(c,n)){
