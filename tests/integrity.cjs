@@ -16,11 +16,12 @@ for(const f of ['./','./index.html','./manifest.webmanifest','./icons/icon.svg',
  assert.ok(sw.includes("'"+f+"'"),'Cache is missing '+f);
 }
 assert.ok(html.includes("navigator.serviceWorker.register('./sw.js')"));
-assert.ok(!html.includes('id="evResplit"'));
+assert.ok(html.includes('id="evResplit"') && html.includes('id="evResplitCompute"'));
+assert.ok(embedded.includes('function solveResplit') && embedded.includes('solveResplit'));
 assert.ok(html.includes("new Worker('./omega_worker.js')"));
 assert.ok(html.includes('id="evSplitCompute"') && html.includes('id="evDoubleCompute"'));
 assert.ok(html.includes('id="betGuide"') && html.includes('Когда ставку рассматривать'));
 const worker=fs.readFileSync('omega_worker.js','utf8');
 new vm.Script(worker);
 assert.ok(worker.includes("importScripts('./omega_v34_core.js')"));
-console.log('PASS: PWA manifest, service worker, inline scripts, core identity, resplit absent');
+console.log('PASS: PWA manifest, service worker, inline scripts, core identity, exact resplit present');

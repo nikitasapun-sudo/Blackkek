@@ -20,7 +20,10 @@ test('Charlie at 7 permits six-card HIT',()=>assert.ok('hit' in actions(['2','2'
 test('old STAND reference preserved',()=>close(actions(['10','5'],'7').stand,-0.47561837175676747));
 test('old HIT reference preserved',()=>close(actions(['10','5'],'7').hit,-0.3691373204907297));
 test('reject missing visible upcard',()=>assert.throws(()=>E.inputCounts({player:['10','5'],up:'7',visible:['10','5']})));
-test('resplit disabled',()=>assert.throws(()=>E.validateRules({resplit:true})));
+test('resplit enabled with exact hand limit',()=>{
+ const rules=E.validateRules({resplit:true});
+ assert.equal(rules.resplit,true);assert.equal(rules.maxSplitHands,4);
+});
 test('split aces no-peek OBO refund',()=>{
  const input={player:['A','A'],up:'10',visible:['A','A','10'],rules:{peek:false,splitAcesOneCard:true},limitMs:10000};
  const all=E.solveSplit(input).ev; input.rules.dealerBJSettlement='originalOnly';

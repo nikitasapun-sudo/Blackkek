@@ -54,8 +54,15 @@ jobs:
           node --check tests/compact_ui.cjs
           node --check tests/stake_comparison.cjs
           node --check omega_worker.js
+          node --check tests/resplit_exact_oracle.cjs
+          node --check tests/resplit_joint_moment_oracle.cjs
+          node --check tests/variance_oracle.cjs
       - name: Mathematical regression
-        run: node tests/v34.cjs
+        run: |
+          node tests/v34.cjs
+          node tests/resplit_exact_oracle.cjs
+          node tests/resplit_joint_moment_oracle.cjs
+          node tests/variance_oracle.cjs
       - name: Independent depleted-shoe oracle
         run: node tests/depleted_oracle.cjs
       - name: PWA integrity

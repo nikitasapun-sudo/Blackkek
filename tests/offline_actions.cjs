@@ -42,6 +42,15 @@ assert.equal(split[1].value.exact,true);
 const both=exec('all',['A','A'],'7',{splitAcesOneCard:true});
 assert.deepEqual(both.map(x=>x.type),['basic','split','done']);
 assert.ok(Math.abs(both[1].value.ev-split[1].value.ev)<1e-12);
+const tinyVisible=[];
+for(let i=0;i<E.R.length;i++){
+ const rank=E.R[i],left=({7:2,10:2})[rank]||0;
+ for(let k=0;k<E.MAX[i]-left;k++)tinyVisible.push(rank);
+}
+messages.length=0;
+self.onmessage({data:{mode:'resplit',input:{player:['A','A'],up:'10',visible:tinyVisible,rules:{peek:false,s17:true,charlieCards:0,resplit:true,maxSplitHands:3,splitAcesOneCard:true},limitMs:10000}}});
+assert.deepEqual(messages.map(x=>x.type),['basic','resplit','done']);
+assert.equal(messages[1].value.exact,true);
 const invalid=exec('split',['9','8'],'7');
 assert.equal(invalid.length,1);
 assert.equal(invalid[0].type,'error');
