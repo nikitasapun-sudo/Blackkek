@@ -79,6 +79,12 @@
 <div id="strategyStatus" class="evstatus" role="status">Подсказка появится сразу после выбора сценария или нажатия «Новая случайная задача».</div>
 <div id="strategyResult" class="evresult"></div>
 <div id="strategyStats" class="evnote" role="status">Попыток: 0 · верно: 0 · среднее отставание EV: 0,000000</div>
+<details class="disclose" open><summary>Рекомендация по виртуальным фишкам</summary>
+<p class="small">Это учебная схема для бесплатного режима. Она использует только aggregate edge до новой раздачи и не относится к EV уже выданной руки.</p>
+<div class="row"><label class="small" for="chipBankroll">Виртуальный банк:</label><input id="chipBankroll" type="number" min="1" max="1000000" step="1" value="100" inputmode="numeric" style="width:110px"><span class="small">фишек</span></div>
+<div id="chipRecommendation" class="evnote" role="status">Сначала рассчитай edge по текущему составу башмака.</div>
+<p class="evfoot">Правило тренажёра: при неположительном или неизвестном edge — 0 фишек; при положительном edge — 1 фишка; при edge от 1% — не более 2 фишек. После проигрыша ставка не увеличивается.</p>
+</details>
 <p class="evfoot">Edge усредняет оптимальное одиночное решение по всем возможным двум картам игрока и upcard из текущего остатка. Карты текущей руки считаются уже изъятыми; для оценки следующей раздачи нажми «Новая рука». Edge учитывает момент до проверки дилера, количество оставшихся карт и выбранные правила; полный SPLIT в этот показатель не входит и считается отдельным режимом. Универсального порога True Count нет: edge пересчитывается по фактическому остатку, проникновению и правилам.</p>
 </details>
 </section>
@@ -656,6 +662,7 @@ function markTabConflict(){
  lastEVReport=null;
  $('evResult').innerHTML='';$('evDiagnosticText').value='';$('evDiagnosticText').hidden=true;
  $('strategyResult').innerHTML='';$('strategyStatus').textContent='Загрузи сохранённые данные перед новым сравнением или расчётом edge.';
+ lastEdgeResult=null;renderChipRecommendation();
  $('evDiagnosticState').textContent='Отчёт устарел: данные изменены в другой вкладке.';
  $('evStatus').textContent='Загрузи сохранённые данные перед новым расчётом.';
  $('tabConflictNotice').hidden=false;
@@ -721,6 +728,7 @@ const $=id=>document.getElementById(id);
 const initial=()=>({player:[],dealer:[],other:[],history:[],selected:'player',surrender:false,splitPolicy:'rank'});
 let state=initial();let undoStack=[];
 let strategyTask=null;
+let lastEdgeResult=null;
 let strategyStats=loadStrategyStats();
 function loadStrategyStats(){
  try{
@@ -739,6 +747,17 @@ function renderStrategyStats(){
  box.textContent='Попыток: '+strategyStats.attempts+' · верно: '+strategyStats.correct+' · среднее отставание EV: '+fmt(avg,6);
 }
 renderStrategyStats();
+function renderChipRecommendation(){
+ const box=$('chipRecommendation');if(!box)return;
+ if(!lastEdgeResult){box.textContent='Сначала рассчитай edge по текущему составу башмака.';return;}
+ const bankroll=Number($('chipBankroll')?.value);
+ if(!Number.isFinite(bankroll)||bankroll<1){box.textContent='Укажи виртуальный банк не меньше 1 фишки.';return;}
+ const edge=Number(lastEdgeResult.playerEdge);
+ if(!Number.isFinite(edge)){box.textContent='Edge не подтверждён — рекомендация отсутствует.';return;}
+ if(edge<=0){box.textContent='Рекомендация: 0 фишек — по этой модели раздачу лучше пропустить. Edge: '+fmt(edge*100,3)+'%.';return;}
+ const strong=edge>=0.01, chips=strong&&bankroll>=100?2:1;
+ box.textContent='Рекомендация: '+chips+' '+(chips===1?'фишка':'фишки')+' из виртуального банка '+fmt(bankroll,0)+'. Edge: '+fmt(edge*100,3)+'%. '+(strong?'Достигнут учебный порог 1%, но потолок — 2 фишки.':'Edge положительный, поэтому используется базовая 1 фишка.')+' После проигрыша ставку не увеличивай.';
+}
 function restoreCards(){
  const raw=readSaved(KEY);
  if(raw===undefined){cardsNeedReset=true;return;}
@@ -977,6 +996,7 @@ function invalidateStrategyExercise(message='Подсказка появится
  if(answer&&clearAnswer)answer.value='';
  if(result)result.innerHTML='';
  if(clearAnswer)strategyTask=null;
+ lastEdgeResult=null;renderChipRecommendation();
  if(status&&!tabConflict)status.textContent=message;
 }
 function renderStrategyComparison(v,answer,scenario){
@@ -1029,9 +1049,9 @@ function calculateEdge(){
  armEVWatchdog(worker,false,120000,()=>{status.textContent='Edge не подтверждён: расчёт превысил лимит времени.';});
  worker.onmessage=e=>{if(activeWorker!==worker)return;const m=e.data;
   if(m.type==='progress')status.textContent='Считается edge: '+m.value.scenarios+'/'+m.value.expectedScenarios+' сценариев; '+fmt(m.value.elapsedMs/1000,1)+' с.';
-  else if(m.type==='edge'){const v=m.value,decision=v.playerEdge>0?'положительное учебное ожидание':'ставку по этой модели лучше пропустить';$('strategyResult').innerHTML=`<table class="evtable"><tbody><tr><td>Player edge</td><td><strong>${v.playerEdge>=0?'+':''}${fmt(v.playerEdge,6)}</strong></td><td>на 1 условную единицу</td></tr><tr><td>House edge</td><td><strong>${v.houseEdge>=0?'+':''}${fmt(v.houseEdge,6)}</strong></td><td>противоположный знак</td></tr><tr><td>Вероятность BJ дилера</td><td><strong>${fmt(v.dealerBJProbability*100,3)}%</strong></td><td>до peek</td></tr></tbody></table><div class="evnote">${decision}. Edge рассчитан по текущему составу, ${v.rules.s17?'S17':'H17'}, ${v.rules.peek?'peek':'без peek'}, Charlie=${v.rules.charlie?v.rules.charlieCards:'нет'}; SPLIT исключён.</div><p class="small">Running Count: ${v.metrics.runningCount>=0?'+':''}${v.metrics.runningCount}; True Count: ${fmt(v.metrics.trueCount,2)}; осталось ${v.metrics.remaining} карт (${fmt(v.metrics.decksRemaining,2)} колод). Сценариев: ${v.scenarios}. ${v.definition}</p>`;}
+  else if(m.type==='edge'){const v=m.value;lastEdgeResult=v;renderChipRecommendation();const decision=v.playerEdge>0?'положительное учебное ожидание':'ставку по этой модели лучше пропустить';$('strategyResult').innerHTML=`<table class="evtable"><tbody><tr><td>Player edge</td><td><strong>${v.playerEdge>=0?'+':''}${fmt(v.playerEdge,6)}</strong></td><td>на 1 условную единицу</td></tr><tr><td>House edge</td><td><strong>${v.houseEdge>=0?'+':''}${fmt(v.houseEdge,6)}</strong></td><td>противоположный знак</td></tr><tr><td>Вероятность BJ дилера</td><td><strong>${fmt(v.dealerBJProbability*100,3)}%</strong></td><td>до peek</td></tr></tbody></table><div class="evnote">${decision}. Edge рассчитан по текущему составу, ${v.rules.s17?'S17':'H17'}, ${v.rules.peek?'peek':'без peek'}, Charlie=${v.rules.charlie?v.rules.charlieCards:'нет'}; SPLIT исключён.</div><p class="small">Running Count: ${v.metrics.runningCount>=0?'+':''}${v.metrics.runningCount}; True Count: ${fmt(v.metrics.trueCount,2)}; осталось ${v.metrics.remaining} карт (${fmt(v.metrics.decksRemaining,2)} колод). Сценариев: ${v.scenarios}. ${v.definition}</p>`;}
   else if(m.type==='done'){cancelEV('Расчёт edge завершён.');status.textContent='Edge рассчитан точно для выбранного состава и правил.';}
-  else if(m.type==='error'){cancelEV('Edge не рассчитан.');status.textContent='Edge не подтверждён: '+m.message;}
+  else if(m.type==='error'){lastEdgeResult=null;renderChipRecommendation();cancelEV('Edge не рассчитан.');status.textContent='Edge не подтверждён: '+m.message;}
  };
  worker.onerror=e=>{if(activeWorker===worker){cancelEV('Ошибка Web Worker при расчёте edge.');status.textContent='Edge не рассчитан: '+(e.message||'ошибка Worker');}};
  worker.postMessage({mode:'edge',input});
@@ -1156,6 +1176,7 @@ $('strategyNew').addEventListener('click',()=>{if(!storageIsCurrent()||cardsNeed
 $('strategyScenario').addEventListener('change',()=>{invalidateStrategyExercise('Считаю подсказку для нового сценария…');compareCurrentStrategy();});
 $('strategyAnswer').addEventListener('change',()=>{if($('strategyResult').innerHTML)$('strategyStatus').textContent='Попытка выбрана. Нажми «Проверить попытку» или продолжай без ответа.';});
 $('edgeCompute').addEventListener('click',calculateEdge);
+$('chipBankroll').addEventListener('input',renderChipRecommendation);
 $('evCancel').addEventListener('click',()=>cancelEV());
 for(const id of ['evSoft','evPeek','evCharlie','evDAS','evSplitAces','evCharlieSplit','evDoublePolicy','evDealerBJSettlement','evBJPayout'])$(id).addEventListener('change',()=>{
  saveEVSettings();if(activeWorker)cancelEV('Настройки изменены: старый расчёт остановлен.');
