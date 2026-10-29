@@ -37,7 +37,7 @@ const base=process.env.OMEGA_TEST_URL||'http://127.0.0.1:8765/';
   // The diagnostic report is generated and readable even with no network.
   await page.locator('#evDiagnosticShow').click();
   const diag=JSON.parse(await page.locator('#evDiagnosticText').inputValue());
-  assert.equal(diag.version,'3.16');
+  assert.equal(diag.version,'3.17');
   assert.equal(diag.mode,'all');
   assert.equal(diag.knownRemaining,413);
   assert.equal(diag.player.join(','),'10,5');

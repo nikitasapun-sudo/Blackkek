@@ -29,7 +29,7 @@ const timers=new Map();
 const context={
  window:{OmegaFiniteEV:E},
  document:{getElementById:el,createElement:()=>({dataset:{},addEventListener(){},classList:{toggle(){}}})},
- localStorage:{getItem(){return null},setItem(){}},Worker,
+ localStorage:{data:new Map(),getItem(k){return this.data.get(k)??null;},setItem(k,v){this.data.set(k,v);}},Worker,
  setTimeout(fn,ms){const id=nextId++;timers.set(id,{fn,ms});return id;},
  clearTimeout(id){timers.delete(id);},
  navigator:{clipboard:{async writeText(value){copied=value;}}},
@@ -58,7 +58,7 @@ assert.equal(worker.dead,true);
 el('evDiagnosticShow').events.click();
 assert.equal(el('evDiagnosticText').hidden,false);
 const data=JSON.parse(el('evDiagnosticText').value);
-assert.equal(data.version,'3.16');
+assert.equal(data.version,'3.17');
 assert.equal(data.status,'error');
 assert.equal(data.stage,'dealer-recursion');
 assert.equal(data.knownRemaining,412);

@@ -50,7 +50,7 @@ class Worker {
 const context = {
   window:{OmegaFiniteEV}, document, Blob:class Blob {},
   Worker, URL:{createObjectURL:()=> 'blob:test',revokeObjectURL(){}},
-  localStorage:{getItem(){return null;},setItem(){}},
+  localStorage:{data:new Map(),getItem(k){return this.data.get(k)??null;},setItem(k,v){this.data.set(k,v);}},
   setTimeout:setTimeoutFake, clearTimeout:clearTimeoutFake,
   console, confirm:()=>true, alert:msg=>{throw Error(msg);}
 };
