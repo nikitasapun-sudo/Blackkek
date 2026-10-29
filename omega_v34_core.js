@@ -213,6 +213,14 @@ function solveSplit(input){
  const aceBase=base===9;
  const das=rules.doubleAfterSplit===true, aceOne=rules.splitAcesOneCard!==false;
  const dm=new Map(),firstMemo=new Map(),secondMemo=new Map(),terminalMemo=new Map(),publicDealerMemo=new Map(),secondStartMemo=new Map();
+ // Mixed radix: rank buckets have 0..32 cards except ten-valued 0..128.
+ // The complete 8-deck count vector fits uniquely into a safe JS integer.
+ const countWeights=[1,33,1089,35937,1185921,39135393,1291467969,42618443077,1406408621541,181426712178789];
+ function packedCounts(c){
+  let code=0;
+  for(let i=0;i<K;i++)code+=c[i]*countWeights[i];
+  return code;
+ }
  // Bound all four exact-value caches. Eviction only forces recomputation;
  // it never changes the probabilities, rewards, or Bellman recursion.
  const defaultCaps={dealer:45000,first:12000,second:30000,terminal:15000,publicDealer:22000,secondStart:12000};
@@ -340,7 +348,7 @@ function solveSplit(input){
  // across different terminal hands with identical visible shoe composition
  // avoids repeated hidden-hole enumeration without approximating anything.
  function publicDealerDistribution(c,n){
-  const key=c.join(',');
+  const key=packedCounts(c);
   const known=publicDealerMemo.get(key);
   if(known!==undefined){counters.publicDealerHits++;return known;}
   if(useDealerPolynomial){
@@ -411,7 +419,7 @@ function solveSplit(input){
   memoize(secondMemo,key,value,'second');counters.second++;budget();return value;
  }
  function startSecond(c,n){
-  const key=c.join(',');
+  const key=packedCounts(c);
   const old=secondStartMemo.get(key);if(old!==undefined)return old;
   let ev=0;
   for(const [i,p] of branches(c,n)){
