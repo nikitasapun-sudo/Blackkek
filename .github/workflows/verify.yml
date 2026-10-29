@@ -27,6 +27,8 @@ jobs:
           node --check tests/depleted_oracle.cjs
           node --check tests/integrity.cjs
           node --check tests/pwa_offline.cjs
+          node --check tests/worker_watchdog.cjs
+          node --check tests/performance.cjs
       - name: Mathematical regression
         run: node tests/v34.cjs
       - name: Independent depleted-shoe oracle
@@ -35,3 +37,7 @@ jobs:
         run: |
           node tests/integrity.cjs
           node tests/pwa_offline.cjs
+      - name: Worker lifecycle and performance smoke
+        run: |
+          node tests/worker_watchdog.cjs
+          node tests/performance.cjs
