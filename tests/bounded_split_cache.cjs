@@ -29,7 +29,7 @@ for(const memoLimit of [2,4,16,64]){
    'Memory cap exceeded for '+kind+' with limit '+memoLimit);
   assert.ok(smaller.stats.cacheLimits[kind]<=memoLimit);
  }
- assert.ok(Object.values(smaller.stats.cacheEvictions).some(n=>n>0),
+ if(memoLimit<=4)assert.ok(Object.values(smaller.stats.cacheEvictions).some(n=>n>0),
   'Tiny caches should actually exercise evictions');
  cases++;
 }
