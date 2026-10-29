@@ -45,3 +45,4 @@ jobs:
           node tests/worker_watchdog.cjs
           node tests/performance.cjs
           node tests/offline_actions.cjs
+          node tests/end_of_shoe.cjs
