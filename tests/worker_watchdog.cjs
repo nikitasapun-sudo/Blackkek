@@ -93,4 +93,23 @@ assert.equal([...timers.values()].filter(t=>t.ms===30000).length,0);
 const status=element('evStatus').textContent;
 last.onmessage({data:{type:'error',message:'stale'}});
 assert.equal(element('evStatus').textContent,status);
-console.log('PASS watchdog: hard timeout, partial result preservation, cancellation cleanup, stale-event isolation');
+// 4. Split-only UI displays a distinct mathematically exact restricted result,
+// retaining it when the full two-hand solver aborts. No full value is fabricated.
+demo.setState({
+ player:['7','7'],dealer:['5'],other:[],history:[],
+ selected:'player',surrender:false,splitPolicy:'rank'
+});
+demo.calculateEV('split');
+const splitWorker=workers[3];
+assert.equal(splitWorker.input.mode,'split');
+splitWorker.onmessage({data:{type:'basic',value:{
+ actions:{stand:-0.2,splitTwoCardStop:-0.12345},splitEligible:true
+}}});
+assert.match(element('evResult').innerHTML,/одной карте \(ограниченный\)/);
+assert.match(element('evResult').innerHTML,/НЕ полный SPLIT/);
+assert.doesNotMatch(element('evResult').innerHTML,/SPLIT · две полные руки/);
+splitWorker.onmessage({data:{type:'error',message:'Лимит времени для точного SPLIT: состояние слишком сложно.'}});
+assert.equal(splitWorker.terminated,true);
+assert.match(element('evStatus').textContent,/ограниченный SPLIT сохранён/);
+assert.match(element('evResult').innerHTML,/НЕ полный SPLIT/);
+console.log('PASS watchdog: cancellation, stale events, restricted-vs-full SPLIT distinction and timeout retention');

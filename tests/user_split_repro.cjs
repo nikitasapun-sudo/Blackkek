@@ -19,7 +19,7 @@ try{
  // If future optimizations complete rapidly that is also valid.
  console.log('PASS real user split fixture unexpectedly completed within short budget');
 }catch(err){
- assert.match(err.message,/Лимит времени/);
+ assert.match(err.message,/(?:Лимит времени|Превышен лимит вычисления SPLIT)/);
  assert.ok(err.diagnostics,'Error must contain snapshot even if no progress was received');
  assert.ok(['dealer-recursion','split-transitions'].includes(err.diagnostics.stage));
  assert.ok(err.diagnostics.counters.dealer+err.diagnostics.counters.transitions>0);
