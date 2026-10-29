@@ -9,6 +9,12 @@ self.onmessage=function(event){
   input.onProgress=update=>self.postMessage({type:'progress',value:update,mode});
   if(!['all','double','split'].includes(mode))throw Error('Неизвестный режим учебного расчёта');
   if(mode==='split'){
+   // Complete an exact, explicitly restricted split first. Both child hands
+   // take exactly one card and stand; this is NOT the optimal full SPLIT.
+   // Preserve that verified result even if the much heavier full solver times out.
+   const basic=OmegaFiniteEV.solve(input);
+   if(!basic.splitEligible)throw Error('Для SPLIT нужна разрешённая пара и три неизвестные карты');
+   self.postMessage({type:'basic',value:basic,mode});
    const split=OmegaFiniteEV.solveSplit(input);
    self.postMessage({type:'split',value:split,mode});
   }else{
