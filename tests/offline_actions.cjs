@@ -38,4 +38,24 @@ assert.equal(invalid.length,1);
 assert.equal(invalid[0].type,'error');
 assert.ok(!messages.some(x=>x.type==='done'));
 assert.ok(!code.includes('fetch('),'Worker must not require internet');
-console.log('PASS static offline Worker: ordinary, double, split, all, invalid pair and network independence');
+// Force the exact full solver to time out after a valid restricted result.
+// The Worker must not forge a full SPLIT value or a successful completion.
+const timeoutMessages=[];
+const simulatedEngine={
+ solve(){return {actions:{splitTwoCardStop:-0.12345},splitEligible:true};},
+ solveSplit(){
+  const err=Error('Лимит времени для точного SPLIT: состояние слишком сложно.');
+  err.diagnostics={stage:'dealer-recursion',elapsedMs:22000,counters:{dealer:10000}};
+  throw err;
+ }
+};
+const timeoutSelf={postMessage(value){timeoutMessages.push(value);}};
+vm.runInNewContext(code,{self:timeoutSelf,OmegaFiniteEV:simulatedEngine,
+ importScripts(path){assert.equal(path,'./omega_v34_core.js');}},{filename:'omega_worker_timeout.js'});
+timeoutSelf.onmessage({data:{mode:'split',input:{player:['7','7'],up:'5'}}});
+assert.deepEqual(timeoutMessages.map(x=>x.type),['basic','error']);
+assert.equal(timeoutMessages[0].value.actions.splitTwoCardStop,-0.12345);
+assert.equal(timeoutMessages[1].diagnostics.stage,'dealer-recursion');
+assert.ok(timeoutMessages.every(x=>x.type!=='split'&&x.type!=='done'),
+ 'A timed-out full split must not be misrepresented as exact');
+console.log('PASS static offline Worker: ordinary, double, restricted split before full, timeout preservation and no network');
