@@ -212,17 +212,17 @@ function solveSplit(input){
  if(N<3)throw Error('Для SPLIT нужны минимум две публичные карты и одна скрытая');
  const aceBase=base===9;
  const das=rules.doubleAfterSplit===true, aceOne=rules.splitAcesOneCard!==false;
- const dm=new Map(),firstMemo=new Map(),secondMemo=new Map(),terminalMemo=new Map();
+ const dm=new Map(),firstMemo=new Map(),secondMemo=new Map(),terminalMemo=new Map(),publicDealerMemo=new Map();
  // Bound all four exact-value caches. Eviction only forces recomputation;
  // it never changes the probabilities, rewards, or Bellman recursion.
- const defaultCaps={dealer:50000,first:12000,second:35000,terminal:35000};
+ const defaultCaps={dealer:45000,first:12000,second:30000,terminal:15000,publicDealer:22000};
  const requestedCap=input.memoLimit;
  if(requestedCap!==undefined&&(!Number.isInteger(requestedCap)||requestedCap<1||requestedCap>50000))
   throw Error('Некорректный предел кэша для учебного расчёта SPLIT');
  const cacheCaps=Object.fromEntries(Object.entries(defaultCaps).map(([kind,max])=>
   [kind,requestedCap===undefined?max:Math.min(max,requestedCap)]));
- const cacheEvictions={dealer:0,first:0,second:0,terminal:0};
- const cachePeak={dealer:0,first:0,second:0,terminal:0};
+ const cacheEvictions={dealer:0,first:0,second:0,terminal:0,publicDealer:0};
+ const cachePeak={dealer:0,first:0,second:0,terminal:0,publicDealer:0};
  function memoize(map,key,value,kind){
   if(map.size>=cacheCaps[kind]){
    map.delete(map.keys().next().value);
@@ -231,7 +231,7 @@ function solveSplit(input){
   map.set(key,value);
   if(map.size>cachePeak[kind])cachePeak[kind]=map.size;
  }
- const counters={first:0,second:0,dealer:0,terminal:0,transitions:0};
+ const counters={first:0,second:0,dealer:0,terminal:0,transitions:0,publicDealerHits:0,publicDealerMisses:0};
  function budget(){if((++counters.transitions&2047)===0 && Date.now()-start>limitMs)throw Error('Превышен лимит вычисления SPLIT (без точного результата). Выбери менее сложный учебный сценарий.');}
  function holeWeights(c,n){const w=new Array(K).fill(0);let denom=0;for(let h=0;h<K;h++)if(c[h]&&!(rules.peek&&dealerBJ(up,h))){w[h]=c[h];denom+=c[h]};if(!denom)throw Error('Нет допустимых скрытых карт');for(let h=0;h<K;h++)w[h]/=denom;return w;}
  function branches(c,n){if(n<2)throw Error('Недостаточно карт при скрытой карте');const w=holeWeights(c,n),out=[];for(let i=0;i<K;i++)if(c[i]){const p=(c[i]-w[i])/(n-1);if(p>0)out.push([i,p]);}return out;}
@@ -240,32 +240,65 @@ function solveSplit(input){
   for(let i=0;i<K;i++)if(c[i]){const p=c[i]/n;c[i]--;const [nt,ns]=cardAdd(t,s,i),a=dealerDist(nt,ns,c,n-1);for(let j=0;j<6;j++)out[j]+=p*a[j];c[i]++;}
   memoize(dm,key,out,'dealer');counters.dealer++;if((counters.dealer&2047)===0&&Date.now()-start>limitMs)throw Error('Лимит времени для точного SPLIT: состояние слишком сложно.');return out;
  }
- // Dealer is rolled only once, after both public child hands terminate.
+ // At a terminal public information state, the distribution of the dealer's
+ // outcome depends only on the REMAINING cards, upcard and peek rule.
+ // The two child hands share this *one* outcome distribution. Reusing it
+ // across different terminal hands with identical visible shoe composition
+ // avoids repeated hidden-hole enumeration without approximating anything.
+ function publicDealerDistribution(c,n){
+  const key=c.join(',');
+  const known=publicDealerMemo.get(key);
+  if(known!==undefined){counters.publicDealerHits++;return known;}
+  const weights=holeWeights(c,n),out=new Float64Array(6);
+  let pBJ=0;
+  for(let h=0;h<K;h++)if(weights[h]){
+   const p=weights[h];
+   if(dealerBJ(up,h)){pBJ+=p;continue;}
+   c[h]--;
+   const [dt,ds]=cardAdd(...cardAdd(0,0,up),h);
+   const d=dealerDist(dt,ds,c,n-1);
+   for(let i=0;i<6;i++)out[i]+=p*d[i];
+   c[h]++;
+  }
+  const value={pBJ,dist:out};
+  memoize(publicDealerMemo,key,value,'publicDealer');
+  counters.publicDealerMisses++;budget();
+  return value;
+ }
+ // Dealer is drawn once, after both public split hands terminate. Linearity
+ // of expectation lets the same dealer outcome distribution settle both
+ // separate virtual hands without losing their shared-shoe dependence.
  function payoff(t1,len1,bet1,t2,len2,bet2,c,n){
-  const k=t1+'|'+len1+'|'+bet1+'|'+t2+'|'+len2+'|'+bet2+'|'+c.join(',');
-  const old=terminalMemo.get(k);if(old!==undefined)return old;
+  const key=t1+'|'+len1+'|'+bet1+'|'+t2+'|'+len2+'|'+bet2+'|'+c.join(',');
+  const old=terminalMemo.get(key);if(old!==undefined)return old;
   if(t1>21&&t2>21&&(rules.peek||rules.dealerBJSettlement==='loseAll'))return -bet1-bet2;
   const char1=rules.charlie&&rules.charlieAfterSplit&&len1>=rules.charlieCards&&t1<=21;
   const char2=rules.charlie&&rules.charlieAfterSplit&&len2>=rules.charlieCards&&t2<=21;
-  let ev=0;const w=holeWeights(c,n);
-  for(let hole=0;hole<K;hole++)if(w[hole]){
-   c[hole]--;
-   let v;
-   if(dealerBJ(up,hole))v=(!rules.peek&&rules.dealerBJSettlement==='originalOnly')?-1:-bet1-bet2; // originalOnly refunds additional split/DAS units
-   else if((t1>21||char1)&&(t2>21||char2))v=bet1*(t1>21?-1:1)+bet2*(t2>21?-1:1);
-   else {
-    const [dt,ds]=cardAdd(...cardAdd(0,0,up),hole),dist=dealerDist(dt,ds,c,n-1);
-    const handPay=(t,len,bet,charlie)=>{
-     if(t>21)return -bet;
-     if(charlie)return bet;
-     let ret=dist[0];for(let d=17;d<=21;d++)ret+=dist[d-16]*(t>d?1:t===d?0:-1);
-     return bet*ret;
-    };
-    v=handPay(t1,len1,bet1,char1)+handPay(t2,len2,bet2,char2);
+  // No dealer draw is needed if both child hands have busted or Charlie.
+  // Preserve the special no-peek original-only settlement on dealer BJ.
+  if((t1>21||char1)&&(t2>21||char2)){
+   const base=bet1*(t1>21?-1:1)+bet2*(t2>21?-1:1);
+   if(!rules.peek&&rules.dealerBJSettlement==='originalOnly'&&(up===8||up===9)){
+    const w=holeWeights(c,n),bj=w[up===8?9:8];
+    const result=base*(1-bj)-bj;
+    memoize(terminalMemo,key,result,'terminal');counters.terminal++;budget();return result;
    }
-   ev+=w[hole]*v;c[hole]++;
+   if(rules.peek||up!==8&&up!==9){
+    memoize(terminalMemo,key,base,'terminal');counters.terminal++;budget();return base;
+   }
   }
-  memoize(terminalMemo,k,ev,'terminal');counters.terminal++;budget();return ev;
+  const {pBJ,dist}=publicDealerDistribution(c,n);
+  let ev=pBJ*((!rules.peek&&rules.dealerBJSettlement==='originalOnly')?-1:-bet1-bet2);
+  const pOther=dist[0]+dist[1]+dist[2]+dist[3]+dist[4]+dist[5];
+  function settleOne(t,bet,charlie){
+   if(t>21)return -bet*pOther;
+   if(charlie)return bet*pOther;
+   let ret=dist[0];
+   for(let d=17;d<=21;d++)ret+=dist[d-16]*(t>d?1:t===d?0:-1);
+   return bet*ret;
+  }
+  ev+=settleOne(t1,bet1,char1)+settleOne(t2,bet2,char2);
+  memoize(terminalMemo,key,ev,'terminal');counters.terminal++;budget();return ev;
  }
  // Terminal first hand is public information when second hand is played.
  function playSecond(t1,len1,bet1,t2,s2,len2,bet2,c,n){
@@ -313,7 +346,7 @@ function solveSplit(input){
    ev+=p*playFirst(t,s,2,1,c,N-1);
    c[i]++;
  }
- return {ev,rules,exact:true,assumptions:{resplit:false,afterSplitBlackjackPaysThreeToTwo:false,splitAcesOneCard:aceOne,doubleAfterSplit:das,charlieAfterSplit:rules.charlieAfterSplit},stats:{...counters,memoFirst:firstMemo.size,memoSecond:secondMemo.size,memoDealer:dm.size,cacheLimits:cacheCaps,cachePeak,cacheEvictions,ms:Date.now()-start}};
+ return {ev,rules,exact:true,assumptions:{resplit:false,afterSplitBlackjackPaysThreeToTwo:false,splitAcesOneCard:aceOne,doubleAfterSplit:das,charlieAfterSplit:rules.charlieAfterSplit},stats:{...counters,memoFirst:firstMemo.size,memoSecond:secondMemo.size,memoDealer:dm.size,cacheLimits:cacheCaps,cachePeak,cacheEvictions,publicDealerEntries:publicDealerMemo.size,ms:Date.now()-start}};
 }
 
 // Separate PRE-PEEK educational insurance experiment. Never mix with main-hand EV.
