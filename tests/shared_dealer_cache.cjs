@@ -8,7 +8,7 @@ const counts=E.MAX.slice();
 for(const r of remaining)counts[E.R.indexOf(r)]--;
 const visible=[];
 for(let i=0;i<E.R.length;i++)for(let j=0;j<counts[i];j++)visible.push(E.R[i]);
-let checked=0;
+let checked=0,publicHits=0,publicMisses=0;
 for(const up of ['8','9','10'])
 for(const peek of [true,false])
 for(const settlement of ['loseAll','originalOnly'])
@@ -19,6 +19,8 @@ for(const das of [false,true]){
  const base=E.solveSplit(input);
  const evicted=E.solveSplit({...input,memoLimit:5});
  assert.ok(Number.isFinite(base.ev));
+ publicHits+=base.stats.publicDealerHits;
+ publicMisses+=base.stats.publicDealerMisses;
  assert.ok(Math.abs(base.ev-evicted.ev)<1e-10,
   'Eviction changed public dealer posterior: '+JSON.stringify({up,peek,settlement,das}));
  for(const type of ['dealer','first','second','terminal','publicDealer']){
@@ -34,6 +36,8 @@ const aces=E.solveSplit({
 assert.ok(Math.abs(aces.ev-0.47241182959770595)<1e-10);
 assert.ok(aces.stats.cachePeak.publicDealer<=128);
 assert.ok(aces.stats.publicDealerMisses>0);
+assert.ok(publicHits>0,'Shared dealer cache should reuse exact outcomes in the 24 fixtures');
 checked++;
 console.log('PASS shared dealer posterior / exactness under heavy evictions:',checked,
- 'scenarios; aces dealer cache misses:',aces.stats.publicDealerMisses);
+ 'scenarios; public dealer cache hits:',publicHits,
+ 'misses:',publicMisses,'aces misses:',aces.stats.publicDealerMisses);
