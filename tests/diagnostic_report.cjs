@@ -58,7 +58,7 @@ assert.equal(worker.dead,true);
 el('evDiagnosticShow').events.click();
 assert.equal(el('evDiagnosticText').hidden,false);
 const data=JSON.parse(el('evDiagnosticText').value);
-assert.equal(data.version,'3.12');
+assert.equal(data.version,'3.13');
 assert.equal(data.status,'error');
 assert.equal(data.stage,'dealer-recursion');
 assert.equal(data.knownRemaining,412);
