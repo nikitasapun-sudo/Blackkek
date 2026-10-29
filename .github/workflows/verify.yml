@@ -29,6 +29,8 @@ jobs:
           node --check tests/pwa_offline.cjs
           node --check tests/worker_watchdog.cjs
           node --check tests/performance.cjs
+          node --check tests/offline_actions.cjs
+          node --check omega_worker.js
       - name: Mathematical regression
         run: node tests/v34.cjs
       - name: Independent depleted-shoe oracle
@@ -41,3 +43,4 @@ jobs:
         run: |
           node tests/worker_watchdog.cjs
           node tests/performance.cjs
+          node tests/offline_actions.cjs
