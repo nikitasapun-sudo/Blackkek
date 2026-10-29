@@ -212,17 +212,26 @@ function solveSplit(input){
  if(N<3)throw Error('Для SPLIT нужны минимум две публичные карты и одна скрытая');
  const aceBase=base===9;
  const das=rules.doubleAfterSplit===true, aceOne=rules.splitAcesOneCard!==false;
- const dm=new Map(),firstMemo=new Map(),secondMemo=new Map(),terminalMemo=new Map(),publicDealerMemo=new Map();
+ const dm=new Map(),firstMemo=new Map(),secondMemo=new Map(),terminalMemo=new Map(),publicDealerMemo=new Map(),secondStartMemo=new Map();
+ // Mixed radix: rank buckets have 0..32 cards except ten-valued 0..128.
+ // The complete 8-deck count vector fits uniquely into a safe JS integer.
+ const countWeights=[];let countMultiplier=1;
+ for(let i=0;i<K;i++){countWeights[i]=countMultiplier;countMultiplier*=i===8?129:33;}
+ function packedCounts(c){
+  let code=0;
+  for(let i=0;i<K;i++)code+=c[i]*countWeights[i];
+  return code;
+ }
  // Bound all four exact-value caches. Eviction only forces recomputation;
  // it never changes the probabilities, rewards, or Bellman recursion.
- const defaultCaps={dealer:45000,first:12000,second:30000,terminal:15000,publicDealer:22000};
+ const defaultCaps={dealer:45000,first:12000,second:30000,terminal:15000,publicDealer:22000,secondStart:12000};
  const requestedCap=input.memoLimit;
  if(requestedCap!==undefined&&(!Number.isInteger(requestedCap)||requestedCap<1||requestedCap>50000))
   throw Error('Некорректный предел кэша для учебного расчёта SPLIT');
  const cacheCaps=Object.fromEntries(Object.entries(defaultCaps).map(([kind,max])=>
   [kind,requestedCap===undefined?max:Math.min(max,requestedCap)]));
- const cacheEvictions={dealer:0,first:0,second:0,terminal:0,publicDealer:0};
- const cachePeak={dealer:0,first:0,second:0,terminal:0,publicDealer:0};
+ const cacheEvictions={dealer:0,first:0,second:0,terminal:0,publicDealer:0,secondStart:0};
+ const cachePeak={dealer:0,first:0,second:0,terminal:0,publicDealer:0,secondStart:0};
  function memoize(map,key,value,kind){
   if(map.size>=cacheCaps[kind]){
    map.delete(map.keys().next().value);
@@ -237,7 +246,7 @@ function solveSplit(input){
  function diagnosticSnapshot(stage){
   return {stage,elapsedMs:Date.now()-start,counters:{...counters},
    cacheSizes:{dealer:dm.size,first:firstMemo.size,second:secondMemo.size,
-    terminal:terminalMemo.size,publicDealer:publicDealerMemo.size},
+    terminal:terminalMemo.size,publicDealer:publicDealerMemo.size,secondStart:secondStartMemo.size},
    cacheEvictions:{...cacheEvictions}};
  }
  function progress(stage){
@@ -261,9 +270,78 @@ function solveSplit(input){
  function holeWeights(c,n){const w=new Array(K).fill(0);let denom=0;for(let h=0;h<K;h++)if(c[h]&&!(rules.peek&&dealerBJ(up,h))){w[h]=c[h];denom+=c[h]};if(!denom)throw Error('Нет допустимых скрытых карт');for(let h=0;h<K;h++)w[h]/=denom;return w;}
  function branches(c,n){if(n<2)throw Error('Недостаточно карт при скрытой карте');const w=holeWeights(c,n),out=[];for(let i=0;i<K;i++)if(c[i]){const p=(c[i]-w[i])/(n-1);if(p>0)out.push([i,p]);}return out;}
  function dealerDist(t,s,c,n){if(t>21)return [1,0,0,0,0,0];if(t>17||(t===17&&(rules.s17||s===0)))return [0,+(t===17),+(t===18),+(t===19),+(t===20),+(t===21)];
-  const key=t+'|'+s+'|'+c.join(',');const cached=dm.get(key);if(cached)return cached; if(n===0)throw Error('Дилеру не хватает карт');const out=[0,0,0,0,0,0];
+  const key=t+'|'+s+'|'+c.join(',');const cached=dm.get(key);if(cached){dm.delete(key);dm.set(key,cached);return cached;} if(n===0)throw Error('Дилеру не хватает карт');const out=[0,0,0,0,0,0];
   for(let i=0;i<K;i++)if(c[i]){const p=c[i]/n;c[i]--;const [nt,ns]=cardAdd(t,s,i),a=dealerDist(nt,ns,c,n-1);for(let j=0;j<6;j++)out[j]+=p*a[j];c[i]++;}
   memoize(dm,key,out,'dealer');counters.dealer++;if((counters.dealer&2047)===0){progress('dealer-recursion');if(Date.now()-start>limitMs)timeout('dealer-recursion','Лимит времени для точного SPLIT: состояние слишком сложно.');}return out;
+ }
+
+ // The upcard 5 has no possible natural dealer blackjack. Dealer drawing
+ // can therefore be evaluated as one finite without-replacement sequence,
+ // rather than re-solving a recursive tree independently for every terminal
+ // public state. A polynomial groups ordered paths by rank multiplicity.
+ // Its coefficients are integers; the runtime falling-factorial probabilities
+ // are exact finite-shoe probabilities (up to normal floating-point rounding).
+ const useDealerPolynomial=up===3&&rules.s17&&input.dealerPolynomial!==false;
+ let dealerPaths=null,dealerFalls=null;
+ function precomputeDealerPaths(){
+  if(dealerPaths)return dealerPaths;
+  const terminal=new Map();
+  let level=[{counts:new Array(K).fill(0),t:5,s:0,ways:1}];
+  for(let depth=0;depth<10&&level.length;depth++){
+   const next=new Map();
+   for(const node of level){
+    if(node.t>21||node.t>17||node.t===17){
+     const countsKey=node.counts.join(',');
+     let value=terminal.get(countsKey);
+     if(!value){value={ranks:node.counts.map((v,i)=>v?[i,v]:null).filter(Boolean),
+      len:depth,out:new Array(6).fill(0)};terminal.set(countsKey,value);}
+     const outcome=node.t>21?0:node.t-16;
+     value.out[outcome]+=node.ways;
+    }else{
+     for(let i=0;i<K;i++){
+      const counts=node.counts.slice();counts[i]++;
+      const [t,soft]=cardAdd(node.t,node.s,i);
+      const key=counts.join(',')+'|'+t+'|'+soft;
+      let entry=next.get(key);
+      if(entry)entry.ways+=node.ways;
+      else next.set(key,{counts,t,s:soft,ways:node.ways});
+     }
+    }
+   }
+   level=[...next.values()];
+  }
+  if(level.length)throw Error('Невозможно ограничить длину последовательности дилера');
+  dealerPaths=[...terminal.values()].map(entry=>({
+   len:entry.len,ranks:entry.ranks,
+   outcomes:entry.out.map((coefficient,bucket)=>[bucket,coefficient])
+    .filter(([,coefficient])=>coefficient!==0)
+  }));
+  // Precompute falling factorials once, not on every terminal public state.
+  dealerFalls=Array.from({length:417},(_,cards)=>{
+   const result=new Float64Array(10);result[0]=1;
+   for(let k=1;k<=9;k++)result[k]=k>cards?0:result[k-1]*(cards-k+1);
+   return result;
+  });
+  return dealerPaths;
+ }
+ function polynomialDealerDist(c,n){
+  const paths=precomputeDealerPaths(),falls=dealerFalls;
+  const denominator=falls[n];
+  const out=new Float64Array(6);
+  for(const entry of paths){
+   if(!denominator[entry.len])continue;
+   let p=1/denominator[entry.len];
+   for(const [i,count] of entry.ranks){
+    p*=falls[c[i]][count];
+    if(!p)break;
+   }
+   if(!p)continue;
+   for(const [bucket,coefficient] of entry.outcomes)
+    out[bucket]+=p*coefficient;
+  }
+  const total=out[0]+out[1]+out[2]+out[3]+out[4]+out[5];
+  if(Math.abs(total-1)>1e-9)throw Error('Дилеру не хватает карт для точного завершения');
+  return out;
  }
  // At a terminal public information state, the distribution of the dealer's
  // outcome depends only on the REMAINING cards, upcard and peek rule.
@@ -271,9 +349,15 @@ function solveSplit(input){
  // across different terminal hands with identical visible shoe composition
  // avoids repeated hidden-hole enumeration without approximating anything.
  function publicDealerDistribution(c,n){
-  const key=c.join(',');
+  const key=packedCounts(c);
   const known=publicDealerMemo.get(key);
   if(known!==undefined){counters.publicDealerHits++;return known;}
+  if(useDealerPolynomial){
+   const value={pBJ:0,dist:polynomialDealerDist(c,n)};
+   memoize(publicDealerMemo,key,value,'publicDealer');
+   counters.publicDealerMisses++;budget();
+   return value;
+  }
   const weights=holeWeights(c,n),out=new Float64Array(6);
   let pBJ=0;
   for(let h=0;h<K;h++)if(weights[h]){
@@ -290,75 +374,77 @@ function solveSplit(input){
   counters.publicDealerMisses++;budget();
   return value;
  }
- // Dealer is drawn once, after both public split hands terminate. Linearity
- // of expectation lets the same dealer outcome distribution settle both
- // separate virtual hands without losing their shared-shoe dependence.
- function payoff(t1,len1,bet1,t2,len2,bet2,c,n){
-  const key=t1+'|'+len1+'|'+bet1+'|'+t2+'|'+len2+'|'+bet2+'|'+c.join(',');
-  const old=terminalMemo.get(key);if(old!==undefined)return old;
-  if(t1>21&&t2>21&&(rules.peek||rules.dealerBJSettlement==='loseAll'))return -bet1-bet2;
-  const char1=rules.charlie&&rules.charlieAfterSplit&&len1>=rules.charlieCards&&t1<=21;
-  const char2=rules.charlie&&rules.charlieAfterSplit&&len2>=rules.charlieCards&&t2<=21;
-  // No dealer draw is needed if both child hands have busted or Charlie.
-  // Preserve the special no-peek original-only settlement on dealer BJ.
-  if((t1>21||char1)&&(t2>21||char2)){
-   const base=bet1*(t1>21?-1:1)+bet2*(t2>21?-1:1);
-   if(!rules.peek&&rules.dealerBJSettlement==='originalOnly'&&(up===8||up===9)){
-    const w=holeWeights(c,n),bj=w[up===8?9:8];
-    const result=base*(1-bj)-bj;
-    memoize(terminalMemo,key,result,'terminal');counters.terminal++;budget();return result;
-   }
-   if(rules.peek||up!==8&&up!==9){
-    memoize(terminalMemo,key,base,'terminal');counters.terminal++;budget();return base;
-   }
-  }
+ // Exact expectation decomposition. Once first child has finished,
+ // its expected dealer settlement is a martingale with respect to public
+ // draws taken by second child. The expected sum therefore equals:
+ // first child's standalone settlement + optimized second-child EV.
+ // The second policy never depends on the first child's payoff, only on the
+ // remaining public composition. This removes a huge duplicated state axis.
+ // For originalOnly + no-peek, assign half of the one-unit dealer-natural
+ // loss to each child; their sum is always exactly -1, even after DAS.
+ function settleOne(t,len,bet,c,n){
+  if(t>21&&(rules.peek||rules.dealerBJSettlement==='loseAll'||up!==8&&up!==9))return -bet;
+  const charlie=rules.charlie&&rules.charlieAfterSplit&&len>=rules.charlieCards&&t<=21;
+  if(charlie&&(rules.peek||up!==8&&up!==9))return bet;
+  const key=t+'|'+(rules.charlieAfterSplit?len:0)+'|'+bet+'|'+c.join(',');
+  const cached=terminalMemo.get(key);if(cached!==undefined)return cached;
   const {pBJ,dist}=publicDealerDistribution(c,n);
-  let ev=pBJ*((!rules.peek&&rules.dealerBJSettlement==='originalOnly')?-1:-bet1-bet2);
+  const bjReturn=(!rules.peek&&rules.dealerBJSettlement==='originalOnly')? -0.5:-bet;
+  let ev=pBJ*bjReturn;
   const pOther=dist[0]+dist[1]+dist[2]+dist[3]+dist[4]+dist[5];
-  function settleOne(t,bet,charlie){
-   if(t>21)return -bet*pOther;
-   if(charlie)return bet*pOther;
-   let ret=dist[0];
-   for(let d=17;d<=21;d++)ret+=dist[d-16]*(t>d?1:t===d?0:-1);
-   return bet*ret;
+  if(t>21)ev-=bet*pOther;
+  else if(charlie)ev+=bet*pOther;
+  else{
+   let one=dist[0];
+   for(let d=17;d<=21;d++)one+=dist[d-16]*(t>d?1:t===d?0:-1);
+   ev+=bet*one;
   }
-  ev+=settleOne(t1,bet1,char1)+settleOne(t2,bet2,char2);
   memoize(terminalMemo,key,ev,'terminal');counters.terminal++;budget();return ev;
  }
- // Terminal first hand is public information when second hand is played.
- function playSecond(t1,len1,bet1,t2,s2,len2,bet2,c,n){
-  if(t2>=21||n<=1||(rules.charlie&&rules.charlieAfterSplit&&len2>=rules.charlieCards)||(aceBase&&aceOne))return payoff(t1,len1,bet1,t2,len2,bet2,c,n);
-  const key=t1+'|'+len1+'|'+bet1+'|'+t2+'|'+s2+'|'+len2+'|'+bet2+'|'+c.join(',');const old=secondMemo.get(key);if(old!==undefined)return old;
-  let value=payoff(t1,len1,bet1,t2,len2,bet2,c,n);
-  let hit=0, dbl=0;
+ function playSecond(t,s,len,bet,c,n){
+  if(t>=21||n<=1||(rules.charlie&&rules.charlieAfterSplit&&len>=rules.charlieCards)||(aceBase&&aceOne))
+   return settleOne(t,len,bet,c,n);
+  const key=t+'|'+s+'|'+(rules.charlieAfterSplit?len:Math.min(len,3))+'|'+bet+'|'+c.join(',');
+  const old=secondMemo.get(key);if(old!==undefined)return old;
+  let value=settleOne(t,len,bet,c,n);
+  let hit=0,dbl=0;
   for(const [i,p] of branches(c,n)){
-   c[i]--;const [nt,ns]=cardAdd(t2,s2,i);
-   hit+=p*playSecond(t1,len1,bet1,nt,ns,len2+1,bet2,c,n-1);
-   if(das&&len2===2&&bet2===1&&doubleAllowed(t2,rules.doublePolicy))dbl+=p*payoff(t1,len1,bet1,nt,len2+1,2,c,n-1);
+   c[i]--;const [nt,ns]=cardAdd(t,s,i);
+   hit+=p*playSecond(nt,ns,len+1,bet,c,n-1);
+   if(das&&len===2&&bet===1&&doubleAllowed(t,rules.doublePolicy))
+    dbl+=p*settleOne(nt,len+1,2,c,n-1);
    c[i]++;
   }
   value=Math.max(value,hit);
-  if(das&&len2===2&&bet2===1&&doubleAllowed(t2,rules.doublePolicy))value=Math.max(value,dbl);
+  if(das&&len===2&&bet===1&&doubleAllowed(t,rules.doublePolicy))value=Math.max(value,dbl);
   memoize(secondMemo,key,value,'second');counters.second++;budget();return value;
  }
- function startSecond(t1,len1,bet1,c,n){
+ function startSecond(c,n){
+  const key=packedCounts(c);
+  const old=secondStartMemo.get(key);if(old!==undefined)return old;
   let ev=0;
   for(const [i,p] of branches(c,n)){
-   c[i]--;const [t2,s2]=cardAdd(...cardAdd(0,0,base),i);
-   ev+=p*playSecond(t1,len1,bet1,t2,s2,2,1,c,n-1);
+   c[i]--;const [t,s]=cardAdd(...cardAdd(0,0,base),i);
+   ev+=p*playSecond(t,s,2,1,c,n-1);
    c[i]++;
   }
-  return ev;
+  memoize(secondStartMemo,key,ev,'secondStart');budget();return ev;
+ }
+ function endFirst(t,len,bet,c,n){
+  return settleOne(t,len,bet,c,n)+startSecond(c,n);
  }
  function playFirst(t,s,len,bet,c,n){
-  if(t>=21||n<=2||(rules.charlie&&rules.charlieAfterSplit&&len>=rules.charlieCards)||(aceBase&&aceOne))return startSecond(t,len,bet,c,n);
-  const key=t+'|'+s+'|'+len+'|'+bet+'|'+c.join(',');const old=firstMemo.get(key);if(old!==undefined)return old;
-  let value=startSecond(t,len,bet,c,n);
+  if(t>=21||n<=2||(rules.charlie&&rules.charlieAfterSplit&&len>=rules.charlieCards)||(aceBase&&aceOne))
+   return endFirst(t,len,bet,c,n);
+  const key=t+'|'+s+'|'+(rules.charlieAfterSplit?len:Math.min(len,3))+'|'+bet+'|'+c.join(',');
+  const old=firstMemo.get(key);if(old!==undefined)return old;
+  let value=endFirst(t,len,bet,c,n);
   let hit=0,dbl=0;
   for(const [i,p] of branches(c,n)){
    c[i]--;const [nt,ns]=cardAdd(t,s,i);
    hit+=p*playFirst(nt,ns,len+1,bet,c,n-1);
-   if(das&&len===2&&bet===1&&doubleAllowed(t,rules.doublePolicy))dbl+=p*startSecond(nt,len+1,2,c,n-1);
+   if(das&&len===2&&bet===1&&doubleAllowed(t,rules.doublePolicy))
+    dbl+=p*endFirst(nt,len+1,2,c,n-1);
    c[i]++;
   }
   value=Math.max(value,hit);
@@ -371,7 +457,7 @@ function solveSplit(input){
    ev+=p*playFirst(t,s,2,1,c,N-1);
    c[i]++;
  }
- return {ev,rules,exact:true,assumptions:{resplit:false,afterSplitBlackjackPaysThreeToTwo:false,splitAcesOneCard:aceOne,doubleAfterSplit:das,charlieAfterSplit:rules.charlieAfterSplit},stats:{...counters,memoFirst:firstMemo.size,memoSecond:secondMemo.size,memoDealer:dm.size,cacheLimits:cacheCaps,cachePeak,cacheEvictions,publicDealerEntries:publicDealerMemo.size,ms:Date.now()-start}};
+ return {ev,rules,exact:true,assumptions:{resplit:false,afterSplitBlackjackPaysThreeToTwo:false,splitAcesOneCard:aceOne,doubleAfterSplit:das,charlieAfterSplit:rules.charlieAfterSplit},stats:{...counters,memoFirst:firstMemo.size,memoSecond:secondMemo.size,memoDealer:dm.size,cacheLimits:cacheCaps,cachePeak,cacheEvictions,publicDealerEntries:publicDealerMemo.size,secondStartEntries:secondStartMemo.size,dealerAlgorithm:useDealerPolynomial?'finite-polynomial':'recursive',dealerPolynomialTerms:dealerPaths?.length||0,ms:Date.now()-start}};
 }
 
 // Separate PRE-PEEK educational insurance experiment. Never mix with main-hand EV.
