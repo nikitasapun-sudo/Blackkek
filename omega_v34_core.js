@@ -273,7 +273,7 @@ function solveSplit(input){
  // Its coefficients are integers; the runtime falling-factorial probabilities
  // are exact finite-shoe probabilities (up to normal floating-point rounding).
  const useDealerPolynomial=up===3&&rules.s17&&input.dealerPolynomial!==false;
- let dealerPaths=null;
+ let dealerPaths=null,dealerFalls=null;
  function precomputeDealerPaths(){
   if(dealerPaths)return dealerPaths;
   const terminal=new Map();
@@ -302,28 +302,33 @@ function solveSplit(input){
    level=[...next.values()];
   }
   if(level.length)throw Error('Невозможно ограничить длину последовательности дилера');
-  dealerPaths=[...terminal.values()];
+  dealerPaths=[...terminal.values()].map(entry=>({
+   len:entry.len,ranks:entry.ranks,
+   outcomes:entry.out.map((coefficient,bucket)=>[bucket,coefficient])
+    .filter(([,coefficient])=>coefficient!==0)
+  }));
+  // Precompute falling factorials once, not on every terminal public state.
+  dealerFalls=Array.from({length:417},(_,cards)=>{
+   const result=new Float64Array(10);result[0]=1;
+   for(let k=1;k<=9;k++)result[k]=k>cards?0:result[k-1]*(cards-k+1);
+   return result;
+  });
   return dealerPaths;
  }
  function polynomialDealerDist(c,n){
-  const paths=precomputeDealerPaths();
-  const falls=Array.from({length:K},(_,i)=>{
-   const row=[1];
-   for(let k=1;k<=9;k++)row[k]=k>c[i]?0:row[k-1]*(c[i]-k+1);
-   return row;
-  });
-  const denom=[1];
-  for(let k=1;k<=9;k++)denom[k]=k>n?0:denom[k-1]*(n-k+1);
+  const paths=precomputeDealerPaths(),falls=dealerFalls;
+  const denominator=falls[n];
   const out=new Float64Array(6);
   for(const entry of paths){
-   if(!denom[entry.len])continue;
-   let p=1/denom[entry.len];
+   if(!denominator[entry.len])continue;
+   let p=1/denominator[entry.len];
    for(const [i,count] of entry.ranks){
-    p*=falls[i][count];
+    p*=falls[c[i]][count];
     if(!p)break;
    }
    if(!p)continue;
-   for(let j=0;j<6;j++)if(entry.out[j])out[j]+=p*entry.out[j];
+   for(const [bucket,coefficient] of entry.outcomes)
+    out[bucket]+=p*coefficient;
   }
   const total=out[0]+out[1]+out[2]+out[3]+out[4]+out[5];
   if(Math.abs(total-1)>1e-9)throw Error('Дилеру не хватает карт для точного завершения');
