@@ -36,6 +36,7 @@ jobs:
           node --check tests/shared_dealer_cache.cjs
           node --check tests/diagnostic_report.cjs
           node --check tests/reported_split_profile.cjs
+          node --check tests/dealer_polynomial.cjs
           node --check omega_worker.js
       - name: Mathematical regression
         run: node tests/v34.cjs
@@ -55,4 +56,5 @@ jobs:
           node tests/bounded_split_cache.cjs
           node tests/shared_dealer_cache.cjs
           node tests/diagnostic_report.cjs
+          node tests/dealer_polynomial.cjs
           node tests/reported_split_profile.cjs
