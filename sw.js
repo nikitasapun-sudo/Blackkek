@@ -1,6 +1,6 @@
 // Static same-origin PWA shell; no analytics or remote game services.
-const CACHE='omega-ii-v315-1';
-const RELEASE_NUMBER=315;
+const CACHE='omega-ii-v316-1';
+const RELEASE_NUMBER=316;
 async function cleanEarlierReleases(){
   const keys=await caches.keys();
   for(const key of keys){
@@ -26,7 +26,7 @@ self.addEventListener('fetch', event=>{
   if(event.request.method!=='GET')return;
   if(new URL(event.request.url).origin!==self.location.origin)return;
   // Only the app's own entry-page navigations may ignore query parameters.
-  // A link such as index.html?update=315 must work after an offline restart.
+  // A link such as index.html?update=316 must work after an offline restart.
   // Do not serve index.html as a fallback for arbitrary/unknown URLs.
   const scope=new URL(self.registration.scope),path=new URL(event.request.url);
   const indexPath=new URL('./index.html',scope).pathname;

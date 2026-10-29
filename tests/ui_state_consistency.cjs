@@ -10,7 +10,7 @@ const defaults={evSoft:'s17',evPeek:'yes',evCharlie:'6',evDAS:'no',
  evSplitAces:'one',evCharlieSplit:'no',evDoublePolicy:'any2',
  evDealerBJSettlement:'loseAll',evBJPayout:'1.5',surrenderTiming:'late',
  rulePlayer:'20',ruleDealer:'19',evUnit:'Виртуальные учебные очки'};
-function boot(store=new Map()){
+function boot(store=new Map(),faults={}){
  const elements=new Map(),workers=[],timers=new Map();
  let seq=0;
  function el(id){
@@ -32,7 +32,7 @@ function boot(store=new Map()){
  const context={
   window:{OmegaFiniteEV:E},
   document:{getElementById:el,createElement:()=>({dataset:{},addEventListener(){},classList:{toggle(){}}})},
-  localStorage:{getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)},
+  localStorage:{getItem:k=>{if(faults.read)throw Error('SecurityError');return store.get(k)??null;},setItem:(k,v)=>{if(faults.write===true||faults.write===k)throw Error('QuotaExceededError');store.set(k,v);}},
   Worker,console,confirm:()=>true,alert:message=>{throw Error(message);},
   setTimeout(cb,ms){timers.set(++seq,{cb,ms});return seq;},
   clearTimeout(id){timers.delete(id);}
@@ -121,3 +121,62 @@ assert.equal(safe.el('evCharlie').value,'6');
 assert.equal(safe.el('evBJPayout').value,'1.5');
 assert.equal(safe.el('evSoft').value,'h17');
 console.log('PASS UI / EV alignment: successful-peek conditional probabilities, exhausted-hole boundary, persisted validated rules, offline restore and stale Worker isolation');
+
+// Storage corruption must never silently alter the mathematical shoe.
+const KEY='omega-mini-edu-v1',RULE_KEY='omega-mini-edu-ev-rules-v1';
+const valid=state(['5','6'],['7'],['A']);
+for(const raw of ['{','null','[]','',JSON.stringify({...valid,history:undefined}),
+ JSON.stringify({...valid,player:['X']}),JSON.stringify({...valid,player:[5]}),
+ JSON.stringify({...valid,history:Array(33).fill('A')}),
+ JSON.stringify({...valid,player:Array(22).fill('2')}),
+ JSON.stringify({...valid,dealer:Array(12).fill('3')})]){
+ const store=new Map([[KEY,raw]]),bad=boot(store);
+ assert.equal(bad.el('storageNotice').hidden,false);
+ assert.equal(bad.el('evCompute').disabled,true);
+ assert.equal(store.get(KEY),raw,'Corrupt source must survive startup');
+ bad.api.calculateEV();assert.equal(bad.workers.length,0);
+ bad.el('next').onclick();assert.equal(store.get(KEY),raw);
+ bad.el('reset').onclick();
+ assert.equal(bad.el('evCompute').disabled,false);
+ assert.equal(bad.el('storageNotice').hidden,true);
+ assert.equal(JSON.parse(store.get(KEY)).history.length,0);
+}
+const repaired=boot(new Map([[KEY,JSON.stringify({...valid,selected:'__proto__',surrender:'false',splitPolicy:{},extra:'ignored'})]]));
+assert.equal(repaired.api.getState().selected,'player');
+assert.equal(repaired.api.getState().surrender,false);
+assert.equal(repaired.api.getState().splitPolicy,'rank');
+assert.equal(repaired.api.getState().extra,undefined);
+assert.equal(JSON.stringify(repaired.api.getState().player),JSON.stringify(valid.player));
+repaired.api.calculateEV('double');assert.equal(repaired.workers.length,1);
+// Existing legacy card state may omit optional UI preferences.
+const legacy=boot(new Map([[KEY,JSON.stringify({player:['5','6'],dealer:['7'],other:[],history:[]})]]));
+assert.equal(legacy.api.getState().selected,'player');
+assert.equal(legacy.el('storageNotice').hidden,true);
+for(const raw of ['{','null','[]','5']){
+ const b=boot(new Map([[KEY,JSON.stringify(valid)],[RULE_KEY,raw]]));
+ assert.equal(b.el('evSoft').value,'s17');
+ assert.equal(b.el('storageNotice').hidden,false);
+ assert.equal(b.store.get(RULE_KEY),raw);
+ assert.equal(JSON.stringify(b.api.getState().player),JSON.stringify(valid.player));
+}
+// A failure for rules must not be hidden by a successful card write.
+const faults={write:RULE_KEY},limited=boot(new Map([[KEY,JSON.stringify(valid)]]),faults);
+limited.el('evSoft').value='h17';limited.el('evSoft').events.change();
+assert.match(limited.el('storageNotice').textContent,/сохранить правила/);
+assert.equal(limited.el('evSoft').value,'h17');
+limited.api.calculateEV('double');assert.equal(limited.workers[0].packet.input.rules.s17,false);
+faults.write=false;limited.el('evSoft').events.change();
+assert.equal(limited.el('storageNotice').hidden,true);
+assert.equal(boot(limited.store).el('evSoft').value,'h17');
+const quota={write:true},unsaved=boot(new Map(),quota);
+unsaved.api.setState(valid);
+assert.match(unsaved.el('storageNotice').textContent,/сохранить карты/);
+assert.equal(unsaved.store.has(KEY),false);
+quota.write=false;unsaved.api.setState(valid);
+assert.equal(unsaved.el('storageNotice').hidden,true);
+assert.equal(JSON.stringify(boot(unsaved.store).api.getState().player),JSON.stringify(valid.player));
+const inaccessible=new Map([[KEY,JSON.stringify(valid)]]),denied=boot(inaccessible,{read:true});
+assert.equal(denied.el('evCompute').disabled,true);
+assert.match(denied.el('storageNotice').textContent,/прочитать/);
+assert.equal(inaccessible.get(KEY),JSON.stringify(valid));
+console.log('PASS storage: malformed/partial cards, rank counts, hand limits, safe preferences, damaged rules, read denial, per-key write failure and recovery');
