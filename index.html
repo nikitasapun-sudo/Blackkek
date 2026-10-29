@@ -707,7 +707,7 @@ function calculateEV(mode='all'){
  }catch(e){status.textContent='Несовместимые правила или карты: '+e.message;return;}
  const knownCounts=Object.fromEntries(window.OmegaFiniteEV.R.map(rank=>[rank,0]));
  for(const card of input.visible)knownCounts[window.OmegaFiniteEV.bucket(card)]++;
- lastEVReport={version:'3.10',mode,player:input.player,up:input.up,
+ lastEVReport={version:'3.11',mode,player:input.player,up:input.up,
   visibleCounts:knownCounts,rules:input.rules,limitMs:input.limitMs,
   knownRemaining:window.OmegaFiniteEV.numCards(window.OmegaFiniteEV.inputCounts(input)),
   status:'running',stage:'created',startedAtMs:Date.now()};
