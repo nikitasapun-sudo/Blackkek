@@ -607,7 +607,7 @@ function renderEVTable(v,split,focus='all'){
  const actions={...(v?.actions||{})};if(split&&Number.isFinite(split.ev))actions.splitFull=split.ev;
  const labels={stand:'Остановиться',hit:'Добор с продолжением',double:'Удвоение',splitFull:'SPLIT · две полные руки',splitTwoCardStop:'SPLIT · по одной карте',surrender:'Сдача'};
  const details={stand:'Без добора',hit:'Рекурсивное продолжение',double:'Одна карта; ×2',splitFull:'Без повторного SPLIT; совместный shoe',splitTwoCardStop:'Ограниченный контрольный сценарий',surrender:'Если разрешено'};
- const rows=Object.keys(labels).filter(k=>actions[k]!==undefined&&(focus==='all'||k===(focus==='split'?'splitFull':'double'))).map(k=>`<tr><td>${labels[k]}</td><td><strong>${actions[k]>=0?'+':''}${fmt(actions[k],6)}</strong></td><td>${details[k]}</td></tr>`).join('');
+ const rows=Object.keys(labels).filter(k=>actions[k]!==undefined&&(focus==='all'||(focus==='split'?(k==='splitFull'||k==='splitTwoCardStop'):k==='double'))).map(k=>`<tr><td>${labels[k]}</td><td><strong>${actions[k]>=0?'+':''}${fmt(actions[k],6)}</strong></td><td>${details[k]}</td></tr>`).join('');
  $('evResult').innerHTML=`<table class="evtable"><thead><tr><th>Модель</th><th>EV</th><th>Условие</th></tr></thead><tbody>${rows}</tbody></table>`+(split?`<div class="evnote evpass">Полный SPLIT вычислен на общем конечном башмаке. Две руки могут продолжать добор; их итог сравнивается с одним дилером. Время: ${fmt(split.stats.ms,0)} мс. Состояний двух рук: ${split.stats.first+split.stats.second}.</div>`:'');
 }
 function updateActionAvailability(){
@@ -657,12 +657,13 @@ function calculateEV(mode='all'){
     if(lastEVReport){lastEVReport.stage=m.value.stage;lastEVReport.progress=m.value;}
     status.textContent='Идёт точный SPLIT, этап: '+m.value.stage+'; время '+fmt(m.value.elapsedMs/1000,1)+' с; состояний дилера '+m.value.counters.dealer+'.';
    }else if(m.type==='basic'){
-    if(lastEVReport){lastEVReport.stage='basic-complete';lastEVReport.basicActions=m.value.actions;}
+    if(lastEVReport){lastEVReport.stage='basic-complete';lastEVReport.basicActions=m.value.actions;lastEVReport.basicSplitDefinition=m.value.splitDefinition||null;}
     basic=m.value;renderEVTable(basic,null,mode);
     if(basic.splitOneCardWarning)result.insertAdjacentHTML('beforeend','<p class="evnote">'+basic.splitOneCardWarning+'</p>');
-    if(basic.splitEligible&&mode==='all')armEVWatchdog(worker,true);
+    if(basic.splitEligible&&(mode==='all'||mode==='split'))armEVWatchdog(worker,true);
     status.textContent=mode==='double'
     ?'Виртуальное удвоение рассчитано: одна следующая карта, затем завершение с двумя условными единицами.'
+    :mode==='split'?'Ограниченный SPLIT по одной карте рассчитан. Продолжается полный точный SPLIT двух рук (без resplit)…'
     :basic.splitEligible?'Основные EV готовы. Считается точный SPLIT двух рук (без resplit)…':'Расчёт обычных учебных сценариев готов; SPLIT недоступен для этих карт.';
    }else if(m.type==='split'){
     if(lastEVReport){lastEVReport.stage='split-complete';lastEVReport.splitEV=m.value.ev;lastEVReport.splitStats=m.value.stats;}
