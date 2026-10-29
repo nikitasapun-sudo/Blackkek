@@ -33,6 +33,7 @@ jobs:
           node --check tests/end_of_shoe.cjs
           node --check tests/full_split_oracle.cjs
           node --check tests/bounded_split_cache.cjs
+          node --check tests/shared_dealer_cache.cjs
           node --check omega_worker.js
       - name: Mathematical regression
         run: node tests/v34.cjs
@@ -50,3 +51,4 @@ jobs:
           node tests/end_of_shoe.cjs
           node tests/full_split_oracle.cjs
           node tests/bounded_split_cache.cjs
+          node tests/shared_dealer_cache.cjs

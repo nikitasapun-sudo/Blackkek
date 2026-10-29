@@ -37,6 +37,7 @@ jobs:
           node tests/end_of_shoe.cjs
           node tests/full_split_oracle.cjs
           node tests/bounded_split_cache.cjs
+          node tests/shared_dealer_cache.cjs
       - name: Stage static-only PWA
         run: |
           mkdir -p _site/icons
