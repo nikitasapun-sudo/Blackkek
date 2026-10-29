@@ -1,6 +1,6 @@
 // Static same-origin PWA shell; no analytics or remote game services.
-const CACHE='omega-ii-v318-1';
-const RELEASE_NUMBER=318;
+const CACHE='omega-ii-v319-1';
+const RELEASE_NUMBER=319;
 async function cleanEarlierReleases(){
   const keys=await caches.keys();
   for(const key of keys){

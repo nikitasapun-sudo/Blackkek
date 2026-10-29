@@ -7,6 +7,7 @@ const R=['2','3','4','5','6','7','8','9','10','A'];
 const MAX=[32,32,32,32,32,32,32,32,128,32];
 const V=[2,3,4,5,6,7,8,9,10,11];
 const K=10;
+const COUNT_TAG={A:0,'2':1,'3':1,'4':2,'5':2,'6':2,'7':1,'8':0,'9':-1,'10':-2};
 function bucket(rank){return ['J','Q','K'].includes(rank)?'10':String(rank)}
 function makeCounts(visible){const c=MAX.slice();for(const rank of visible){const i=R.indexOf(bucket(rank));if(i<0||!c[i])throw Error('Недопустимый состав известных карт: '+rank);c[i]--;}return c}
 function numCards(c){let n=0;for(let i=0;i<K;i++)n+=c[i];return n}
@@ -48,6 +49,99 @@ function parseRules(r={}){
   splitAcesOneCard:r.splitAcesOneCard!==false,doublePolicy,dealerBJSettlement,blackjackPayout};
 }
 function doubleAllowed(total,policy){return policy==='any2'||(policy==='9-11'?total>=9&&total<=11:total>=10&&total<=11)}
+const ACTION_ORDER=['stand','hit','double','surrender','splitTwoCardStop'];
+function chooseBestAction(actions,{includeRestrictedSplit=false}={}){
+ const allowed=includeRestrictedSplit?ACTION_ORDER:ACTION_ORDER.filter(name=>name!=='splitTwoCardStop');
+ let best=null;
+ for(const name of allowed){
+  const value=actions&&actions[name];
+  if(!Number.isFinite(value))continue;
+  if(!best||value>best.value+1e-12)best={name,value};
+ }
+ return best;
+}
+function countingMetrics(visible=[]){
+ if(!Array.isArray(visible))throw Error('visible должен быть массивом карт');
+ const counts=makeCounts(visible),remaining=numCards(counts);
+ const runningCount=visible.reduce((sum,rank)=>sum+(COUNT_TAG[bucket(rank)]??0),0);
+ const decksRemaining=remaining/52;
+ return {runningCount,trueCount:decksRemaining?runningCount/decksRemaining:0,
+   remaining,decksRemaining};
+}
+function compareStrategy(input){
+ const visible=input?.visible===undefined?[...(input?.player||[]),input?.up]:input.visible;
+ if(!input||!Array.isArray(input.player)||!input.up)throw Error('Для сравнения нужны карты игрока и открытая карта дилера');
+ const current=solve({...input,visible});
+ // The reference uses a fresh eight-deck composition with the same rules.
+ // It is a rule-aware baseline, not a universal table for every casino.
+ const baseline=solve({...input,visible:[...input.player,input.up]});
+ const currentBest=chooseBestAction(current.actions);
+ const baselineBest=chooseBestAction(baseline.actions);
+ if(!currentBest||!baselineBest)throw Error('Для этой завершённой руки нет сравнимых действий');
+ return {exact:true,compositionBest:currentBest,baselineBest,
+   deviates:currentBest.name!==baselineBest.name,
+   compositionEV:currentBest.value,baselineEV:baselineBest.value,
+   EVDelta:currentBest.value-baselineBest.value,
+   metrics:countingMetrics(visible),rules:current.rules,status:current.status,
+   splitAvailable:Boolean(current.splitEligible),splitExcluded:Boolean(current.splitEligible),
+   currentActions:current.actions,baselineActions:baseline.actions};
+}
+function compositionEdge(input){
+ const start=Date.now(),rules=validateRules(input?.rules),limitMs=input?.limitMs??22000;
+ const visible=input?.visible===undefined?[]:input.visible;
+ const counts=makeCounts(visible),N=numCards(counts);
+ if(N<4)throw Error('Для виртуального edge нужны минимум четыре неизвестные карты: две карты игрока, upcard и закрытая карта дилера');
+ const orderedDen=N*(N-1),scenarioLimit=Math.min(5000,Math.max(1000,limitMs));
+ let expectedScenarios=0;
+ for(let i=0;i<K;i++)for(let j=i;j<K;j++){
+  if(!(i===j?counts[i]>=2:counts[i]>0&&counts[j]>0))continue;
+  const left=counts.slice();left[i]--;left[j]--;
+  expectedScenarios+=left.filter(n=>n>0).length;
+ }
+ let expectedEV=0,probability=0,dealerBJProbability=0,scenarios=0,totalScenarios=0;
+ const actionWeights=Object.fromEntries(ACTION_ORDER.filter(k=>k!=='splitTwoCardStop').map(k=>[k,0]));
+ actionWeights.dealerNatural=0;
+ const ranks=R.map(String);
+ for(let i=0;i<K;i++)for(let j=i;j<K;j++){
+  const pairWays=i===j?counts[i]*(counts[i]-1):2*counts[i]*counts[j];
+  if(!pairWays)continue;
+  const afterPair=counts.slice();afterPair[i]--;afterPair[j]--;
+  const pairProbability=pairWays/orderedDen;
+  for(let u=0;u<K;u++)if(afterPair[u]){
+   totalScenarios++;
+   if(Date.now()-start>limitMs)throw Error('Лимит времени aggregate edge; завершены '+scenarios+' из '+totalScenarios+' сценариев');
+   const weight=pairProbability*afterPair[u]/(N-2);
+   const player=[ranks[i],ranks[j]],up=ranks[u];
+   const stateVisible=[...visible,...player,up];
+   // With a successful peek, solve() is conditional on no dealer blackjack.
+   // A wager is placed before that check, so restore the initial-unit loss
+   // when the hidden card completes the dealer's natural blackjack.
+   const postCounts=makeCounts(stateVisible),postN=numCards(postCounts),upBucket=bucket(up);
+   const pBJ=upBucket==='A'?postCounts[8]/postN:upBucket==='10'?postCounts[9]/postN:0;
+   const playerNatural=handValue(player).natural;
+   if(rules.peek&&pBJ===1){
+    expectedEV+=weight*(playerNatural?0:-1);dealerBJProbability+=weight;probability+=weight;scenarios++;
+    actionWeights.dealerNatural+=weight;
+    continue;
+   }
+   const solved=solve({player,up,visible:stateVisible,rules,limitMs:scenarioLimit});
+   const best=chooseBestAction(solved.actions);
+   if(!best)throw Error('В aggregate edge встретилась незавершённая рука');
+   const dealerBJPayoff=playerNatural?0:-1;
+   const prePeekEV=rules.peek?(1-pBJ)*best.value+pBJ*dealerBJPayoff:best.value;
+   expectedEV+=weight*(rules.peek?prePeekEV:best.value);dealerBJProbability+=weight*pBJ;probability+=weight;scenarios++;
+   actionWeights[best.name]+=weight;
+   if(typeof input.onProgress==='function'&&(scenarios===1||scenarios%25===0))
+    input.onProgress({stage:'edge',elapsedMs:Date.now()-start,scenarios,totalScenarios,expectedScenarios});
+  }
+ }
+ if(Math.abs(probability-1)>1e-10)throw Error('Aggregate edge не покрыл все начальные сценарии');
+ const metrics=countingMetrics(visible);
+ return {exact:true,expectedEV,playerEdge:expectedEV,houseEdge:-expectedEV,dealerBJProbability,
+   scenarios,totalScenarios,actionWeights,metrics,rules,
+   definition:'Среднее EV оптимального одиночного решения по всем двум картам игрока и открытой карте дилера из текущего остатка; SPLIT исключён, потому что полный двухрукий расчёт выполняется отдельным режимом.',
+   stats:{ms:Date.now()-start}};
+}
 function solve(input){
   const start=Date.now(),rules=validateRules(input.rules),limitMs=input.limitMs??15000;
   const hand=input.player||[],up=R.indexOf(bucket(input.up)),c=inputCounts(input),hv=handValue(hand),N=numCards(c);
@@ -449,7 +543,7 @@ function insuranceLesson(upcard){
  if(v==='10')return 'При открытой карте дилера со значением 10 стандартное предложение страховки обычно отсутствует. При этом дилер всё равно может иметь натуральный блэкджек, если закрытая карта — туз.';
  return 'При открытой карте дилера, отличной от туза, стандартная страховка обычно недоступна. Она не связана с перебором игрока или дилера.';
 }
-const API={solve,solveSplit,doubleAllowed,makeCounts,handValue,cardAdd,MAX,R,bucket,numCards,terminalOutcome,insuranceLesson,insuranceScenario,inputCounts,validateRules,parseRules};
+const API={solve,solveSplit,doubleAllowed,chooseBestAction,countingMetrics,compareStrategy,compositionEdge,makeCounts,handValue,cardAdd,MAX,R,bucket,numCards,terminalOutcome,insuranceLesson,insuranceScenario,inputCounts,validateRules,parseRules};
 if(typeof module!=='undefined'&&module.exports)module.exports=API;
 root.OmegaFiniteEV=API;
 })(typeof window!=='undefined'?window:globalThis);

@@ -22,6 +22,15 @@ function exec(mode,player,up,rules={}){
 const ordinary=exec('all',['10','5'],'7');
 assert.deepEqual(ordinary.map(x=>x.type),['basic','done']);
 assert.ok(Math.abs(ordinary[0].value.actions.stand+0.47561837175676747)<1e-9);
+const edgeVisible=[];
+for(let i=0;i<E.R.length;i++){
+ const rank=E.R[i],leave=({10:3,9:2,8:2,A:1})[rank]||0;
+ for(let k=0;k<E.MAX[i]-leave;k++)edgeVisible.push(rank);
+}
+messages.length=0;
+self.onmessage({data:{mode:'edge',input:{visible:edgeVisible,rules:{peek:false,charlieCards:0},limitMs:10000}}});
+assert.deepEqual(messages.map(x=>x.type).filter(t=>t!=='progress'),['edge','done']);
+assert.ok(Math.abs(messages.find(x=>x.type==='edge').value.playerEdge-0.07976190476190478)<1e-11);
 const doubled=exec('double',['5','6'],'7');
 assert.deepEqual(doubled.map(x=>x.type),['basic','done']);
 assert.ok(Number.isFinite(doubled[0].value.actions.double));
