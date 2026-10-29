@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0c1b24"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icons/icon.svg"><title>Blackjack Omega II v3.4 · Mini EV</title>
+<meta name="theme-color" content="#0c1b24"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icons/icon.svg"><title>Blackjack Omega II v3.5 · Offline EV</title>
 <style>
 :root{color-scheme:dark;--bg:#0a1720;--panel:#132832;--border:#35515d;--ink:#eff9f8;--muted:#b1c7cc;--mint:#60dfbb;--gold:#ffda91;--red:#ff969d}*{box-sizing:border-box}body{margin:0;font:15px/1.45 system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:radial-gradient(ellipse at 45% -10%,#22545b 0%,#0b202b 40%,var(--bg) 80%)}button,input,select{font:inherit}button{color:var(--ink);background:#24424d;border:1px solid #52717a;border-radius:11px;padding:9px 11px;cursor:pointer;font-weight:700;touch-action:manipulation}button:hover{border-color:#9edfcc}button:focus-visible,select:focus-visible{outline:2px solid var(--mint);outline-offset:2px}button:disabled{opacity:.35;cursor:not-allowed}select{color:var(--ink);background:#102c36;border:1px solid var(--border);padding:8px;border-radius:9px;max-width:100%}.wrap{max-width:880px;margin:auto;padding:14px 12px 44px}header{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin:2px 0 12px}header h1{margin:0;font-size:clamp(21px,4.5vw,28px);letter-spacing:-.5px}header p{margin:3px 0 0;color:var(--muted);font-size:12px}.pill{font-size:11px;font-weight:800;background:#1d4846;border:1px solid #397768;color:#caffea;border-radius:999px;padding:5px 9px;white-space:nowrap}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.stat{background:#0f2a35;border:1px solid #315260;border-radius:12px;padding:10px 12px}.stat label{display:block;color:var(--muted);font-size:11px}.stat strong{display:block;font-size:clamp(19px,4vw,25px);line-height:1.22;margin:5px 0;font-variant-numeric:tabular-nums}.panel{background:linear-gradient(140deg,#152e38,#11232d);border:1px solid var(--border);border-radius:15px;padding:14px;margin-bottom:10px}.panel h2{font-size:16px;margin:0 0 9px}.hint,.small{font-size:12px;color:var(--muted)}.muted{color:var(--muted)}.modes{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.modes button{flex:1 0 auto;padding:7px;font-size:12px}.modes button.active{border-color:var(--mint);background:#286153;color:#fff}.cards{display:flex;gap:7px;flex-wrap:wrap;min-height:39px;margin:9px 0}.chip{position:relative;display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:46px;padding:0 8px;border-radius:9px;background:#f0f9f5;color:#17404a;border:1px solid #d4f2e4;font-size:18px;font-weight:900}.chip button{position:absolute;top:-8px;right:-8px;border:0;background:#3b5861;font-size:13px;padding:0;width:20px;height:20px;border-radius:50%}.ranks{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:4px}.ranks button{padding:10px 0;font-size:13px;border-radius:7px}.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.row button{font-size:12px}.row .spacer{flex:1}.signal{padding:12px;background:#123c38;border:1px solid #377d69;border-radius:12px}.signal b{font-size:19px;color:#c6ffe3}.explainer{margin-top:5px;font-size:13px;color:#d4f3e9}.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}.action{border:1px solid #375663;background:#112c38;border-radius:12px;padding:10px}.action b{font-size:14px}.action .status{display:inline-block;margin-left:5px;font-size:10px;font-weight:800;color:#aff4dc}.action .status.off{color:#edabb0}.action p{font-size:12px;color:#c4d8dc;margin:4px 0 0}.numbers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.number{padding:9px;border:1px solid #2d4b55;border-radius:11px;background:#0e2630}.number strong{display:block;font-size:20px;font-variant-numeric:tabular-nums}.number span{font-size:11px;color:var(--muted)}.disclose{margin-top:13px;border-top:1px solid #36545e;padding-top:10px}summary{font-weight:700;cursor:pointer}.ranktable{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}.ranktable td{padding:6px;border-bottom:1px solid #2d4852}.ranktable td:last-child{text-align:right;font-variant-numeric:tabular-nums}.warn{background:#3e3426;color:#fbe5ac;border-left:3px solid var(--gold);border-radius:8px;padding:9px 10px;margin-top:10px;font-size:12px}.footer{font-size:12px;color:var(--muted);margin-top:17px}.inline-select{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.inline-select label{font-size:12px;color:var(--muted)}@media(max-width:500px){.wrap{padding:10px 8px 30px}.panel{padding:11px}.stats{gap:5px}.stat{padding:8px}.ranks{grid-template-columns:repeat(7,minmax(0,1fr))}.actions{grid-template-columns:1fr 1fr}.action{padding:8px}.numbers{gap:5px}.number{padding:7px}.number strong{font-size:17px}}
 
@@ -11,7 +11,7 @@
 .rule-accordion>summary{font-size:16px;line-height:1.5;color:var(--ink);padding:2px 0}.rule-accordion[open]>summary{margin-bottom:10px}.evsettings{grid-template-columns:repeat(2,minmax(0,1fr))}.evbutton{flex:1}.evresult .evtable{min-width:0}.evnote{font-size:12px;padding:10px;background:#0e303b;border:1px solid #42616e;border-radius:10px;margin-top:10px}.evpass{color:#9ef0d2}.evlimit{color:#ffdca1}@media(max-width:440px){.evsettings{grid-template-columns:1fr 1fr}.evsettings label{min-height:28px}.evtable td:last-child{max-width:115px}}
 </style></head>
 <body><main class="wrap">
-<header><div><h1>♠ Blackjack Omega II <span class="muted">· v3.4</span></h1><p>Учебная finite-shoe модель · SPLIT без resplit · 8 колод</p></div><span class="pill">ОФЛАЙН · БЕЗ ДЕНЕГ</span></header>
+<header><div><h1>♠ Blackjack Omega II <span class="muted">· v3.5</span></h1><p>Учебная finite-shoe модель · SPLIT без resplit · 8 колод</p></div><span class="pill">ОФЛАЙН · БЕЗ ДЕНЕГ</span></header>
 <div class="stats"><div class="stat"><label>Omega II RC</label><strong id="rc">0</strong></div><div class="stat"><label>True Count*</label><strong id="tc">0,00</strong></div><div class="stat"><label>Карт осталось</label><strong id="remaining">416</strong></div></div>
 <section class="panel"><h2>1. Ввод карт</h2><div class="modes" id="target"><button class="active" data-target="player">Моя рука</button><button data-target="dealer">Дилер</button><button data-target="other">Остальные</button></div>
 <div class="cards" id="cards" aria-live="polite"></div><div class="ranks" id="ranks"></div>
@@ -37,7 +37,8 @@
   <div class="evnote"><b>Повторный SPLIT:</b> отключён во всей учебной модели.</div>
   <div><label for="evUnit">Единицы</label><select id="evUnit" disabled><option>Виртуальные учебные очки</option></select></div>
 </div>
-<div class="row"><button type="button" class="evbutton" id="evCompute">Рассчитать finite-shoe EV</button><button type="button" id="evCancel" hidden>Прервать вычисление</button></div>
+<div class="row"><button type="button" class="evbutton" id="evCompute">Рассчитать все сценарии</button><button type="button" id="evDoubleCompute">Удвоить · расчёт</button><button type="button" id="evSplitCompute">SPLIT · расчёт</button><button type="button" id="evCancel" hidden>Прервать вычисление</button></div>
+<p class="small">Кнопки «Удвоить» и «SPLIT» запускают математический расчёт <b>виртуальных сценариев</b>, а не реальные игровые действия. SPLIT использует общий остаток колоды и выполняется без повторного разделения.</p>
 <div class="row" style="margin-top:9px"><button type="button" id="selfTest">Проверить базовую математику</button><span class="small" id="selfTestResult" role="status">Это быстрая проверка, не доказательство точности всех сценариев.</span></div>
 <div id="evStatus" class="evstatus" role="status">Введи от 2 карт игрока и одну карту дилера. Точный SPLIT рассчитывается для двух рук без повторного разделения.</div>
 <div class="evresult" id="evResult"></div>
@@ -456,7 +457,7 @@ function render(){if(typeof activeWorker!=='undefined' && activeWorker)cancelEV(
  $('probTable').innerHTML=`<table class="ranktable"><tbody>${x.bs.map(v=>`<tr><td>${v.rank}</td><td>${x.counts[v.rank]} карт</td><td>${fmt(v.p*100,2)}%</td></tr>`).join('')}</tbody></table>`;
  renderGuide(x);renderRuleLesson();
  const used=416-x.n;$('shuffleWarn').hidden=used<208;$('shuffleWarn').textContent='Известно уже '+used+' карт. Если произошла тасовка, нажми «Тасовка»: иначе данные о составе башмака неверны.';
- save()
+ updateActionAvailability();save()
 }
 for(const r of RANKS){const b=document.createElement('button');b.textContent=r;b.type='button';b.dataset.rank=r;b.addEventListener('click',()=>add(r));$('ranks').append(b)}
 $('cards').addEventListener('click',e=>{const b=e.target.closest('button[data-remove]');if(b)remove(Number(b.dataset.remove))});
@@ -483,39 +484,58 @@ function cancelEV(message='Вычисление прервано.'){
  if(activeEVTimer!==null){clearTimeout(activeEVTimer);activeEVTimer=null;}
  if(activeWorker){activeWorker.terminate();activeWorker=null;}
  $('evCompute').disabled=false;$('evCancel').hidden=true;
+ updateActionAvailability();
  if(message)$('evStatus').textContent=message;
 }
-function renderEVTable(v,split){
- const actions={...v.actions};if(split&&Number.isFinite(split.ev))actions.splitFull=split.ev;
+function renderEVTable(v,split,focus='all'){
+ const actions={...(v?.actions||{})};if(split&&Number.isFinite(split.ev))actions.splitFull=split.ev;
  const labels={stand:'Остановиться',hit:'Добор с продолжением',double:'Удвоение',splitFull:'SPLIT · две полные руки',splitTwoCardStop:'SPLIT · по одной карте',surrender:'Сдача'};
  const details={stand:'Без добора',hit:'Рекурсивное продолжение',double:'Одна карта; ×2',splitFull:'Без повторного SPLIT; совместный shoe',splitTwoCardStop:'Ограниченный контрольный сценарий',surrender:'Если разрешено'};
- const rows=Object.keys(labels).filter(k=>actions[k]!==undefined).map(k=>`<tr><td>${labels[k]}</td><td><strong>${actions[k]>=0?'+':''}${fmt(actions[k],6)}</strong></td><td>${details[k]}</td></tr>`).join('');
+ const rows=Object.keys(labels).filter(k=>actions[k]!==undefined&&(focus==='all'||k===(focus==='split'?'splitFull':'double'))).map(k=>`<tr><td>${labels[k]}</td><td><strong>${actions[k]>=0?'+':''}${fmt(actions[k],6)}</strong></td><td>${details[k]}</td></tr>`).join('');
  $('evResult').innerHTML=`<table class="evtable"><thead><tr><th>Модель</th><th>EV</th><th>Условие</th></tr></thead><tbody>${rows}</tbody></table>`+(split?`<div class="evnote evpass">Полный SPLIT вычислен на общем конечном башмаке. Две руки могут продолжать добор; их итог сравнивается с одним дилером. Время: ${fmt(split.stats.ms,0)} мс. Состояний двух рук: ${split.stats.first+split.stats.second}.</div>`:'');
 }
-function calculateEV(){
+function updateActionAvailability(){
+ const hv=window.OmegaFiniteEV.handValue(state.player);
+ const ready=state.dealer.length===1&&hv.number===2&&hv.total<21&&!hv.natural;
+ $('evDoubleCompute').disabled=Boolean(activeWorker)||!ready||!window.OmegaFiniteEV.doubleAllowed(hv.total,$('evDoublePolicy').value);
+ $('evSplitCompute').disabled=Boolean(activeWorker)||!ready||!canSplit(state.player);
+ $('evCompute').disabled=Boolean(activeWorker);
+}
+function calculateEV(mode='all'){
+ if(!['all','double','split'].includes(mode))mode='all';
  if(activeWorker)cancelEV('Предыдущий расчёт отменён.');
  const status=$('evStatus'),result=$('evResult');result.innerHTML='';
  if(state.player.length<2||state.dealer.length!==1){status.textContent='Нужно от 2 карт игрока и РОВНО одна открытая карта дилера. Остальные раскрытые карты вводи отдельно.';return;}
   const rules={resplit:false,s17:$('evSoft').value==='s17',doublePolicy:$('evDoublePolicy').value,dealerBJSettlement:$('evDealerBJSettlement').value,blackjackPayout:Number($('evBJPayout').value),peek:$('evPeek').value==='yes',charlieCards:Number($('evCharlie').value),surrender:state.surrender,surrenderTiming:$('surrenderTiming').value,splitPolicy:state.splitPolicy==='value'?'sameValue':'sameRank',doubleAfterSplit:$('evDAS').value==='yes',splitAcesOneCard:$('evSplitAces').value==='one',charlieAfterSplit:$('evCharlieSplit').value==='yes'};
  const input={player:[...state.player],up:state.dealer[0],visible:allKnown(),rules,limitMs:22000};
- try{window.OmegaFiniteEV.validateRules(rules);window.OmegaFiniteEV.inputCounts(input);}catch(e){status.textContent='Несовместимые правила или карты: '+e.message;return;}
- status.textContent='Расчёт finite-shoe с выбранными правилами. Скрытая карта остаётся неизвестной. Сначала обычные сценарии, затем SPLIT без повторного разделения…';
- $('evCompute').disabled=true;$('evCancel').hidden=false;
  try{
-  const code=$('omegaCore').textContent+`\nself.onmessage=function(event){try{const input=event.data;const basic=OmegaFiniteEV.solve(input);self.postMessage({type:'basic',value:basic});if(basic.splitEligible){const split=OmegaFiniteEV.solveSplit(input);self.postMessage({type:'split',value:split});}self.postMessage({type:'done'});}catch(error){self.postMessage({type:'error',message:error.message});}};`;
-  const blob=new Blob([code],{type:'text/javascript'}),url=URL.createObjectURL(blob);
-  const worker=new Worker(url);activeWorker=worker;setTimeout(()=>URL.revokeObjectURL(url),3000);
+  window.OmegaFiniteEV.validateRules(rules);window.OmegaFiniteEV.inputCounts(input);
+  const hv=window.OmegaFiniteEV.handValue(input.player);
+  if(mode!=='all'&&(hv.number!==2||hv.total>=21||hv.natural))
+   throw Error('Для выбранного сценария нужны две начальные карты без завершённой руки');
+  if(mode==='double'&&!window.OmegaFiniteEV.doubleAllowed(hv.total,rules.doublePolicy))
+   throw Error('Удвоение недоступно при выбранном ограничении суммы');
+  if(mode==='split'&&!canSplit(input.player))
+   throw Error('SPLIT доступен только для пары по выбранному правилу');
+ }catch(e){status.textContent='Несовместимые правила или карты: '+e.message;return;}
+ status.textContent='Расчёт finite-shoe с выбранными правилами. Скрытая карта остаётся неизвестной. Сначала обычные сценарии, затем SPLIT без повторного разделения…';
+ $('evCompute').disabled=true;$('evDoubleCompute').disabled=true;$('evSplitCompute').disabled=true;$('evCancel').hidden=false;
+ try{
+  // Cached same-origin Worker can import the locally cached mathematical module offline.
+  const worker=new Worker('./omega_worker.js');activeWorker=worker;
   let basic=null,split=null;
   armEVWatchdog(worker,false);
   worker.onmessage=e=>{
    if(activeWorker!==worker)return;
    const m=e.data;
    if(m.type==='basic'){
-    basic=m.value;renderEVTable(basic,null);
-    if(basic.splitEligible)armEVWatchdog(worker,true);
-    status.textContent=basic.splitEligible?'Основные EV готовы. Считается точный SPLIT двух рук (без resplit)…':'Расчёт обычных учебных сценариев готов; SPLIT недоступен для этих карт.';
+    basic=m.value;renderEVTable(basic,null,mode);
+    if(basic.splitEligible&&mode==='all')armEVWatchdog(worker,true);
+    status.textContent=mode==='double'
+    ?'Виртуальное удвоение рассчитано: одна следующая карта, затем завершение с двумя условными единицами.'
+    :basic.splitEligible?'Основные EV готовы. Считается точный SPLIT двух рук (без resplit)…':'Расчёт обычных учебных сценариев готов; SPLIT недоступен для этих карт.';
    }else if(m.type==='split'){
-    split=m.value;renderEVTable(basic,split);
+    split=m.value;renderEVTable(basic||{actions:{}},split,mode);
     status.textContent='Точный SPLIT рассчитан для выбранных правил без повторного разделения. Результат условен на заданной информации о скрытой карте.';
    }else if(m.type==='done'){
     cancelEV('Расчёт завершён. Все числа относятся только к заданной учебной модели.');
@@ -524,7 +544,7 @@ function calculateEV(){
    }
   };
   worker.onerror=e=>{if(activeWorker===worker)cancelEV('Ошибка Web Worker: '+(e.message||'недоступен'));};
-  worker.postMessage(input);
+  worker.postMessage({mode,input});
  }catch(e){cancelEV('Не удалось запустить автономный Web Worker: '+e.message);}
 }
 function runSelfTest(){
@@ -553,7 +573,9 @@ function runSelfTest(){
  }catch(e){$('selfTestResult').textContent='Проверка прервана: '+e.message;}
 }
 $('selfTest').addEventListener('click',runSelfTest);
-$('evCompute').addEventListener('click',calculateEV);
+$('evCompute').addEventListener('click',()=>calculateEV('all'));
+$('evDoubleCompute').addEventListener('click',()=>calculateEV('double'));
+$('evSplitCompute').addEventListener('click',()=>calculateEV('split'));
 $('evCancel').addEventListener('click',()=>cancelEV());
 for(const id of ['evSoft','evPeek','evCharlie','evDAS','evSplitAces','evCharlieSplit','evDoublePolicy','evDealerBJSettlement','evBJPayout'])$(id).addEventListener('change',()=>{
  if(activeWorker)cancelEV('Настройки изменены: старый расчёт остановлен.');
