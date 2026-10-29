@@ -31,6 +31,8 @@ jobs:
           node tests/depleted_oracle.cjs
           node tests/integrity.cjs
           node tests/pwa_offline.cjs
+          node tests/worker_watchdog.cjs
+          node tests/performance.cjs
       - name: Stage static-only PWA
         run: |
           mkdir -p _site/icons
