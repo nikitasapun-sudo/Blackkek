@@ -2,16 +2,62 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0c1b24"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icons/icon.svg"><title>Blackjack Omega II v3.21 · Offline EV</title>
+<meta name="theme-color" content="#0c1b24"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icons/icon.svg"><title>Blackjack Omega II v3.22 · Offline EV</title>
 <style>
 :root{color-scheme:dark;--bg:#0a1720;--panel:#132832;--border:#35515d;--ink:#eff9f8;--muted:#b1c7cc;--mint:#60dfbb;--gold:#ffda91;--red:#ff969d}*{box-sizing:border-box}body{margin:0;font:15px/1.45 system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:radial-gradient(ellipse at 45% -10%,#22545b 0%,#0b202b 40%,var(--bg) 80%)}button,input,select{font:inherit}button{color:var(--ink);background:#24424d;border:1px solid #52717a;border-radius:11px;padding:9px 11px;cursor:pointer;font-weight:700;touch-action:manipulation}button:hover{border-color:#9edfcc}button:focus-visible,select:focus-visible{outline:2px solid var(--mint);outline-offset:2px}button:disabled{opacity:.35;cursor:not-allowed}select{color:var(--ink);background:#102c36;border:1px solid var(--border);padding:8px;border-radius:9px;max-width:100%}.wrap{max-width:880px;margin:auto;padding:14px 12px 44px}header{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin:2px 0 12px}header h1{margin:0;font-size:clamp(21px,4.5vw,28px);letter-spacing:-.5px}header p{margin:3px 0 0;color:var(--muted);font-size:12px}.pill{font-size:11px;font-weight:800;background:#1d4846;border:1px solid #397768;color:#caffea;border-radius:999px;padding:5px 9px;white-space:nowrap}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.stat{background:#0f2a35;border:1px solid #315260;border-radius:12px;padding:10px 12px}.stat label{display:block;color:var(--muted);font-size:11px}.stat strong{display:block;font-size:clamp(19px,4vw,25px);line-height:1.22;margin:5px 0;font-variant-numeric:tabular-nums}.panel{background:linear-gradient(140deg,#152e38,#11232d);border:1px solid var(--border);border-radius:15px;padding:14px;margin-bottom:10px}.panel h2{font-size:16px;margin:0 0 9px}.hint,.small{font-size:12px;color:var(--muted)}.muted{color:var(--muted)}.modes{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.modes button{flex:1 0 auto;padding:7px;font-size:12px}.modes button.active{border-color:var(--mint);background:#286153;color:#fff}.cards{display:flex;gap:7px;flex-wrap:wrap;min-height:39px;margin:9px 0}.chip{position:relative;display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:46px;padding:0 8px;border-radius:9px;background:#f0f9f5;color:#17404a;border:1px solid #d4f2e4;font-size:18px;font-weight:900}.chip button{position:absolute;top:-8px;right:-8px;border:0;background:#3b5861;font-size:13px;padding:0;width:20px;height:20px;border-radius:50%}.ranks{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:4px}.ranks button{padding:10px 0;font-size:13px;border-radius:7px}.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.row button{font-size:12px}.row .spacer{flex:1}.signal{padding:12px;background:#123c38;border:1px solid #377d69;border-radius:12px}.signal b{font-size:19px;color:#c6ffe3}.explainer{margin-top:5px;font-size:13px;color:#d4f3e9}.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}.action{border:1px solid #375663;background:#112c38;border-radius:12px;padding:10px}.action b{font-size:14px}.action .status{display:inline-block;margin-left:5px;font-size:10px;font-weight:800;color:#aff4dc}.action .status.off{color:#edabb0}.action p{font-size:12px;color:#c4d8dc;margin:4px 0 0}.action ul{margin:7px 0 0;padding-left:18px}.action li+li{margin-top:4px}.numbers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.number{padding:9px;border:1px solid #2d4b55;border-radius:11px;background:#0e2630}.number strong{display:block;font-size:20px;font-variant-numeric:tabular-nums}.number span{font-size:11px;color:var(--muted)}.disclose{margin-top:13px;border-top:1px solid #36545e;padding-top:10px}summary{font-weight:700;cursor:pointer}.ranktable{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}.ranktable td{padding:6px;border-bottom:1px solid #2d4852}.ranktable td:last-child{text-align:right;font-variant-numeric:tabular-nums}.warn{background:#3e3426;color:#fbe5ac;border-left:3px solid var(--gold);border-radius:8px;padding:9px 10px;margin-top:10px;font-size:12px}.footer{font-size:12px;color:var(--muted);margin-top:17px}.inline-select{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.inline-select label{font-size:12px;color:var(--muted)}@media(max-width:500px){.wrap{padding:10px 8px 30px}.panel{padding:11px}.stats{gap:5px}.stat{padding:8px}.ranks{grid-template-columns:repeat(7,minmax(0,1fr))}.actions{grid-template-columns:1fr 1fr}.action{padding:8px}.numbers{gap:5px}.number{padding:7px}.number strong{font-size:17px}}
 
 .evsettings{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.evsettings label{display:block;font-size:11px;color:var(--muted);margin:0 0 4px}.evsettings select{width:100%}.evstatus{border:1px solid #385965;background:#102a35;border-radius:10px;padding:10px;color:var(--muted);font-size:12px;line-height:1.5;margin-top:10px}.evtable{width:100%;border-collapse:collapse;font-size:13px}.evtable td,.evtable th{padding:9px 7px;border-bottom:1px solid #35515d;text-align:left}.evtable td:nth-child(2),.evtable th:nth-child(2){text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.evtable td:last-child{font-size:11px;color:var(--muted)}.evtable th{color:#b6ccd0;font-size:11px}.evtable td strong{font-size:16px;color:#ebfffa}.evbutton{background:#275b51;border-color:#51a68a;color:white;width:100%;padding:11px 12px;margin-top:4px}.evfoot{font-size:11px;color:var(--muted);margin:9px 0 0}.evresult{overflow-x:auto;margin-top:9px}@media(max-width:500px){.evsettings{gap:6px}.evtable td,.evtable th{padding:7px 4px}.evtable td:last-child{max-width:132px}}
 
 .rule-accordion>summary{font-size:16px;line-height:1.5;color:var(--ink);padding:2px 0}.rule-accordion[open]>summary{margin-bottom:10px}.evsettings{grid-template-columns:repeat(2,minmax(0,1fr))}.evbutton{flex:1}.evresult .evtable{min-width:0}.evnote{font-size:12px;padding:10px;background:#0e303b;border:1px solid #42616e;border-radius:10px;margin-top:10px}.evpass{color:#9ef0d2}.evlimit{color:#ffdca1}@media(max-width:440px){.evsettings{grid-template-columns:1fr 1fr}.evsettings label{min-height:28px}.evtable td:last-child{max-width:115px}}
+</style>
+<style id="compactUi">
+.evsettings{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.panel{padding:12px;margin-bottom:8px}
+.panel h2{margin-bottom:7px}
+.row{gap:6px}
+.evnote{padding:8px}
+.disclose{margin-top:9px;padding-top:8px}
+@media(max-width:600px){
+ body{font-size:14px}
+ .wrap{padding:8px 7px 26px}
+ header{margin-bottom:8px}
+ header h1{font-size:21px}
+ header p{font-size:11px}
+ .stats{gap:4px;margin-bottom:8px}
+ .stat{padding:7px 8px}
+ .stat label{font-size:10px}
+ .stat strong{font-size:18px;margin:3px 0}
+ .panel{padding:9px;margin-bottom:7px;border-radius:12px}
+ .panel h2{font-size:15px;margin-bottom:6px}
+ .cards{gap:5px;min-height:34px;margin:6px 0}
+ .chip{min-width:34px;height:40px;font-size:16px}
+ .ranks{gap:3px}
+ .ranks button{padding:7px 0;font-size:12px}
+ .row{gap:5px}
+ .row button,.row select,select{padding:6px 8px}
+ .evsettings{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:7px 0}
+ .evsettings label{font-size:10px}
+ .evtable{font-size:12px}
+ .evtable td,.evtable th{padding:6px 4px}
+ .evtable td strong{font-size:14px}
+ .evnote{padding:7px;margin-top:7px}
+ .evstatus{padding:8px;margin-top:7px}
+ .evfoot{margin:7px 0 0}
+ .actions{gap:5px;margin-top:7px}
+ .action{padding:7px}
+ .action b{font-size:13px}
+ .action ul{margin-top:5px;padding-left:15px}
+ .action li+li{margin-top:3px}
+}
+@media(max-width:390px){
+ .wrap{padding-left:5px;padding-right:5px}
+ .actions{grid-template-columns:1fr}
+ .evsettings{gap:4px}
+ .evtable td:last-child{max-width:105px}
+}
 </style></head>
 <body><main class="wrap">
-<header><div><h1>♠ Blackjack Omega II <span class="muted">· v3.21</span></h1><p>Учебная finite-shoe модель · SPLIT без resplit · 8 колод</p></div><span class="pill">ОФЛАЙН · БЕЗ ДЕНЕГ</span></header>
+<header><div><h1>♠ Blackjack Omega II <span class="muted">· v3.22</span></h1><p>Учебная finite-shoe модель · SPLIT без resplit · 8 колод</p></div><span class="pill">ОФЛАЙН · БЕЗ ДЕНЕГ</span></header>
 <div class="stats"><div class="stat"><label>Omega II RC</label><strong id="rc">0</strong></div><div class="stat"><label>True Count*</label><strong id="tc">0,00</strong></div><div class="stat"><label>Карт осталось</label><strong id="remaining">416</strong></div></div>
 <div class="warn" id="tabConflictNotice" role="status" aria-live="polite" hidden>Карты или правила изменены в другой вкладке. Старый расчёт очищен; сохранение из этой вкладки остановлено. Загрузка заменит её текущие данные сохранёнными.<button type="button" id="tabConflictReload">Загрузить сохранённые данные</button></div>
 <div class="warn" id="storageNotice" role="status" aria-live="polite" hidden></div>
@@ -73,13 +119,13 @@
  <div class="action"><b>От ставки отказаться</b><ul class="small"><li>EV отрицательный, равен нулю, неизвестен или расчёт прерван по лимиту;</li><li>правила не совпадают с моделью, состояние карт повреждено или есть конфликт вкладок;</li><li>достигнут лимит потерь/времени, хочется отыграться или для игры нужны заёмные либо необходимые деньги;</li><li>решение принимается в усталости, под давлением или после изменения условий.</li></ul></div>
 </div>
 <div class="evnote"><b>Практическое правило:</b> если хотя бы одно ключевое условие неизвестно, считай ожидание неопределённым и пропускай раздачу. Сначала проверь карты, правила и завершённый расчёт, затем сверяйся с личным лимитом.</div>
-<details class="disclose" open><summary>Тренажёр стратегии по составу и счёту</summary>
+<details class="disclose"><summary>Тренажёр стратегии по составу и счёту</summary>
 <p class="small">Сравнение использует конкретные карты, текущий остаток, S17/H17, peek, surrender и Charlie. Для готового сценария учитываются карты из истории и «Остальные», а показанные карты руки заменяются выбранным примером. Базовая линия — та же модель на свежем восьмиколодном башмаке; это учебная точка сравнения, а не универсальная таблица казино.</p>
 <div class="row"><button type="button" id="strategyNew">Новая случайная задача</button><label class="small" for="strategyScenario">Сценарий:</label><select id="strategyScenario"><option value="random">Случайная задача</option><option value="current">Текущая раздача</option><option value="hard16v10">10+6 против 10</option><option value="hard12v6">10+2 против 6</option><option value="soft18v9">A+7 против 9</option><option value="pair88v10">8+8 против 10</option><option value="hard11v6">5+6 против 6</option><option value="hard10v9">5+5 против 9</option><option value="soft17v2">A+6 против 2</option><option value="pair99v7">9+9 против 7</option></select><label class="small" for="strategyAnswer">Моя попытка:</label><select id="strategyAnswer"><option value="">Не отвечать</option><option value="stand">Остановиться</option><option value="hit">Добор</option><option value="double">Удвоение</option><option value="surrender">Сдача</option><option value="splitTwoCardStop">SPLIT</option></select><button type="button" id="strategyCheck">Проверить попытку</button><button type="button" id="edgeCompute">Рассчитать edge по составу башмака</button></div>
 <div id="strategyStatus" class="evstatus" role="status">Подсказка появится сразу после выбора сценария или нажатия «Новая случайная задача».</div>
 <div id="strategyResult" class="evresult"></div>
 <div id="strategyStats" class="evnote" role="status">Попыток: 0 · верно: 0 · среднее отставание EV: 0,000000</div>
-<details class="disclose" open><summary>Рекомендация по виртуальным фишкам</summary>
+<details class="disclose"><summary>Рекомендация по виртуальным фишкам</summary>
 <p class="small">Это учебная схема для бесплатного режима. Она использует только aggregate edge до новой раздачи и не относится к EV уже выданной руки.</p>
 <div class="row"><label class="small" for="chipBankroll">Виртуальный банк:</label><input id="chipBankroll" type="number" min="1" max="1000000" step="1" value="100" inputmode="numeric" style="width:110px"><span class="small">фишек</span></div>
 <div id="chipRecommendation" class="evnote" role="status">Сначала рассчитай edge по текущему составу башмака.</div>
