@@ -7,7 +7,7 @@ const visibleCounts={'2':3,'3':1,'4':1,'5':3,'6':4,'7':2,'8':0,'9':4,'10':9,'A':
 const visible=[];
 for(const r of ranks)for(let i=0;i<visibleCounts[r];i++)visible.push(r);
 const input={player:['7','7'],up:'5',visible,limitMs:90,rules:{
- resplit:false,s17:true,doublePolicy:'any2',dealerBJSettlement:'loseAll',
+ resplit:false,s17:true,doublePolicy:'any2',dealerBJSettlement:'originalOnly',
  blackjackPayout:1.5,peek:true,charlieCards:6,surrender:true,
  surrenderTiming:'late',splitPolicy:'sameRank',doubleAfterSplit:false,
  splitAcesOneCard:true,charlieAfterSplit:false
