@@ -32,7 +32,7 @@ const input={player:['7','7'],up:'5',
 assert.equal(E.numCards(E.inputCounts(input)),389);
 let result=null,diagnostic=null;
 try{result=E.solveSplit(input);}catch(e){
- assert.match(e.message,/Лимит времени/);
+ assert.match(e.message,/(?:Лимит времени|Превышен лимит вычисления SPLIT)/);
  assert.ok(e.diagnostics);
  diagnostic=e.diagnostics;
  assert.ok(['dealer-recursion','split-transitions'].includes(diagnostic.stage));
