@@ -94,7 +94,7 @@ const stop=()=>new Promise(resolve=>server.close(resolve));
   await page.waitForFunction(async()=>{
    const cachesForApp=(await caches.keys()).filter(k=>k.startsWith('omega-ii-v'));
    return cachesForApp.length===1&&cachesForApp[0]==='omega-ii-v315-1';
-  },{timeout:15000});
+  },null,{timeout:15000});
   const activeCache=await page.evaluate(async()=>(
    await caches.keys()).filter(k=>k.startsWith('omega-ii-v')));
   assert.deepEqual(activeCache,['omega-ii-v315-1']);
