@@ -215,7 +215,8 @@ function solveSplit(input){
  const dm=new Map(),firstMemo=new Map(),secondMemo=new Map(),terminalMemo=new Map(),publicDealerMemo=new Map(),secondStartMemo=new Map();
  // Mixed radix: rank buckets have 0..32 cards except ten-valued 0..128.
  // The complete 8-deck count vector fits uniquely into a safe JS integer.
- const countWeights=[1,33,1089,35937,1185921,39135393,1291467969,42618443077,1406408621541,181426712178789];
+ const countWeights=[];let countMultiplier=1;
+ for(let i=0;i<K;i++){countWeights[i]=countMultiplier;countMultiplier*=i===8?129:33;}
  function packedCounts(c){
   let code=0;
   for(let i=0;i<K;i++)code+=c[i]*countWeights[i];
