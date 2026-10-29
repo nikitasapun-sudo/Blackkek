@@ -39,6 +39,7 @@ jobs:
           node tests/bounded_split_cache.cjs
           node tests/shared_dealer_cache.cjs
           node tests/diagnostic_report.cjs
+          node tests/user_split_repro.cjs
       - name: Stage static-only PWA
         run: |
           mkdir -p _site/icons
