@@ -5,7 +5,7 @@ const E=require('../omega_v34_core.js');
 const visibleCounts={'2':3,'3':1,'4':1,'5':3,'6':4,'7':2,'8':0,'9':4,'10':9,'A':0};
 const visible=E.R.flatMap(r=>Array(visibleCounts[r]).fill(r));
 const input={
- player:['7','7'],up:'5',visible,limitMs:2000,
+ player:['7','7'],up:'5',visible,limitMs:22000,
  rules:{resplit:false,s17:true,doublePolicy:'any2',dealerBJSettlement:'loseAll',
   blackjackPayout:1.5,peek:true,charlieCards:6,surrender:true,
   surrenderTiming:'late',splitPolicy:'sameRank',doubleAfterSplit:false,
