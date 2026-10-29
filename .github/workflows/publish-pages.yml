@@ -41,6 +41,7 @@ jobs:
           node tests/diagnostic_report.cjs
           node tests/user_split_repro.cjs
           node tests/dealer_hotpath.cjs
+          node tests/julius_rational_oracle.cjs
       - name: Stage static-only PWA
         run: |
           mkdir -p _site/icons
