@@ -52,6 +52,7 @@ jobs:
           node --check tests/strategy_edge.cjs
           node --check tests/strategy_trainer.cjs
           node --check tests/compact_ui.cjs
+          node --check tests/stake_comparison.cjs
           node --check omega_worker.js
       - name: Mathematical regression
         run: node tests/v34.cjs
@@ -67,6 +68,7 @@ jobs:
           node tests/strategy_edge.cjs
           node tests/strategy_trainer.cjs
           node tests/compact_ui.cjs
+          node tests/stake_comparison.cjs
           node tests/performance.cjs
           node tests/offline_actions.cjs
           node tests/end_of_shoe.cjs
