@@ -35,6 +35,7 @@ jobs:
           node tests/performance.cjs
           node tests/offline_actions.cjs
           node tests/end_of_shoe.cjs
+          node tests/full_split_oracle.cjs
       - name: Stage static-only PWA
         run: |
           mkdir -p _site/icons
