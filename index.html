@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0c1b24"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icons/icon.svg"><title>Blackjack Omega II v3.9 · Offline EV</title>
+<meta name="theme-color" content="#0c1b24"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icons/icon.svg"><title>Blackjack Omega II v3.10 · Offline EV</title>
 <style>
 :root{color-scheme:dark;--bg:#0a1720;--panel:#132832;--border:#35515d;--ink:#eff9f8;--muted:#b1c7cc;--mint:#60dfbb;--gold:#ffda91;--red:#ff969d}*{box-sizing:border-box}body{margin:0;font:15px/1.45 system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:radial-gradient(ellipse at 45% -10%,#22545b 0%,#0b202b 40%,var(--bg) 80%)}button,input,select{font:inherit}button{color:var(--ink);background:#24424d;border:1px solid #52717a;border-radius:11px;padding:9px 11px;cursor:pointer;font-weight:700;touch-action:manipulation}button:hover{border-color:#9edfcc}button:focus-visible,select:focus-visible{outline:2px solid var(--mint);outline-offset:2px}button:disabled{opacity:.35;cursor:not-allowed}select{color:var(--ink);background:#102c36;border:1px solid var(--border);padding:8px;border-radius:9px;max-width:100%}.wrap{max-width:880px;margin:auto;padding:14px 12px 44px}header{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin:2px 0 12px}header h1{margin:0;font-size:clamp(21px,4.5vw,28px);letter-spacing:-.5px}header p{margin:3px 0 0;color:var(--muted);font-size:12px}.pill{font-size:11px;font-weight:800;background:#1d4846;border:1px solid #397768;color:#caffea;border-radius:999px;padding:5px 9px;white-space:nowrap}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.stat{background:#0f2a35;border:1px solid #315260;border-radius:12px;padding:10px 12px}.stat label{display:block;color:var(--muted);font-size:11px}.stat strong{display:block;font-size:clamp(19px,4vw,25px);line-height:1.22;margin:5px 0;font-variant-numeric:tabular-nums}.panel{background:linear-gradient(140deg,#152e38,#11232d);border:1px solid var(--border);border-radius:15px;padding:14px;margin-bottom:10px}.panel h2{font-size:16px;margin:0 0 9px}.hint,.small{font-size:12px;color:var(--muted)}.muted{color:var(--muted)}.modes{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.modes button{flex:1 0 auto;padding:7px;font-size:12px}.modes button.active{border-color:var(--mint);background:#286153;color:#fff}.cards{display:flex;gap:7px;flex-wrap:wrap;min-height:39px;margin:9px 0}.chip{position:relative;display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:46px;padding:0 8px;border-radius:9px;background:#f0f9f5;color:#17404a;border:1px solid #d4f2e4;font-size:18px;font-weight:900}.chip button{position:absolute;top:-8px;right:-8px;border:0;background:#3b5861;font-size:13px;padding:0;width:20px;height:20px;border-radius:50%}.ranks{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:4px}.ranks button{padding:10px 0;font-size:13px;border-radius:7px}.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.row button{font-size:12px}.row .spacer{flex:1}.signal{padding:12px;background:#123c38;border:1px solid #377d69;border-radius:12px}.signal b{font-size:19px;color:#c6ffe3}.explainer{margin-top:5px;font-size:13px;color:#d4f3e9}.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}.action{border:1px solid #375663;background:#112c38;border-radius:12px;padding:10px}.action b{font-size:14px}.action .status{display:inline-block;margin-left:5px;font-size:10px;font-weight:800;color:#aff4dc}.action .status.off{color:#edabb0}.action p{font-size:12px;color:#c4d8dc;margin:4px 0 0}.numbers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.number{padding:9px;border:1px solid #2d4b55;border-radius:11px;background:#0e2630}.number strong{display:block;font-size:20px;font-variant-numeric:tabular-nums}.number span{font-size:11px;color:var(--muted)}.disclose{margin-top:13px;border-top:1px solid #36545e;padding-top:10px}summary{font-weight:700;cursor:pointer}.ranktable{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}.ranktable td{padding:6px;border-bottom:1px solid #2d4852}.ranktable td:last-child{text-align:right;font-variant-numeric:tabular-nums}.warn{background:#3e3426;color:#fbe5ac;border-left:3px solid var(--gold);border-radius:8px;padding:9px 10px;margin-top:10px;font-size:12px}.footer{font-size:12px;color:var(--muted);margin-top:17px}.inline-select{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.inline-select label{font-size:12px;color:var(--muted)}@media(max-width:500px){.wrap{padding:10px 8px 30px}.panel{padding:11px}.stats{gap:5px}.stat{padding:8px}.ranks{grid-template-columns:repeat(7,minmax(0,1fr))}.actions{grid-template-columns:1fr 1fr}.action{padding:8px}.numbers{gap:5px}.number{padding:7px}.number strong{font-size:17px}}
 
@@ -11,7 +11,7 @@
 .rule-accordion>summary{font-size:16px;line-height:1.5;color:var(--ink);padding:2px 0}.rule-accordion[open]>summary{margin-bottom:10px}.evsettings{grid-template-columns:repeat(2,minmax(0,1fr))}.evbutton{flex:1}.evresult .evtable{min-width:0}.evnote{font-size:12px;padding:10px;background:#0e303b;border:1px solid #42616e;border-radius:10px;margin-top:10px}.evpass{color:#9ef0d2}.evlimit{color:#ffdca1}@media(max-width:440px){.evsettings{grid-template-columns:1fr 1fr}.evsettings label{min-height:28px}.evtable td:last-child{max-width:115px}}
 </style></head>
 <body><main class="wrap">
-<header><div><h1>♠ Blackjack Omega II <span class="muted">· v3.9</span></h1><p>Учебная finite-shoe модель · SPLIT без resplit · 8 колод</p></div><span class="pill">ОФЛАЙН · БЕЗ ДЕНЕГ</span></header>
+<header><div><h1>♠ Blackjack Omega II <span class="muted">· v3.10</span></h1><p>Учебная finite-shoe модель · SPLIT без resplit · 8 колод</p></div><span class="pill">ОФЛАЙН · БЕЗ ДЕНЕГ</span></header>
 <div class="stats"><div class="stat"><label>Omega II RC</label><strong id="rc">0</strong></div><div class="stat"><label>True Count*</label><strong id="tc">0,00</strong></div><div class="stat"><label>Карт осталось</label><strong id="remaining">416</strong></div></div>
 <section class="panel"><h2>1. Ввод карт</h2><div class="modes" id="target"><button class="active" data-target="player">Моя рука</button><button data-target="dealer">Дилер</button><button data-target="other">Остальные</button></div>
 <div class="cards" id="cards" aria-live="polite"></div><div class="ranks" id="ranks"></div>
@@ -41,6 +41,8 @@
 <p class="small">Кнопки «Удвоить» и «SPLIT» запускают математический расчёт <b>виртуальных сценариев</b>, а не реальные игровые действия. SPLIT использует общий остаток колоды и выполняется без повторного разделения.</p>
 <div class="row" style="margin-top:9px"><button type="button" id="selfTest">Проверить базовую математику</button><span class="small" id="selfTestResult" role="status">Это быстрая проверка, не доказательство точности всех сценариев.</span></div>
 <div id="evStatus" class="evstatus" role="status">Введи от 2 карт игрока и одну карту дилера. Точный SPLIT рассчитывается для двух рук без повторного разделения.</div>
+<div class="row" style="margin-top:8px"><button type="button" id="evDiagnosticShow">Показать диагностику</button><button type="button" id="evDiagnosticCopy">Скопировать отчёт</button><span class="small" id="evDiagnosticState" role="status">Отчёт хранится только на устройстве и никуда не отправляется.</span></div>
+<textarea id="evDiagnosticText" readonly hidden aria-label="Диагностика последнего вычисления" style="width:100%;min-height:150px;margin-top:8px;padding:8px;border-radius:8px;background:#102c36;color:#eff9f8;border:1px solid #35515d;font:12px/1.45 monospace"></textarea>
 <div class="evresult" id="evResult"></div>
 <p class="evfoot"><b>Допущение модели:</b> «без peek» означает, что дилер уже получил закрытую карту, но не проверил её. Это не European no-hole-card. Ранняя сдача и EV после peek не сопоставляются в одной таблице; движок откажет в несовместимой конфигурации. Неподтверждённые правила мобильного приложения задаются вручную.</p>
 <p class="evfoot">При Charlie=нет продолжение после 6 карт разрешено. В тяжёлых состояниях точный расчёт может быть отменён по лимиту времени, без подстановки приблизительного ответа. <b>Late surrender и no-peek</b> учитывают возможный натуральный блэкджек дилера. Страховка имеет отдельный учебный EV и не смешивается с основным результатом.</p>
@@ -293,13 +295,38 @@ function solveSplit(input){
   if(map.size>cachePeak[kind])cachePeak[kind]=map.size;
  }
  const counters={first:0,second:0,dealer:0,terminal:0,transitions:0,publicDealerHits:0,publicDealerMisses:0};
- function budget(){if((++counters.transitions&2047)===0 && Date.now()-start>limitMs)throw Error('Превышен лимит вычисления SPLIT (без точного результата). Выбери менее сложный учебный сценарий.');}
+ const reportProgress=typeof input.onProgress==='function'?input.onProgress:null;
+ let lastReportMs=start;
+ function diagnosticSnapshot(stage){
+  return {stage,elapsedMs:Date.now()-start,counters:{...counters},
+   cacheSizes:{dealer:dm.size,first:firstMemo.size,second:secondMemo.size,
+    terminal:terminalMemo.size,publicDealer:publicDealerMemo.size},
+   cacheEvictions:{...cacheEvictions}};
+ }
+ function progress(stage){
+  if(!reportProgress)return;
+  const now=Date.now();
+  if(now-lastReportMs<1000)return;
+  lastReportMs=now;
+  try{reportProgress(diagnosticSnapshot(stage));}catch(e){} // Diagnostics must never affect EV.
+ }
+ function timeout(stage,message){
+  const error=Error(message);
+  error.diagnostics=diagnosticSnapshot(stage);
+  throw error;
+ }
+ function budget(){
+  if((++counters.transitions&2047)!==0)return;
+  progress('split-transitions');
+  if(Date.now()-start>limitMs)
+   timeout('split-transitions','Превышен лимит вычисления SPLIT (без точного результата). Выбери менее сложный учебный сценарий.');
+ }
  function holeWeights(c,n){const w=new Array(K).fill(0);let denom=0;for(let h=0;h<K;h++)if(c[h]&&!(rules.peek&&dealerBJ(up,h))){w[h]=c[h];denom+=c[h]};if(!denom)throw Error('Нет допустимых скрытых карт');for(let h=0;h<K;h++)w[h]/=denom;return w;}
  function branches(c,n){if(n<2)throw Error('Недостаточно карт при скрытой карте');const w=holeWeights(c,n),out=[];for(let i=0;i<K;i++)if(c[i]){const p=(c[i]-w[i])/(n-1);if(p>0)out.push([i,p]);}return out;}
  function dealerDist(t,s,c,n){if(t>21)return [1,0,0,0,0,0];if(t>17||(t===17&&(rules.s17||s===0)))return [0,+(t===17),+(t===18),+(t===19),+(t===20),+(t===21)];
   const key=t+'|'+s+'|'+c.join(',');const cached=dm.get(key);if(cached)return cached; if(n===0)throw Error('Дилеру не хватает карт');const out=[0,0,0,0,0,0];
   for(let i=0;i<K;i++)if(c[i]){const p=c[i]/n;c[i]--;const [nt,ns]=cardAdd(t,s,i),a=dealerDist(nt,ns,c,n-1);for(let j=0;j<6;j++)out[j]+=p*a[j];c[i]++;}
-  memoize(dm,key,out,'dealer');counters.dealer++;if((counters.dealer&2047)===0&&Date.now()-start>limitMs)throw Error('Лимит времени для точного SPLIT: состояние слишком сложно.');return out;
+  memoize(dm,key,out,'dealer');counters.dealer++;if((counters.dealer&2047)===0){progress('dealer-recursion');if(Date.now()-start>limitMs)timeout('dealer-recursion','Лимит времени для точного SPLIT: состояние слишком сложно.');}return out;
  }
  // At a terminal public information state, the distribution of the dealer's
  // outcome depends only on the REMAINING cards, upcard and peek rule.
@@ -528,7 +555,29 @@ $('splitpolicy').onchange=e=>{snapshot();state.splitPolicy=e.target.value;render
 $('surrenderTiming').addEventListener('change',()=>{if(activeWorker)cancelEV();$('evResult').innerHTML='';$('evStatus').textContent='Тип сдачи изменён: пересчитай EV.';});
 for(const id of ['rulePlayer','ruleDealer'])$(id).addEventListener('change',renderRuleLesson);
 
-let activeWorker=null,activeEVTimer=null;
+let activeWorker=null,activeEVTimer=null,lastEVReport=null;
+function diagnosticText(){
+ if(!lastEVReport)return 'Диагностика ещё не создана. Запусти учебный расчёт.';
+ const {startedAtMs,...safe}=lastEVReport;
+ return JSON.stringify(safe,null,2);
+}
+$('evDiagnosticShow').addEventListener('click',()=>{
+ $('evDiagnosticText').hidden=false;
+ $('evDiagnosticText').value=diagnosticText();
+ $('evDiagnosticState').textContent='Отчёт открыт. Можно выделить текст и скопировать.';
+});
+$('evDiagnosticCopy').addEventListener('click',async()=>{
+ const text=diagnosticText(),box=$('evDiagnosticText');
+ box.hidden=false;box.value=text;
+ try{
+  if(!navigator.clipboard||!navigator.clipboard.writeText)throw Error('Clipboard unavailable');
+  await navigator.clipboard.writeText(text);
+  $('evDiagnosticState').textContent='Отчёт скопирован. Можешь вставить его в чат для диагностики.';
+ }catch(e){
+  box.focus();box.select();
+  $('evDiagnosticState').textContent='Текст выделен. Скопируй его вручную и вставь в чат.';
+ }
+});
 const EV_WATCHDOG_MS=30000;
 function armEVWatchdog(worker,hasBasic){
  if(activeEVTimer!==null)clearTimeout(activeEVTimer);
@@ -537,9 +586,15 @@ function armEVWatchdog(worker,hasBasic){
   cancelEV(hasBasic
    ?'Лимит времени ожидания SPLIT: точный результат не получен. Завершённые основные EV сохранены.'
    :'Лимит времени ожидания: точный расчёт не завершён. Попробуй менее сложное учебное состояние.');
+  if(lastEVReport){lastEVReport.status='watchdog-timeout';lastEVReport.elapsedMs=Date.now()-lastEVReport.startedAtMs;}
  },EV_WATCHDOG_MS);
 }
 function cancelEV(message='Вычисление прервано.'){
+ if(lastEVReport&&activeWorker){
+  lastEVReport.status='interrupted';
+  lastEVReport.message=message;
+  lastEVReport.elapsedMs=Date.now()-lastEVReport.startedAtMs;
+ }
  if(activeEVTimer!==null){clearTimeout(activeEVTimer);activeEVTimer=null;}
  if(activeWorker){activeWorker.terminate();activeWorker=null;}
  $('evCompute').disabled=false;$('evCancel').hidden=true;
@@ -578,6 +633,14 @@ function calculateEV(mode='all'){
   if(mode==='split'&&(window.OmegaFiniteEV.numCards(window.OmegaFiniteEV.inputCounts(input))<3||!canSplit(input.player)))
    throw Error('SPLIT доступен только для пары по выбранному правилу');
  }catch(e){status.textContent='Несовместимые правила или карты: '+e.message;return;}
+ const knownCounts=Object.fromEntries(window.OmegaFiniteEV.R.map(rank=>[rank,0]));
+ for(const card of input.visible)knownCounts[window.OmegaFiniteEV.bucket(card)]++;
+ lastEVReport={version:'3.10',mode,player:input.player,up:input.up,
+  visibleCounts:knownCounts,rules:input.rules,limitMs:input.limitMs,
+  knownRemaining:window.OmegaFiniteEV.numCards(window.OmegaFiniteEV.inputCounts(input)),
+  status:'running',stage:'created',startedAtMs:Date.now()};
+ $('evDiagnosticText').hidden=true;
+ $('evDiagnosticState').textContent='Отчёт о последнем расчёте доступен локально.';
  status.textContent='Расчёт finite-shoe с выбранными правилами. Скрытая карта остаётся неизвестной. Сначала обычные сценарии, затем SPLIT без повторного разделения…';
  $('evCompute').disabled=true;$('evDoubleCompute').disabled=true;$('evSplitCompute').disabled=true;$('evCancel').hidden=false;
  try{
@@ -588,7 +651,11 @@ function calculateEV(mode='all'){
   worker.onmessage=e=>{
    if(activeWorker!==worker)return;
    const m=e.data;
-   if(m.type==='basic'){
+   if(m.type==='progress'){
+    if(lastEVReport){lastEVReport.stage=m.value.stage;lastEVReport.progress=m.value;}
+    status.textContent='Идёт точный SPLIT, этап: '+m.value.stage+'; время '+fmt(m.value.elapsedMs/1000,1)+' с; состояний дилера '+m.value.counters.dealer+'.';
+   }else if(m.type==='basic'){
+    if(lastEVReport){lastEVReport.stage='basic-complete';lastEVReport.basicActions=m.value.actions;}
     basic=m.value;renderEVTable(basic,null,mode);
     if(basic.splitOneCardWarning)result.insertAdjacentHTML('beforeend','<p class="evnote">'+basic.splitOneCardWarning+'</p>');
     if(basic.splitEligible&&mode==='all')armEVWatchdog(worker,true);
@@ -596,12 +663,18 @@ function calculateEV(mode='all'){
     ?'Виртуальное удвоение рассчитано: одна следующая карта, затем завершение с двумя условными единицами.'
     :basic.splitEligible?'Основные EV готовы. Считается точный SPLIT двух рук (без resplit)…':'Расчёт обычных учебных сценариев готов; SPLIT недоступен для этих карт.';
    }else if(m.type==='split'){
+    if(lastEVReport){lastEVReport.stage='split-complete';lastEVReport.splitEV=m.value.ev;lastEVReport.splitStats=m.value.stats;}
     split=m.value;renderEVTable(basic||{actions:{}},split,mode);
     status.textContent='Точный SPLIT рассчитан для выбранных правил без повторного разделения. Результат условен на заданной информации о скрытой карте.';
    }else if(m.type==='done'){
     cancelEV('Расчёт завершён. Все числа относятся только к заданной учебной модели.');
+    if(lastEVReport)lastEVReport.status='complete';
    }else if(m.type==='error'){
     cancelEV('Точный расчёт прерван: '+m.message+(basic?' Основные EV уже показаны.':''));
+    if(lastEVReport){
+     lastEVReport.status='error';lastEVReport.error=m.message;
+     if(m.diagnostics){lastEVReport.stage=m.diagnostics.stage;lastEVReport.timeoutDiagnostics=m.diagnostics;}
+    }
    }
   };
   worker.onerror=e=>{if(activeWorker===worker)cancelEV('Ошибка Web Worker: '+(e.message||'недоступен'));};

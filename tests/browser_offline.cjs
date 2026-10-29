@@ -34,6 +34,16 @@ const base=process.env.OMEGA_TEST_URL||'http://127.0.0.1:8765/';
   await page.locator('#evCompute').click();
   await page.waitForFunction(()=>document.querySelector('#evStatus').textContent.includes('Расчёт завершён'),{timeout:20000});
   assert.match(await page.locator('#evResult').innerText(),/0,475618/);
+  // The diagnostic report is generated and readable even with no network.
+  await page.locator('#evDiagnosticShow').click();
+  const diag=JSON.parse(await page.locator('#evDiagnosticText').inputValue());
+  assert.equal(diag.version,'3.10');
+  assert.equal(diag.mode,'all');
+  assert.equal(diag.knownRemaining,413);
+  assert.equal(diag.player.join(','),'10,5');
+  assert.equal(diag.visibleCounts['7'],1);
+  assert.equal(diag.status,'complete');
+
 
   await page.evaluate(()=>window.__OMEGA_MINI_TEST__.setState({
     player:['5','6'],dealer:['7'],other:[],history:[],
