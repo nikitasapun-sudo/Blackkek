@@ -218,6 +218,21 @@ function solveSplit(input){
  const lengthKey=len=>splitCharlie?len:0;
  const decisionLengthKey=len=>splitCharlie||das?len:0;
  const dm=new Map(),firstMemo=new Map(),secondMemo=new Map(),terminalMemo=new Map(),publicDealerMemo=new Map();
+ // The entire 8-deck rank-count vector fits exactly in a JS safe integer.
+ // Mixed-radix updates eliminate repeated 10-rank join() allocations along
+ // the hottest dealer recursion; a dealer draw subtracts one rank weight.
+ const rankWeights=new Array(K);
+ let radix=1;
+ for(let i=0;i<K;i++){rankWeights[i]=radix;radix*=MAX[i]+1;}
+ if(!Number.isSafeInteger(radix))throw Error('Недоступно точное кодирование состава колоды');
+ function countCode(c){let code=0;for(let i=0;i<K;i++)code+=c[i]*rankWeights[i];return code;}
+ // Static terminal distributions and dealer card transitions avoid allocating
+ // millions of temporary arrays while traversing the exact dealer tree.
+ const dealerEnd=Array.from({length:6},(_,k)=>
+  Array.from({length:6},(_,j)=>Number(j===k)));
+ const dealerTransitions=Array.from({length:22},(_,total)=>
+  Array.from({length:2},(_,soft)=>Array.from({length:K},(_,i)=>cardAdd(total,soft,i))));
+
  // Bound all four exact-value caches. Eviction only forces recomputation;
  // it never changes the probabilities, rewards, or Bellman recursion.
  const defaultCaps={dealer:45000,first:12000,second:30000,terminal:15000,publicDealer:22000};
@@ -265,10 +280,26 @@ function solveSplit(input){
  }
  function holeWeights(c,n){const w=new Array(K).fill(0);let denom=0;for(let h=0;h<K;h++)if(c[h]&&!(rules.peek&&dealerBJ(up,h))){w[h]=c[h];denom+=c[h]};if(!denom)throw Error('Нет допустимых скрытых карт');for(let h=0;h<K;h++)w[h]/=denom;return w;}
  function branches(c,n){if(n<2)throw Error('Недостаточно карт при скрытой карте');const w=holeWeights(c,n),out=[];for(let i=0;i<K;i++)if(c[i]){const p=(c[i]-w[i])/(n-1);if(p>0)out.push([i,p]);}return out;}
- function dealerDist(t,s,c,n){if(t>21)return [1,0,0,0,0,0];if(t>17||(t===17&&(rules.s17||s===0)))return [0,+(t===17),+(t===18),+(t===19),+(t===20),+(t===21)];
-  const key=t+'|'+s+'|'+c.join(',');const cached=dm.get(key);if(cached)return cached; if(n===0)throw Error('Дилеру не хватает карт');const out=[0,0,0,0,0,0];
-  for(let i=0;i<K;i++)if(c[i]){const p=c[i]/n;c[i]--;const [nt,ns]=cardAdd(t,s,i),a=dealerDist(nt,ns,c,n-1);for(let j=0;j<6;j++)out[j]+=p*a[j];c[i]++;}
-  memoize(dm,key,out,'dealer');counters.dealer++;if((counters.dealer&2047)===0){progress('dealer-recursion');if(Date.now()-start>limitMs)timeout('dealer-recursion','Лимит времени для точного SPLIT: состояние слишком сложно.');}return out;
+ function dealerDist(t,s,c,n,code){
+  if(t>21)return dealerEnd[0];
+  if(t>17||(t===17&&(rules.s17||s===0)))return dealerEnd[t-16];
+  // Cache keys are exact: countCode is injective over the eight-deck shoe.
+  const key=code+'|'+t+'|'+s,cached=dm.get(key);
+  if(cached!==undefined)return cached;
+  if(n===0)throw Error('Дилеру не хватает карт');
+  const out=[0,0,0,0,0,0],moves=dealerTransitions[t][s];
+  for(let i=0;i<K;i++)if(c[i]){
+   const p=c[i]/n;c[i]--;
+   const [nt,ns]=moves[i],a=dealerDist(nt,ns,c,n-1,code-rankWeights[i]);
+   for(let j=0;j<6;j++)out[j]+=p*a[j];
+   c[i]++;
+  }
+  memoize(dm,key,out,'dealer');counters.dealer++;
+  if((counters.dealer&2047)===0){
+   progress('dealer-recursion');
+   if(Date.now()-start>limitMs)timeout('dealer-recursion','Лимит времени для точного SPLIT: состояние слишком сложно.');
+  }
+  return out;
  }
  // At a terminal public information state, the distribution of the dealer's
  // outcome depends only on the REMAINING cards, upcard and peek rule.
@@ -279,14 +310,14 @@ function solveSplit(input){
   const key=c.join(',');
   const known=publicDealerMemo.get(key);
   if(known!==undefined){counters.publicDealerHits++;return known;}
-  const weights=holeWeights(c,n),out=new Float64Array(6);
+  const weights=holeWeights(c,n),out=new Float64Array(6),code=countCode(c);
   let pBJ=0;
   for(let h=0;h<K;h++)if(weights[h]){
    const p=weights[h];
    if(dealerBJ(up,h)){pBJ+=p;continue;}
    c[h]--;
    const [dt,ds]=cardAdd(...cardAdd(0,0,up),h);
-   const d=dealerDist(dt,ds,c,n-1);
+   const d=dealerDist(dt,ds,c,n-1,code-rankWeights[h]);
    for(let i=0;i<6;i++)out[i]+=p*d[i];
    c[h]++;
   }
