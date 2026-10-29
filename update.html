@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Проверка обновления Omega II</title>
+<style>
+body{font:16px/1.5 system-ui,sans-serif;max-width:620px;margin:4rem auto;padding:0 1rem;background:#0a1720;color:#eff9f8}
+h1{font-size:1.6rem}button,a{font:inherit;border-radius:9px;padding:.7rem 1rem}
+button{background:#285d52;color:#fff;border:1px solid #60dfbb;cursor:pointer}
+a{color:#a6f8dd;display:inline-block}a[hidden]{display:none}
+#status{border:1px solid #35515d;border-radius:9px;padding:1rem;background:#132832}
+</style>
+</head>
+<body>
+<main>
+<h1>Проверка обновления Omega II</h1>
+<p>Эта страница принудительно проверяет обновление приложения. Введённые карты и настройки не удаляются.</p>
+<p id="status" role="status" aria-live="polite">Проверка новой версии…</p>
+<button type="button" id="retry">Проверить снова</button>
+<a href="./index.html" id="open" hidden>Открыть обновлённое приложение</a>
+<p><small>Не очищайте данные сайта в настройках Chrome: это может удалить сохранённые карты и правила. Проверка требует подключения к интернету.</small></p>
+</main>
+<script>
+'use strict';
+const statusElement=document.getElementById('status');
+const retryButton=document.getElementById('retry');
+const openLink=document.getElementById('open');
+const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+async function checkUpdate(){
+  retryButton.disabled=true;
+  openLink.hidden=true;
+  statusElement.textContent='Проверяю версию на сервере…';
+  try{
+    if(!('serviceWorker' in navigator)||!('caches' in window))throw Error('Обновление через Service Worker недоступно в этом браузере.');
+    // This path is intentionally NOT cached by the old service worker.
+    // Its existing fetch handler has no match for ./update.html, so it
+    // requests this page from the network even while index.html is stale.
+    const response=await fetch('./sw.js',{cache:'no-store'});
+    if(!response.ok)throw Error('Не удалось получить актуальный Service Worker (HTTP '+response.status+').');
+    const source=await response.text();
+    const expected=source.match(/const CACHE\s*=\s*['"]([^'"]+)['"]/)?.[1];
+    if(!expected||!/^omega-ii-v[0-9]+-[0-9]+$/.test(expected))throw Error('Не удалось определить версию с сервера.');
+    let registration=await navigator.serviceWorker.getRegistration('./');
+    if(!registration)registration=await navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'});
+    statusElement.textContent='Устанавливаю актуальную версию…';
+    await registration.update();
+    for(let attempt=0;attempt<60;attempt++){
+      const names=await caches.keys();
+      if(names.includes(expected)&&registration.active?.state==='activated'&&!registration.installing&&!registration.waiting){
+        const cache=await caches.open(expected);
+        const files=await Promise.all(['./index.html','./omega_worker.js','./omega_v34_core.js'].map(f=>cache.match(f)));
+        if(files.every(Boolean)){
+          statusElement.textContent='Готово: актуальная версия '+expected+' установлена. Можно открыть приложение.';
+          openLink.hidden=false;
+          return;
+        }
+      }
+      await delay(250);
+    }
+    throw Error('Установка не завершилась. Проверьте подключение к интернету и попробуйте ещё раз.');
+  }catch(error){
+    statusElement.textContent='Не удалось обновить: '+(error?.message||String(error))+'. Сохранённые данные не очищались.';
+  }finally{
+    retryButton.disabled=false;
+  }
+}
+retryButton.addEventListener('click',checkUpdate);
+checkUpdate();
+</script>
+</body>
+</html>
