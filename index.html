@@ -328,6 +328,70 @@ function solveSplit(input){
   for(let i=0;i<K;i++)if(c[i]){const p=c[i]/n;c[i]--;const [nt,ns]=cardAdd(t,s,i),a=dealerDist(nt,ns,c,n-1);for(let j=0;j<6;j++)out[j]+=p*a[j];c[i]++;}
   memoize(dm,key,out,'dealer');counters.dealer++;if((counters.dealer&2047)===0){progress('dealer-recursion');if(Date.now()-start>limitMs)timeout('dealer-recursion','Лимит времени для точного SPLIT: состояние слишком сложно.');}return out;
  }
+
+ // The upcard 5 has no possible natural dealer blackjack. Dealer drawing
+ // can therefore be evaluated as one finite without-replacement sequence,
+ // rather than re-solving a recursive tree independently for every terminal
+ // public state. A polynomial groups ordered paths by rank multiplicity.
+ // Its coefficients are integers; the runtime falling-factorial probabilities
+ // are exact finite-shoe probabilities (up to normal floating-point rounding).
+ const useDealerPolynomial=up===3&&rules.s17&&input.dealerPolynomial!==false;
+ let dealerPaths=null;
+ function precomputeDealerPaths(){
+  if(dealerPaths)return dealerPaths;
+  const terminal=new Map();
+  let level=[{counts:new Array(K).fill(0),t:5,s:0,ways:1}];
+  for(let depth=0;depth<10&&level.length;depth++){
+   const next=new Map();
+   for(const node of level){
+    if(node.t>21||node.t>17||node.t===17){
+     const countsKey=node.counts.join(',');
+     let value=terminal.get(countsKey);
+     if(!value){value={ranks:node.counts.map((v,i)=>v?[i,v]:null).filter(Boolean),
+      len:depth,out:new Array(6).fill(0)};terminal.set(countsKey,value);}
+     const outcome=node.t>21?0:node.t-16;
+     value.out[outcome]+=node.ways;
+    }else{
+     for(let i=0;i<K;i++){
+      const counts=node.counts.slice();counts[i]++;
+      const [t,soft]=cardAdd(node.t,node.s,i);
+      const key=counts.join(',')+'|'+t+'|'+soft;
+      let entry=next.get(key);
+      if(entry)entry.ways+=node.ways;
+      else next.set(key,{counts,t,s:soft,ways:node.ways});
+     }
+    }
+   }
+   level=[...next.values()];
+  }
+  if(level.length)throw Error('Невозможно ограничить длину последовательности дилера');
+  dealerPaths=[...terminal.values()];
+  return dealerPaths;
+ }
+ function polynomialDealerDist(c,n){
+  const paths=precomputeDealerPaths();
+  const falls=Array.from({length:K},(_,i)=>{
+   const row=[1];
+   for(let k=1;k<=9;k++)row[k]=k>c[i]?0:row[k-1]*(c[i]-k+1);
+   return row;
+  });
+  const denom=[1];
+  for(let k=1;k<=9;k++)denom[k]=k>n?0:denom[k-1]*(n-k+1);
+  const out=new Float64Array(6);
+  for(const entry of paths){
+   if(!denom[entry.len])continue;
+   let p=1/denom[entry.len];
+   for(const [i,count] of entry.ranks){
+    p*=falls[i][count];
+    if(!p)break;
+   }
+   if(!p)continue;
+   for(let j=0;j<6;j++)if(entry.out[j])out[j]+=p*entry.out[j];
+  }
+  const total=out[0]+out[1]+out[2]+out[3]+out[4]+out[5];
+  if(Math.abs(total-1)>1e-9)throw Error('Дилеру не хватает карт для точного завершения');
+  return out;
+ }
  // At a terminal public information state, the distribution of the dealer's
  // outcome depends only on the REMAINING cards, upcard and peek rule.
  // The two child hands share this *one* outcome distribution. Reusing it
@@ -337,6 +401,12 @@ function solveSplit(input){
   const key=c.join(',');
   const known=publicDealerMemo.get(key);
   if(known!==undefined){counters.publicDealerHits++;return known;}
+  if(useDealerPolynomial){
+   const value={pBJ:0,dist:polynomialDealerDist(c,n)};
+   memoize(publicDealerMemo,key,value,'publicDealer');
+   counters.publicDealerMisses++;budget();
+   return value;
+  }
   const weights=holeWeights(c,n),out=new Float64Array(6);
   let pBJ=0;
   for(let h=0;h<K;h++)if(weights[h]){
@@ -436,7 +506,7 @@ function solveSplit(input){
    ev+=p*playFirst(t,s,2,1,c,N-1);
    c[i]++;
  }
- return {ev,rules,exact:true,assumptions:{resplit:false,afterSplitBlackjackPaysThreeToTwo:false,splitAcesOneCard:aceOne,doubleAfterSplit:das,charlieAfterSplit:rules.charlieAfterSplit},stats:{...counters,memoFirst:firstMemo.size,memoSecond:secondMemo.size,memoDealer:dm.size,cacheLimits:cacheCaps,cachePeak,cacheEvictions,publicDealerEntries:publicDealerMemo.size,secondStartEntries:secondStartMemo.size,ms:Date.now()-start}};
+ return {ev,rules,exact:true,assumptions:{resplit:false,afterSplitBlackjackPaysThreeToTwo:false,splitAcesOneCard:aceOne,doubleAfterSplit:das,charlieAfterSplit:rules.charlieAfterSplit},stats:{...counters,memoFirst:firstMemo.size,memoSecond:secondMemo.size,memoDealer:dm.size,cacheLimits:cacheCaps,cachePeak,cacheEvictions,publicDealerEntries:publicDealerMemo.size,secondStartEntries:secondStartMemo.size,dealerAlgorithm:useDealerPolynomial?'finite-polynomial':'recursive',dealerPolynomialTerms:dealerPaths?.length||0,ms:Date.now()-start}};
 }
 
 // Separate PRE-PEEK educational insurance experiment. Never mix with main-hand EV.
