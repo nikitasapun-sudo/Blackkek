@@ -232,13 +232,38 @@ function solveSplit(input){
   if(map.size>cachePeak[kind])cachePeak[kind]=map.size;
  }
  const counters={first:0,second:0,dealer:0,terminal:0,transitions:0,publicDealerHits:0,publicDealerMisses:0};
- function budget(){if((++counters.transitions&2047)===0 && Date.now()-start>limitMs)throw Error('Превышен лимит вычисления SPLIT (без точного результата). Выбери менее сложный учебный сценарий.');}
+ const reportProgress=typeof input.onProgress==='function'?input.onProgress:null;
+ let lastReportMs=start;
+ function diagnosticSnapshot(stage){
+  return {stage,elapsedMs:Date.now()-start,counters:{...counters},
+   cacheSizes:{dealer:dm.size,first:firstMemo.size,second:secondMemo.size,
+    terminal:terminalMemo.size,publicDealer:publicDealerMemo.size},
+   cacheEvictions:{...cacheEvictions}};
+ }
+ function progress(stage){
+  if(!reportProgress)return;
+  const now=Date.now();
+  if(now-lastReportMs<1000)return;
+  lastReportMs=now;
+  try{reportProgress(diagnosticSnapshot(stage));}catch(e){} // Diagnostics must never affect EV.
+ }
+ function timeout(stage,message){
+  const error=Error(message);
+  error.diagnostics=diagnosticSnapshot(stage);
+  throw error;
+ }
+ function budget(){
+  if((++counters.transitions&2047)!==0)return;
+  progress('split-transitions');
+  if(Date.now()-start>limitMs)
+   timeout('split-transitions','Превышен лимит вычисления SPLIT (без точного результата). Выбери менее сложный учебный сценарий.');
+ }
  function holeWeights(c,n){const w=new Array(K).fill(0);let denom=0;for(let h=0;h<K;h++)if(c[h]&&!(rules.peek&&dealerBJ(up,h))){w[h]=c[h];denom+=c[h]};if(!denom)throw Error('Нет допустимых скрытых карт');for(let h=0;h<K;h++)w[h]/=denom;return w;}
  function branches(c,n){if(n<2)throw Error('Недостаточно карт при скрытой карте');const w=holeWeights(c,n),out=[];for(let i=0;i<K;i++)if(c[i]){const p=(c[i]-w[i])/(n-1);if(p>0)out.push([i,p]);}return out;}
  function dealerDist(t,s,c,n){if(t>21)return [1,0,0,0,0,0];if(t>17||(t===17&&(rules.s17||s===0)))return [0,+(t===17),+(t===18),+(t===19),+(t===20),+(t===21)];
   const key=t+'|'+s+'|'+c.join(',');const cached=dm.get(key);if(cached)return cached; if(n===0)throw Error('Дилеру не хватает карт');const out=[0,0,0,0,0,0];
   for(let i=0;i<K;i++)if(c[i]){const p=c[i]/n;c[i]--;const [nt,ns]=cardAdd(t,s,i),a=dealerDist(nt,ns,c,n-1);for(let j=0;j<6;j++)out[j]+=p*a[j];c[i]++;}
-  memoize(dm,key,out,'dealer');counters.dealer++;if((counters.dealer&2047)===0&&Date.now()-start>limitMs)throw Error('Лимит времени для точного SPLIT: состояние слишком сложно.');return out;
+  memoize(dm,key,out,'dealer');counters.dealer++;if((counters.dealer&2047)===0){progress('dealer-recursion');if(Date.now()-start>limitMs)timeout('dealer-recursion','Лимит времени для точного SPLIT: состояние слишком сложно.');}return out;
  }
  // At a terminal public information state, the distribution of the dealer's
  // outcome depends only on the REMAINING cards, upcard and peek rule.
