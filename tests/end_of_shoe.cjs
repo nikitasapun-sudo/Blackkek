@@ -56,3 +56,30 @@ for(const peek of [true,false]){
  n++;
 }
 console.log('PASS exhausted-shoe boundaries:',n,'independent finite outcomes');
+
+
+ // Regression: a pair can stand even if fewer than three unknown cards remain.
+for(const remaining of [['10'],['10','10']]){
+ const result=E.solve({
+  player:['10','10'],up:'10',visible:knownExcept(remaining),
+  rules:{peek:false,charlieCards:0}
+ });
+ approx(result.actions.stand,0,'pair stand when split is impossible');
+ assert.equal(result.splitEligible,false);
+ assert.equal(result.actions.splitTwoCardStop,undefined);
+ n++;
+}
+// Three cards allow the two mandatory split draws, but the dealer's
+// remaining hole=2 might require a fourth card. Basic STAND must not vanish.
+{
+ const result=E.solve({
+  player:['10','10'],up:'10',visible:knownExcept(['2','10','10']),
+  rules:{peek:false,charlieCards:0}
+ });
+ approx(result.actions.stand,1/3,'preserved basic STAND when SPLIT cannot complete');
+ assert.equal(result.splitEligible,true);
+ assert.equal(result.actions.splitTwoCardStop,undefined);
+ assert.match(result.splitOneCardWarning,/дилеру не хватает карт/);
+ n++;
+}
+console.log('PASS pair split exhaustion isolation:',n,'total edge-case scenarios');
