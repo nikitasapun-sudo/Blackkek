@@ -65,6 +65,32 @@ const base=process.env.OMEGA_TEST_URL||'http://127.0.0.1:8765/';
   assert.match(await page.locator('#evResult').innerText(),/0,472412/);
   assert.match(await page.locator('#evResult').innerText(),/по одной карте/);
   assert.match(await page.locator('#evResult').innerText(),/две полные руки/);
+  // The public next-card display must use the same successful-peek
+  // conditioning as the EV core, even while the PWA is offline.
+  await page.evaluate(()=>window.__OMEGA_MINI_TEST__.setState({
+    player:['10','9'],dealer:['A'],other:[],history:[],
+    selected:'player',surrender:false,splitPolicy:'rank'
+  }));
+  await page.locator('#evPeek').selectOption('yes');
+  const conditioned=await page.evaluate(()=>window.__OMEGA_MINI_TEST__.stats().ten);
+  assert.ok(Math.abs(conditioned-127/412)<1e-12);
+  assert.match(await page.locator('#probHint').innerText(),/peek/);
+  await page.locator('#evPeek').selectOption('no');
+  const ordinary=await page.evaluate(()=>window.__OMEGA_MINI_TEST__.stats().ten);
+  assert.ok(Math.abs(ordinary-127/413)<1e-12);
+  await page.locator('#evSoft').selectOption('h17');
+  await page.locator('#evCharlie').selectOption('7');
+  await page.locator('#evBJPayout').selectOption('1.2');
+  await page.locator('#surrenderTiming').selectOption('early');
+  // Reopen offline: cards and explicitly chosen rules must survive restart.
+  await page.reload({waitUntil:'domcontentloaded',timeout:15000});
+  assert.equal(await page.locator('#evPeek').inputValue(),'no');
+  assert.equal(await page.locator('#evSoft').inputValue(),'h17');
+  assert.equal(await page.locator('#evCharlie').inputValue(),'7');
+  assert.equal(await page.locator('#evBJPayout').inputValue(),'1.2');
+  assert.equal(await page.locator('#surrenderTiming').inputValue(),'early');
+  assert.equal((await page.evaluate(()=>window.__OMEGA_MINI_TEST__.getState())).dealer[0],'A');
+  assert.ok(Math.abs(await page.evaluate(()=>window.__OMEGA_MINI_TEST__.stats().ten)-127/413)<1e-12);
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Mobile horizontal overflow');
   assert.deepEqual(issues,[], 'No page Javascript errors');
   console.log('PASS Chromium offline PWA: cached Worker, full EV, DOUBLE, SPLIT, mobile layout');
