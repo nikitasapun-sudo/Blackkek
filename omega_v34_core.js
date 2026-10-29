@@ -24,7 +24,6 @@ function inputCounts(input){
  return makeCounts(visible);
 }
 function validateRules(r){
- if(r?.resplit===true)throw Error('Повторный SPLIT намеренно не поддерживается');
  const rules=parseRules(r);
  if(rules.surrender&&rules.surrenderTiming==='early'&&rules.peek)
    throw Error('Ранняя сдача рассматривается ДО peek, а EV остальных действий задан ПОСЛЕ peek. Для сопоставимого учебного расчёта выбери режим без peek.');
@@ -39,14 +38,20 @@ function parseRules(r={}){
  const doublePolicy=r.doublePolicy||'any2';
  const dealerBJSettlement=r.dealerBJSettlement||'loseAll';
  const blackjackPayout=r.blackjackPayout??1.5;
+ const requestedMax=r.maxSplitHands??(r.resplit===true?4:2);
+ if(!Number.isInteger(requestedMax)||requestedMax<1||requestedMax>4)throw Error('maxSplitHands должен быть целым числом от 1 до 4');
  if(![0,6,7].includes(charlieCards))throw Error('Charlie: 0, 6 или 7 карт');
  if(!['any2','9-11','10-11'].includes(doublePolicy))throw Error('Неизвестные ограничения DOUBLE');
+ if(!['sameRank','sameValue'].includes(r.splitPolicy||'sameRank'))throw Error('Неизвестное правило SPLIT');
  if(!['loseAll','originalOnly'].includes(dealerBJSettlement))throw Error('Неизвестный режим dealer BJ settlement');
  if(!(Number.isFinite(blackjackPayout)&&blackjackPayout>0&&blackjackPayout<=3))throw Error('Некорректная выплата blackjack');
+ if(r.resplit===true&&requestedMax<3)throw Error('resplit требует maxSplitHands не меньше 3');
+ if(r.resplit===false&&requestedMax>2)throw Error('maxSplitHands больше 2 требует resplit:true');
  return {s17:r.s17!==false,charlie:charlieCards>0,charlieCards,peek:r.peek!==false,
   charlieAfterSplit:r.charlieAfterSplit===true,splitPolicy:r.splitPolicy||'sameRank',surrender:r.surrender===true,
   surrenderTiming:r.surrenderTiming==='early'?'early':'late',doubleAfterSplit:r.doubleAfterSplit===true,
-  splitAcesOneCard:r.splitAcesOneCard!==false,doublePolicy,dealerBJSettlement,blackjackPayout};
+  splitAcesOneCard:r.splitAcesOneCard!==false,resplitAces:r.resplitAces===true,maxSplitHands:requestedMax,
+  resplit:requestedMax>2,doublePolicy,dealerBJSettlement,blackjackPayout};
 }
 function doubleAllowed(total,policy){return policy==='any2'||(policy==='9-11'?total>=9&&total<=11:total>=10&&total<=11)}
 const ACTION_ORDER=['stand','hit','double','surrender','splitTwoCardStop'];
@@ -98,7 +103,7 @@ function compositionEdge(input){
   const left=counts.slice();left[i]--;left[j]--;
   expectedScenarios+=left.filter(n=>n>0).length;
  }
- let expectedEV=0,probability=0,dealerBJProbability=0,scenarios=0,totalScenarios=0;
+ let expectedEV=0,expectedSecondMoment=0,probability=0,dealerBJProbability=0,scenarios=0,totalScenarios=0;
  const actionWeights=Object.fromEntries(ACTION_ORDER.filter(k=>k!=='splitTwoCardStop').map(k=>[k,0]));
  actionWeights.dealerNatural=0;
  const ranks=R.map(String);
@@ -120,16 +125,18 @@ function compositionEdge(input){
    const pBJ=upBucket==='A'?postCounts[8]/postN:upBucket==='10'?postCounts[9]/postN:0;
    const playerNatural=handValue(player).natural;
    if(rules.peek&&pBJ===1){
-    expectedEV+=weight*(playerNatural?0:-1);dealerBJProbability+=weight;probability+=weight;scenarios++;
+    expectedEV+=weight*(playerNatural?0:-1);expectedSecondMoment+=weight*(playerNatural?0:1);dealerBJProbability+=weight;probability+=weight;scenarios++;
     actionWeights.dealerNatural+=weight;
     continue;
    }
-   const solved=solve({player,up,visible:stateVisible,rules,limitMs:scenarioLimit});
+   const solved=solveMoments({player,up,visible:stateVisible,rules,limitMs:scenarioLimit});
    const best=chooseBestAction(solved.actions);
    if(!best)throw Error('В aggregate edge встретилась незавершённая рука');
    const dealerBJPayoff=playerNatural?0:-1;
    const prePeekEV=rules.peek?(1-pBJ)*best.value+pBJ*dealerBJPayoff:best.value;
-   expectedEV+=weight*(rules.peek?prePeekEV:best.value);dealerBJProbability+=weight*pBJ;probability+=weight;scenarios++;
+   const moment=solved.secondMoments[best.name];
+   const prePeekMoment=rules.peek?(1-pBJ)*moment+pBJ*dealerBJPayoff*dealerBJPayoff:moment;
+   expectedEV+=weight*prePeekEV;expectedSecondMoment+=weight*prePeekMoment;dealerBJProbability+=weight*pBJ;probability+=weight;scenarios++;
    actionWeights[best.name]+=weight;
    if(typeof input.onProgress==='function'&&(scenarios===1||scenarios%25===0))
     input.onProgress({stage:'edge',elapsedMs:Date.now()-start,scenarios,totalScenarios,expectedScenarios});
@@ -137,11 +144,120 @@ function compositionEdge(input){
  }
  if(Math.abs(probability-1)>1e-10)throw Error('Aggregate edge не покрыл все начальные сценарии');
  const metrics=countingMetrics(visible);
- return {exact:true,expectedEV,playerEdge:expectedEV,houseEdge:-expectedEV,dealerBJProbability,
+ const variance=Math.max(0,expectedSecondMoment-expectedEV*expectedEV);
+ return {exact:true,expectedEV,expectedSecondMoment,variance,standardDeviation:Math.sqrt(variance),playerEdge:expectedEV,houseEdge:-expectedEV,dealerBJProbability,
    scenarios,totalScenarios,actionWeights,metrics,rules,
    definition:'Среднее EV оптимального одиночного решения по всем двум картам игрока и открытой карте дилера из текущего остатка; SPLIT исключён, потому что полный двухрукий расчёт выполняется отдельным режимом.',
    stats:{ms:Date.now()-start}};
 }
+// First and second moments for the same optimal single-hand policy used by
+// solve().  SPLIT is deliberately absent: its correlated hands need a joint
+// distribution, and a sum of their separate variances would be incorrect.
+function solveMoments(input){
+ const start=Date.now(),rules=validateRules(input.rules),limitMs=input.limitMs??15000;
+ const cards=input.player||[],up=R.indexOf(bucket(input.up)),c=inputCounts(input),hv=handValue(cards),N=numCards(c);
+ if(cards.length<2||cards.length>21)throw Error('Для EV нужно от 2 до 21 карт игрока');
+ if(up<0)throw Error('Выбери открытую карту дилера');
+ if(N<1)throw Error('Нет неизвестной закрытой карты дилера');
+ const dealerMemo=new Map(),standMemo=new Map(),playMemo=new Map();
+ let states=0;
+ function budget(){if((++states&1023)===0&&Date.now()-start>limitMs)throw Error('Лимит времени расчёта моментов; результат не подтверждён');}
+ function dealerDist(t,s,shoe,n){
+  if(t>21)return [1,0,0,0,0,0];
+  if(t>17||(t===17&&(rules.s17||s===0)))return [0,+(t===17),+(t===18),+(t===19),+(t===20),+(t===21)];
+  const key=t+'|'+s+'|'+shoe.join(','),old=dealerMemo.get(key);if(old)return old;
+  if(!n)throw Error('Недостаточно карт для дилера');
+  const out=[0,0,0,0,0,0];
+  for(let i=0;i<K;i++)if(shoe[i]){
+   const p=shoe[i]/n;shoe[i]--;
+   const [nt,ns]=cardAdd(t,s,i),v=dealerDist(nt,ns,shoe,n-1);
+   for(let j=0;j<6;j++)out[j]+=p*v[j];
+   shoe[i]++;
+  }
+  if(dealerMemo.size>=400000)throw Error('Превышен лимит кэша дилера');
+  dealerMemo.set(key,out);budget();return out;
+ }
+ function holes(shoe){
+  const w=new Array(K).fill(0);let n=0;
+  for(let i=0;i<K;i++)if(shoe[i]&&!(rules.peek&&dealerBJ(up,i))){w[i]=shoe[i];n+=shoe[i];}
+  if(!n)throw Error('Нет допустимых закрытых карт');
+  for(let i=0;i<K;i++)w[i]/=n;
+  return w;
+ }
+ function draws(shoe,n){
+  if(n<=1)throw Error('Недостаточно карт для добора при скрытой карте');
+  const w=holes(shoe),out=[];
+  for(let i=0;i<K;i++)if(shoe[i]){const p=(shoe[i]-w[i])/(n-1);if(p>0)out.push({i,p});}
+  return out;
+ }
+ function stand(t,s,len,shoe,n){
+  if(t>21)return {mean:-1,m2:1};
+  const key=t+'|'+s+'|'+len+'|'+shoe.join(','),old=standMemo.get(key);if(old)return old;
+  let mean=0,m2=0;const w=holes(shoe);
+  for(let h=0;h<K;h++)if(w[h]){
+   shoe[h]--;let a,b;
+   if(dealerBJ(up,h)){a=-1;b=1;}
+   else if(rules.charlie&&len>=rules.charlieCards){a=1;b=1;}
+   else{
+    const [dt,ds]=cardAdd(...cardAdd(0,0,up),h),dist=dealerDist(dt,ds,shoe,n-1);
+    a=dist[0];b=dist[0];
+    for(let score=17;score<=21;score++){
+     const p=dist[score-16],payoff=t>score?1:t===score?0:-1;
+     a+=p*payoff;b+=p*payoff*payoff;
+    }
+   }
+   mean+=w[h]*a;m2+=w[h]*b;shoe[h]++;
+  }
+  const out={mean,m2};standMemo.set(key,out);budget();return out;
+ }
+ function play(t,s,len,shoe,n){
+  if(t>21)return {mean:-1,m2:1};
+  const stop=stand(t,s,len,shoe,n);
+  if((rules.charlie&&len>=rules.charlieCards)||t>=21||n<=1)return stop;
+  const key=t+'|'+s+'|'+len+'|'+shoe.join(','),old=playMemo.get(key);if(old)return old;
+  let mean=0,m2=0;
+  for(const d of draws(shoe,n)){
+   shoe[d.i]--;const [nt,ns]=cardAdd(t,s,d.i),child=play(nt,ns,len+1,shoe,n-1);
+   mean+=d.p*child.mean;m2+=d.p*child.m2;shoe[d.i]++;
+  }
+  // Match solve's deterministic tie handling: a tie chooses STAND.
+  const out=mean>stop.mean?{mean,m2}:stop;playMemo.set(key,out);budget();return out;
+ }
+ const actions={},secondMoments={};
+ function set(name,pair){actions[name]=pair.mean;secondMoments[name]=pair.m2;}
+ if(hv.total>21){set('stand',{mean:-1,m2:1});return {actions,secondMoments,status:'bust'};}
+ if(rules.charlie&&hv.number>=rules.charlieCards){set('stand',stand(hv.total,hv.acesSoft,hv.number,c,N));return {actions,secondMoments,status:'charlie'};}
+ if(hv.natural){
+  const w=holes(c);let pBJ=0;for(let h=0;h<K;h++)if(dealerBJ(up,h))pBJ+=w[h];
+  set('stand',{mean:rules.blackjackPayout*(1-pBJ),m2:rules.blackjackPayout**2*(1-pBJ)});
+  return {actions,secondMoments,status:'natural',dealerBJ:pBJ};
+ }
+ set('stand',stand(hv.total,hv.acesSoft,hv.number,c,N));
+ if(N>1&&hv.total<21&&(!rules.charlie||hv.number<rules.charlieCards)){
+  let hitMean=0,hitM2=0,doubleMean=0,doubleM2=0;
+  for(const d of draws(c,N)){
+   c[d.i]--;const [t,s]=cardAdd(hv.total,hv.acesSoft,d.i),child=play(t,s,hv.number+1,c,N-1);
+   hitMean+=d.p*child.mean;hitM2+=d.p*child.m2;
+   if(hv.number===2&&doubleAllowed(hv.total,rules.doublePolicy)){
+    const one=stand(t,s,hv.number+1,c,N-1),w=holes(c);let pBJ=0;
+    if(!rules.peek&&rules.dealerBJSettlement==='originalOnly')for(let h=0;h<K;h++)if(dealerBJ(up,h))pBJ+=w[h];
+    // OBO returns the doubled unit on a dealer natural.  That outcome is
+    // -1 (square 1), rather than -2 (square 4), even after a player bust.
+    doubleMean+=d.p*(2*one.mean+pBJ);doubleM2+=d.p*(4*one.m2-3*pBJ);
+   }
+   c[d.i]++;
+  }
+  set('hit',{mean:hitMean,m2:hitM2});
+  if(hv.number===2&&doubleAllowed(hv.total,rules.doublePolicy))set('double',{mean:doubleMean,m2:doubleM2});
+ }
+ if(rules.surrender&&hv.number===2){
+  const pBJ=up===9?c[8]/N:up===8?c[9]/N:0;
+  const lateBeforePeek=rules.surrenderTiming==='late'&&!rules.peek;
+  set('surrender',lateBeforePeek?{mean:-0.5*(1-pBJ)-pBJ,m2:0.25*(1-pBJ)+pBJ}:{mean:-0.5,m2:0.25});
+ }
+ return {actions,secondMoments,status:'ok',rules};
+}
+
 function solve(input){
   const start=Date.now(),rules=validateRules(input.rules),limitMs=input.limitMs??15000;
   const hand=input.player||[],up=R.indexOf(bucket(input.up)),c=inputCounts(input),hv=handValue(hand),N=numCards(c);
@@ -298,6 +414,7 @@ function solve(input){
 // No resplitting: two children draw from one shoe, dealer hole remains unobserved.
 function solveSplit(input){
  const start=Date.now(), rules=validateRules(input.rules), limitMs=input.limitMs??25000;
+ if(rules.maxSplitHands>2)throw Error('Для повторного SPLIT используй solveResplit');
  const hands=input.player||[], up=R.indexOf(bucket(input.up)), c=inputCounts(input), N=numCards(c);
  if(hands.length!==2||up<0)throw Error('Для SPLIT укажи пару и открытую карту дилера');
  const policy=rules.splitPolicy;
@@ -504,6 +621,34 @@ function solveSplit(input){
  return {ev,rules,exact:true,assumptions:{resplit:false,afterSplitBlackjackPaysThreeToTwo:false,splitAcesOneCard:aceOne,doubleAfterSplit:das,charlieAfterSplit:rules.charlieAfterSplit},stats:{...counters,memoFirst:firstMemo.size,memoSecond:secondMemo.size,memoDealer:dm.size,cacheLimits:cacheCaps,cachePeak,cacheEvictions,publicDealerEntries:publicDealerMemo.size,ms:Date.now()-start}};
 }
 
+// Generic exact finite-shoe SPLIT queue. Each branch keeps the shared shoe,
+// dealer hole posterior and hand order explicit. A timeout is an error: no
+// partial EV is ever returned. maxSplitHands=2 is retained as a compatibility
+// mode for the independently audited two-hand solver.
+function solveResplit(input={}){
+ const start=Date.now(),rules=validateRules(input.rules),limitMs=input.limitMs??25000;
+ const rawPlayer=input.player||[],up=bucket(input.up),hands=rawPlayer.map(bucket);
+ if(hands.length!==2||R.indexOf(up)<0)throw Error('Для resplit нужны две карты игрока и upcard');
+ if(rules.maxSplitHands>2&&rules.splitPolicy==='sameRank'&&bucket(hands[0])==='10')
+  throw Error('Точный resplit десяток требует splitPolicy sameValue: 10/J/Q/K объединены в один bucket');
+ const sameRank=String(rawPlayer[0])===String(rawPlayer[1]);
+ if(!(sameRank||(rules.splitPolicy==='sameValue'&&hands[0]==='10'&&hands[1]==='10')))
+  throw Error('Карты не образуют пару по выбранному правилу');
+ const c0=inputCounts({...input,player:rawPlayer,up}),N0=numCards(c0),base=R.indexOf(hands[0]);
+ if(N0<3)throw Error('Для resplit нужны минимум две публичные карты и одна скрытая');
+ const aceBase=base===9,aceOne=rules.splitAcesOneCard,stats={nodes:0,terminal:0,dealer:0,ms:0};
+ const dealerMemo=new Map(),terminalMemo=new Map(),queueMemo=new Map();
+ function timeout(){if(Date.now()-start>limitMs){const e=Error('Лимит exact resplit; результат не подтверждён.');e.exact=false;e.diagnostics={stage:'resplit',elapsedMs:Date.now()-start,stats:{...stats}};throw e;}}
+ function holes(c){const w=new Array(K).fill(0);let d=0;for(let i=0;i<K;i++)if(c[i]&&!(rules.peek&&dealerBJ(R.indexOf(up),i))){w[i]=c[i];d+=c[i];}if(!d)throw Error('Нет допустимых скрытых карт');for(let i=0;i<K;i++)w[i]/=d;return w;}
+ function draws(c,n){if(n<=1)throw Error('Недостаточно карт для публичного добора');const w=holes(c),out=[];for(let i=0;i<K;i++)if(c[i]){const p=(c[i]-w[i])/(n-1);if(p>0)out.push([i,p]);}return out;}
+ function dealerDist(t,s,c,n){if(t>21)return [1,0,0,0,0,0];if(t>17||(t===17&&(rules.s17||s===0)))return [0,+(t===17),+(t===18),+(t===19),+(t===20),+(t===21)];const key=t+'|'+s+'|'+c.join(','),old=dealerMemo.get(key);if(old)return old;if(!n)throw Error('Дилеру не хватает карт');const out=[0,0,0,0,0,0];for(let i=0;i<K;i++)if(c[i]){const p=c[i]/n;c[i]--;const [nt,ns]=cardAdd(t,s,i),d=dealerDist(nt,ns,c,n-1);for(let j=0;j<6;j++)out[j]+=p*d[j];c[i]++;}dealerMemo.set(key,out);stats.dealer++;if((stats.dealer&2047)===0)timeout();return out;}
+ function terminal(done,c,n){const key=done.map(h=>h.cards.join(',')+'|'+h.bet).join(';')+'|'+c.join(',');const old=terminalMemo.get(key);if(old!==undefined)return old;const w=holes(c),di=R.indexOf(up);let ev=0;for(let h=0;h<K;h++)if(w[h]){const p=w[h];c[h]--;const bj=dealerBJ(di,h);let value;if(bj)value=!rules.peek&&rules.dealerBJSettlement==='originalOnly'?-1:-done.reduce((s,x)=>s+x.bet,0);else{const [dt,ds]=cardAdd(...cardAdd(0,0,di),h),d=dealerDist(dt,ds,c,n-1),pOther=d.reduce((a,b)=>a+b,0);value=0;for(const hand of done){const hv=handValue(hand.cards.map(i=>R[i]));if(hv.total>21)value-=hand.bet*pOther;else if(rules.charlie&&rules.charlieAfterSplit&&hv.number>=rules.charlieCards)value+=hand.bet*pOther;else{let one=d[0];for(let k=17;k<=21;k++)one+=d[k-16]*(hv.total>k?1:hv.total===k?0:-1);value+=hand.bet*one;}}}ev+=p*value;c[h]++;}terminalMemo.set(key,ev);stats.terminal++;return ev;}
+ function pair(cards){return cards.length===2&&(cards[0]===cards[1]||(rules.splitPolicy==='sameValue'&&cards.every(i=>V[i]===10)));}
+ function key(active,done,c,ops){return ops+'|'+active.map(h=>h.cards.join(',')+'|'+h.bet).join(';')+'|'+done.map(h=>h.cards.join(',')+'|'+h.bet).join(';')+'|'+c.join(',');}
+ function play(active,done,c,n,ops){stats.nodes++;if((stats.nodes&2047)===0)timeout();if(!active.length)return terminal(done,c,n);const k=key(active,done,c,ops),old=queueMemo.get(k);if(old!==undefined)return old;const h=active[0],rest=active.slice(1),hv=handValue(h.cards.map(i=>R[i]));if(hv.number===1){let ev=0;for(const [i,p] of draws(c,n)){c[i]--;ev+=p*play([{cards:[...h.cards,i],bet:h.bet},...rest],done,c,n-1,ops);c[i]++;}queueMemo.set(k,ev);return ev;}const required=rest.filter(x=>x.cards.length===1).length;const canSplit=hv.number===2&&pair(h.cards)&&ops+1<rules.maxSplitHands&&n>=required+3&&(!aceBase||rules.resplitAces);if(aceBase&&aceOne){let value=play(rest,[...done,h],c,n,ops);if(canSplit){const children=[{cards:[h.cards[0]],bet:1},{cards:[h.cards[0]],bet:1}];value=Math.max(value,play([...children,...rest],done,c,n,ops+1));}queueMemo.set(k,value);return value;}if(hv.total>=21||n<=required+1||(rules.charlie&&rules.charlieAfterSplit&&hv.number>=rules.charlieCards)){const ev=play(rest,[...done,h],c,n,ops);queueMemo.set(k,ev);return ev;}let best=play(rest,[...done,h],c,n,ops);const canDouble=rules.doubleAfterSplit&&hv.number===2&&h.bet===1&&doubleAllowed(hv.total,rules.doublePolicy);let hit=0,dbl=0;for(const [i,p] of draws(c,n)){c[i]--;const child={cards:[...h.cards,i],bet:h.bet};hit+=p*play([child,...rest],done,c,n-1,ops);if(canDouble)dbl+=p*play(rest,[{cards:child.cards,bet:2},...done],c,n-1,ops);c[i]++;}best=Math.max(best,hit);if(canDouble)best=Math.max(best,dbl);if(canSplit){const children=[{cards:[h.cards[0]],bet:1},{cards:[h.cards[0]],bet:1}];best=Math.max(best,play([...children,...rest],done,c,n,ops+1));}queueMemo.set(k,best);return best;}
+ const ev=play([{cards:[base],bet:1},{cards:[base],bet:1}],[],c0,N0,1);stats.ms=Date.now()-start;return {ev,exact:true,rules,assumptions:{maxSplitHands:rules.maxSplitHands,resplit:rules.maxSplitHands>2,resplitAces:rules.resplitAces,splitAcesOneCard:aceOne,doubleAfterSplit:rules.doubleAfterSplit},stats};
+}
+
 // Separate PRE-PEEK educational insurance experiment. Never mix with main-hand EV.
 // fraction is a preset hypothetical part of one teaching unit, not a stake-size suggestion.
 function insuranceScenario({up,visible=[],fraction=0.5,payout=2}={}){
@@ -543,7 +688,7 @@ function insuranceLesson(upcard){
  if(v==='10')return 'При открытой карте дилера со значением 10 стандартное предложение страховки обычно отсутствует. При этом дилер всё равно может иметь натуральный блэкджек, если закрытая карта — туз.';
  return 'При открытой карте дилера, отличной от туза, стандартная страховка обычно недоступна. Она не связана с перебором игрока или дилера.';
 }
-const API={solve,solveSplit,doubleAllowed,chooseBestAction,countingMetrics,compareStrategy,compositionEdge,makeCounts,handValue,cardAdd,MAX,R,bucket,numCards,terminalOutcome,insuranceLesson,insuranceScenario,inputCounts,validateRules,parseRules};
+const API={solve,solveMoments,solveSplit,solveResplit,doubleAllowed,chooseBestAction,countingMetrics,compareStrategy,compositionEdge,makeCounts,handValue,cardAdd,MAX,R,bucket,numCards,terminalOutcome,insuranceLesson,insuranceScenario,inputCounts,validateRules,parseRules};
 if(typeof module!=='undefined'&&module.exports)module.exports=API;
 root.OmegaFiniteEV=API;
 })(typeof window!=='undefined'?window:globalThis);

@@ -13,7 +13,16 @@ self.onmessage=function(event){
    self.postMessage({type:'done',mode});
    return;
   }
-  if(!['all','double','split'].includes(mode))throw Error('Неизвестный режим учебного расчёта');
+  if(!['all','double','split','resplit'].includes(mode))throw Error('Неизвестный режим учебного расчёта');
+  if(mode==='resplit'){
+   const basic=OmegaFiniteEV.solve(input);
+   if(!basic.splitEligible)throw Error('Для resplit нужна разрешённая пара и три неизвестные карты');
+   self.postMessage({type:'basic',value:basic,mode});
+   const resplit=OmegaFiniteEV.solveResplit(input);
+   self.postMessage({type:'resplit',value:resplit,mode});
+   self.postMessage({type:'done',mode});
+   return;
+  }
   if(mode==='split'){
    // Complete an exact, explicitly restricted split first. Both child hands
    // take exactly one card and stand; this is NOT the optimal full SPLIT.

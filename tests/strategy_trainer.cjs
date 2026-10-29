@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const html=fs.readFileSync('index.html','utf8');
 
-assert.match(html,/<title>Blackjack Omega II v3\.23/);
+assert.match(html,/<title>Blackjack Omega II v3\.24/);
 for(const id of ['strategyNew','strategyScenario','strategyAnswer','strategyCheck','strategyResult','strategyStats','chipBankroll','chipRecommendation'])
  assert.match(html,new RegExp('id="'+id+'"'),'strategy trainer control missing: '+id);
 assert.match(html,/<option value="random">Случайная задача<\/option>/);

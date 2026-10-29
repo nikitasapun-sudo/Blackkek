@@ -28,6 +28,9 @@ jobs:
         run: |
           node --check omega_v34_core.js
           node tests/v34.cjs
+          node tests/resplit_exact_oracle.cjs
+          node tests/resplit_joint_moment_oracle.cjs
+          node tests/variance_oracle.cjs
           node tests/depleted_oracle.cjs
           node tests/integrity.cjs
           node tests/pwa_offline.cjs
