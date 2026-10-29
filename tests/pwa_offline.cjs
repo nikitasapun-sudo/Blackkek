@@ -26,6 +26,7 @@ const caches = {
     if (!entries.has(name)) entries.set(name, new Map());
     const items = entries.get(name);
     return {
+      async match(request) { return items.get(normalize(request)); },
       async addAll(urls) {
         if (!networkOnline) throw Error('Network unavailable during install');
         for (const url of urls) items.set(normalize(url), { source: 'cache', url: normalize(url) });
@@ -40,6 +41,7 @@ const caches = {
 };
 const self = {
   location: { origin: new URL(origin).origin },
+  registration: { scope: origin },
   addEventListener(name, callback) { handlers.set(name, callback); },
   skipWaiting() { skippedWaiting = true; },
   clients: { async claim() { claimed = true; } }
@@ -57,13 +59,17 @@ async function lifecycle(name) {
   assert.ok(promised, name + ' must wait for async work');
   await promised;
 }
-async function request(url, method = 'GET') {
-  let result;
+async function request(url, method = 'GET', mode = 'cors') {
+  let result,maintenance;
   handlers.get('fetch')({
-    request: { url, method },
-    respondWith(promise) { result = promise; }
+    request: { url, method, mode },
+    respondWith(promise) { result = promise; },
+    waitUntil(promise) { maintenance = promise; }
   });
-  return result === undefined ? undefined : await result;
+  if(result===undefined)return undefined;
+  const response=await result;
+  if(maintenance)await maintenance;
+  return response;
 }
 
 (async () => {
@@ -89,6 +95,25 @@ async function request(url, method = 'GET') {
   for (const result of [home, htmlCached, manifest, icon, worker, core])
     assert.equal(result.source, 'cache', 'App shell must be available offline');
   assert.equal(fetchCalls, 0, 'Offline app-shell requests must not hit the network');
+  // Query-bearing installation/update links should restart entirely from the
+  // active version's precache, not fail due to a cache-key mismatch.
+  // Reproduce the real update race: the previous controller recreates its
+  // cache after the new release activated. A navigation must remove only
+  // earlier Omega caches, never a concurrently installing *newer* release.
+  entries.set('omega-ii-v314-recreated-after-activation',new Map());
+  entries.set('omega-ii-v316-installing',new Map());
+  const queryHome=await request(origin+'?update=315','GET','navigate');
+  const queryIndex=await request(origin+'index.html?update=315','GET','navigate');
+  assert.equal(entries.has('omega-ii-v314-recreated-after-activation'),false);
+  assert.equal(entries.has('omega-ii-v316-installing'),true,
+    'An already installing newer release must not be deleted');
+  assert.equal(queryHome.url,normalize('./index.html'));
+  assert.equal(queryIndex.url,normalize('./index.html'));
+  assert.equal(fetchCalls,0,'Offline query navigation cannot request the network');
+  // Do not silently serve the app shell for an arbitrary missing page.
+  await assert.rejects(request(origin+'unrelated.html?update=315','GET','navigate'),/Network offline/);
+  // Other web apps on the same origin must never receive this app's shell.
+  await assert.rejects(request('https://example.test/other-app/?update=315','GET','navigate'),/Network offline/);
 
   const otherOrigin = await request('https://other.test/style.css');
   assert.equal(otherOrigin, undefined, 'Cross-origin traffic is not intercepted');
@@ -97,7 +122,7 @@ async function request(url, method = 'GET') {
 
   networkOnline = true;
   assert.equal((await request(origin + 'uncached-file.txt')).source, 'network');
-  assert.equal(fetchCalls, 1);
+  assert.equal(fetchCalls, 3, 'Two intentional offline missing paths plus one online fallback');
   assert.ok(html.includes("intro=p.length+' карт без перебора: Charlie.'"),
     'Charlie label must reflect selected six/seven-card rule');
 
