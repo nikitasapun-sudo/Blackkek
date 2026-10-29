@@ -165,7 +165,8 @@ function solve(input){
       ? -0.5*(1-dealerNatural)-dealerNatural : -0.5;
   }
   // Exact joint-shoe EV for a restricted split scenario: draw 1 card to each hand, then stand.
-  const [a,b]=hand.map(bucket),eligible=hv.number===2&&(String(hand[0])===String(hand[1])||(rules.splitPolicy==='sameValue'&&a==='10'&&b==='10'));
+  const [a,b]=hand.map(bucket),eligible=hv.number===2&&N>=3&&(String(hand[0])===String(hand[1])||(rules.splitPolicy==='sameValue'&&a==='10'&&b==='10'));
+  let splitOneCardWarning=null;
   if(eligible){
     const child=R.indexOf(a),splitPost=(t1,s1,t2,s2,c,n)=>{
       // Same dealer path settles both split hands; compute one distribution per hole.
@@ -179,6 +180,7 @@ function solve(input){
       return sum;
     };
     let splitEV=0;
+    try{
     for(const x of publicDraws(c,N)){
       c[x.index]--;const [t1,s1]=cardAdd(...cardAdd(0,0,child),x.index);
       for(const y of publicDraws(c,N-1)){
@@ -189,8 +191,14 @@ function solve(input){
       c[x.index]++;
     }
     actions.splitTwoCardStop=splitEV;
+    }catch(error){
+      // Some full-shoe states permit STAND, but SPLIT leaves no cards
+      // for a dealer who must draw. Do not discard valid basic EVs.
+      if(!/Недостаточно карт для дилера/.test(error.message))throw error;
+      splitOneCardWarning='Однокарточный SPLIT не определён: дилеру не хватает карт для завершения.';
+    }
   }
-  return {actions,status:'ok',stats:{...stat,dealerCache:dm.size,ms:Date.now()-start},rules,splitEligible:eligible,splitDefinition:'Каждая часть разделённой пары получает одну карту и останавливается. Этот ограниченный сценарий рассчитан точно, но это не полный SPLIT с дальнейшими решениями.',postPeek:rules.peek,knownRemaining:N};
+  return {actions,status:'ok',stats:{...stat,dealerCache:dm.size,ms:Date.now()-start},rules,splitEligible:eligible,splitOneCardWarning,splitDefinition:'Каждая часть разделённой пары получает одну карту и останавливается. Этот ограниченный сценарий рассчитан точно, но это не полный SPLIT с дальнейшими решениями.',postPeek:rules.peek,knownRemaining:N};
 }
 // Exact finite-shoe, two-hand, split-once educational expectation.
 // No resplitting: two children draw from one shoe, dealer hole remains unobserved.
