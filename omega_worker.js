@@ -7,6 +7,12 @@ self.onmessage=function(event){
   const packet=event.data||{},input=packet.input||packet,mode=packet.mode||'all';
   // The progress callback exists only inside the Worker, never in the cloned message.
   input.onProgress=update=>self.postMessage({type:'progress',value:update,mode});
+  if(mode==='edge'){
+   const value=OmegaFiniteEV.compositionEdge(input);
+   self.postMessage({type:'edge',value,mode});
+   self.postMessage({type:'done',mode});
+   return;
+  }
   if(!['all','double','split'].includes(mode))throw Error('Неизвестный режим учебного расчёта');
   if(mode==='split'){
    // Complete an exact, explicitly restricted split first. Both child hands

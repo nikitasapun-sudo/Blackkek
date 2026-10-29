@@ -49,6 +49,7 @@ jobs:
           node --check tests/browser_upgrade.cjs
           node --check tests/browser_storage.cjs
           node --check tests/browser_tabs.cjs
+          node --check tests/strategy_edge.cjs
           node --check omega_worker.js
       - name: Mathematical regression
         run: node tests/v34.cjs
@@ -61,6 +62,7 @@ jobs:
       - name: Worker lifecycle and performance smoke
         run: |
           node tests/worker_watchdog.cjs
+          node tests/strategy_edge.cjs
           node tests/performance.cjs
           node tests/offline_actions.cjs
           node tests/end_of_shoe.cjs
