@@ -49,6 +49,7 @@ jobs:
           node tests/julius_full_shoe_decimal.cjs
           node tests/julius_full_shoe_bayes.cjs
           node tests/full_shoe_numerical_invariants.cjs
+          node tests/ui_state_consistency.cjs
       - name: Stage static-only PWA
         run: |
           mkdir -p _site/icons
