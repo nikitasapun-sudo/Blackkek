@@ -13,6 +13,21 @@ let checked=0;
 for(const [up,peek,remaining,observed,posterior,draws,likelihood] of cases){
  const initial=Array.from({length:E.R.length},(_,i)=>remaining.split(',').filter(r=>r===E.R[i]).length);
  const counts=initial.slice();
+ // A third identity: the product of public conditional draw probabilities
+ // must equal the hole-first exact joint observation likelihood from Julius.
+ const sequential=initial.slice();
+ let observedLikelihood=1;
+ for(const r of observed.split(',')){
+  const j=E.R.indexOf(r),n=sequential.reduce((a,b)=>a+b,0);
+  const active=sequential.map((v,i)=>peek===1&&up==='10'&&E.R[i]==='A'||peek===1&&up==='A'&&E.R[i]==='10'?0:v);
+  const denom=active.reduce((a,b)=>a+b,0);
+  assert.ok(n>1&&denom>0&&sequential[j]>0);
+  observedLikelihood*=(sequential[j]-active[j]/denom)/(n-1);
+  sequential[j]--;
+ }
+ assert.ok(Math.abs(observedLikelihood-frac(likelihood))<1e-12,
+  'Ordered public sequence likelihood failed for '+JSON.stringify({up,peek,remaining,observed}));
+ checked++;
  for(const r of observed.split(',')){
   const j=E.R.indexOf(r);assert.ok(j>=0&&counts[j]>0);counts[j]--;
  }
@@ -38,5 +53,5 @@ for(const [up,peek,remaining,observed,posterior,draws,likelihood] of cases){
  assert.ok(frac(likelihood)>0);
 }
 assert.equal(cases.length,8);
-assert.equal(checked,160);
-console.log('PASS hole-first conditional posterior: 8 ordered public-draw histories, 160 exact-fraction probability checks');
+assert.equal(checked,168);
+console.log('PASS hole-first conditional posterior: 8 ordered public-draw histories, 168 exact-fraction probability checks');
