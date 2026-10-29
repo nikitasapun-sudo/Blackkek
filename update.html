@@ -34,28 +34,53 @@ async function checkUpdate(){
   statusElement.textContent='Проверяю версию на сервере…';
   try{
     if(!('serviceWorker' in navigator)||!('caches' in window))throw Error('Обновление через Service Worker недоступно в этом браузере.');
-    // This path is intentionally NOT cached by the old service worker.
-    // Its existing fetch handler has no match for ./update.html, so it
-    // requests this page from the network even while index.html is stale.
-    const response=await fetch('./sw.js',{cache:'no-store'});
+    // The old worker does not cache sw.js or update.html.
+    const response=await fetch('./sw.js?omega-update-check='+Date.now(),{cache:'no-store'});
     if(!response.ok)throw Error('Не удалось получить актуальный Service Worker (HTTP '+response.status+').');
     const source=await response.text();
     const expected=source.match(/const CACHE\s*=\s*['"]([^'"]+)['"]/)?.[1];
-    if(!expected||!/^omega-ii-v[0-9]+-[0-9]+$/.test(expected))throw Error('Не удалось определить версию с сервера.');
+    const number=Number(source.match(/const RELEASE_NUMBER\s*=\s*(\d+)/)?.[1]);
+    if(!expected||!/^omega-ii-v[0-9]+-[0-9]+$/.test(expected)||!number)
+      throw Error('Не удалось определить версию с сервера.');
+    const label='v'+Math.floor(number/100)+'.'+String(number%100).padStart(2,'0');
     let registration=await navigator.serviceWorker.getRegistration('./');
     if(!registration)registration=await navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'});
-    statusElement.textContent='Устанавливаю актуальную версию…';
+    statusElement.textContent='Устанавливаю '+label+'…';
     await registration.update();
-    for(let attempt=0;attempt<60;attempt++){
+    for(let attempt=0;attempt<80;attempt++){
       const names=await caches.keys();
       if(names.includes(expected)&&registration.active?.state==='activated'&&!registration.installing&&!registration.waiting){
         const cache=await caches.open(expected);
         const files=await Promise.all(['./index.html','./omega_worker.js','./omega_v34_core.js'].map(f=>cache.match(f)));
-        if(files.every(Boolean)){
-          statusElement.textContent='Готово: актуальная версия '+expected+' установлена. Можно открыть приложение.';
-          openLink.hidden=false;
-          return;
+        if(!files.every(Boolean)){await delay(250);continue;}
+        let cachedHtml=await files[0].text();
+        // A release-named cache alone is not proof its HTML is current.
+        // Earlier deployment propagation could have put v3.23 into the v3.24 cache.
+        if(!cachedHtml.includes('Blackjack Omega II '+label)){
+          statusElement.textContent='Обнаружен старый интерфейс в кэше '+expected+'. Обновляю файлы без удаления настроек…';
+          const paths=['./index.html','./omega_worker.js','./omega_v34_core.js'];
+          const fresh=await Promise.all(paths.map(async path=>{
+            // fetch() is NOT a navigation: the worker's cache-first
+            // index-navigation rule does not apply. Unique query misses
+            // the normal asset cache and goes to the network.
+            const url=new URL(path,location.href);
+            url.searchParams.set('omega-repair',String(Date.now()));
+            const res=await fetch(url.href,{cache:'no-store'});
+            if(!res.ok)throw Error('Не удалось загрузить '+path+': HTTP '+res.status);
+            return res;
+          }));
+          const freshHtml=await fresh[0].clone().text();
+          if(!freshHtml.includes('Blackjack Omega II '+label))
+            throw Error('Сервер всё ещё возвращает старую страницу вместо '+label+'. Попробуйте позже.');
+          for(let i=0;i<paths.length;i++)await cache.put(paths[i],fresh[i].clone());
+          await cache.put('./',fresh[0].clone());
+          cachedHtml=await (await cache.match('./index.html')).text();
         }
+        if(!cachedHtml.includes('Blackjack Omega II '+label))
+          throw Error('Новая версия не появилась в офлайн-кэше.');
+        statusElement.textContent='Готово: проверена '+label+' в офлайн-кэше. Карты и настройки сохранены.';
+        openLink.hidden=false;
+        return;
       }
       await delay(250);
     }
