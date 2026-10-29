@@ -13,7 +13,7 @@ const latestHTML=fs.readFileSync('index.html','utf8');
 const latestSW=fs.readFileSync('sw.js','utf8');
 assert.match(latestSW,/omega-ii-v315-1/);
 const oldHTML=latestHTML.replaceAll('v3.15','v3.14');
-const oldSW=latestSW.replaceAll('omega-ii-v315-1','omega-ii-v314-upgrade-fixture');
+const oldSW=latestSW.replaceAll('omega-ii-v315-1','omega-ii-v314-upgrade-fixture').replace('RELEASE_NUMBER=315','RELEASE_NUMBER=314');
 let upgraded=false;
 const server=http.createServer((req,res)=>{
  const url=new URL(req.url,'http://localhost');
@@ -114,6 +114,12 @@ const stop=()=>new Promise(resolve=>server.close(resolve));
   for(const [id,expected] of [['evPeek','no'],['evSoft','h17'],['evCharlie','7'],['evBJPayout','1.2']])
    assert.equal(await page.locator('#'+id).inputValue(),expected,id+' lost after upgrade');
   assert.equal(await page.locator('#appUpdateNotice').isHidden(),true);
+  // The first navigation under the new controller also repairs any old
+  // cache recreated during controller handoff, without touching new releases.
+  await page.waitForFunction(async()=>{
+   const keys=(await caches.keys()).filter(x=>x.startsWith('omega-ii-'));
+   return keys.length===1&&keys[0]==='omega-ii-v315-1';
+  },null,{timeout:10000});
   await ctx.setOffline(true);
   await page.close();
   page=await ctx.newPage();
@@ -126,7 +132,7 @@ const stop=()=>new Promise(resolve=>server.close(resolve));
   await page.waitForFunction(()=>document.querySelector('#evStatus').textContent.includes('Расчёт завершён'),{timeout:20000});
   assert.match(await page.locator('#evResult').innerText(),/Удвоение/);
   assert.deepEqual(errors,[],'No page errors across old/new offline reloads');
-  console.log('PASS Chromium PWA upgrade: offline close/reopen, query navigation, live SW replacement, cache cleanup, retained cards/rules, stale EV invalidation');
+  console.log('PASS Chromium PWA upgrade: offline close/reopen, query navigation, live SW replacement, race-safe old-cache cleanup, retained cards/rules, stale EV invalidation');
  }finally{
   await browser.close();
  }
