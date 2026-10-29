@@ -89,10 +89,14 @@ const stop=()=>new Promise(resolve=>server.close(resolve));
   assert.equal(await page.locator('#evResult').innerText(),'');
   assert.match(await page.locator('#evStatus').innerText(),/Новая версия/);
   assert.deepEqual(await page.evaluate(()=>window.__OMEGA_MINI_TEST__.getState()),saved.cards);
-  const activeCache=await page.evaluate(async()=>{
-   const list=(await caches.keys()).filter(k=>k.startsWith('omega-ii-v'));
-   return list;
-  });
+  // The controllerchange signal can arrive before the activation
+  // waitUntil cleanup promise has fully resolved. Await cache cleanup.
+  await page.waitForFunction(async()=>{
+   const cachesForApp=(await caches.keys()).filter(k=>k.startsWith('omega-ii-v'));
+   return cachesForApp.length===1&&cachesForApp[0]==='omega-ii-v315-1';
+  },{timeout:15000});
+  const activeCache=await page.evaluate(async()=>(
+   await caches.keys()).filter(k=>k.startsWith('omega-ii-v')));
   assert.deepEqual(activeCache,['omega-ii-v315-1']);
   await page.locator('#appUpdateReload').click();
   await page.waitForLoadState('domcontentloaded');
