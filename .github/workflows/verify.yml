@@ -38,6 +38,8 @@ jobs:
           node --check tests/user_split_repro.cjs
           node --check tests/dealer_hotpath.cjs
           node --check tests/julius_rational_oracle.cjs
+          node --check tests/julius_hit_charlie_oracle.cjs
+          node --check tests/julius_boundary_oracle.cjs
           node --check omega_worker.js
       - name: Mathematical regression
         run: node tests/v34.cjs
@@ -60,3 +62,5 @@ jobs:
           node tests/user_split_repro.cjs
           node tests/dealer_hotpath.cjs
           node tests/julius_rational_oracle.cjs
+          node tests/julius_hit_charlie_oracle.cjs
+          node tests/julius_boundary_oracle.cjs
