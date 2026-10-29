@@ -18,7 +18,7 @@ const base=process.env.OMEGA_TEST_URL||'http://127.0.0.1:8765/';
   await page.waitForFunction(()=>navigator.serviceWorker.controller!==null,null,{timeout:15000});
   const cache=await page.evaluate(async()=>{
     const all=await caches.keys();
-    const key=all.find(k=>k.startsWith('omega-ii-v35-'));
+    const key=all.find(k=>k.startsWith('omega-ii-v'));
     const shell=key&&await caches.open(key);
     return {key,worker:Boolean(shell&&await shell.match('./omega_worker.js')),
       core:Boolean(shell&&await shell.match('./omega_v34_core.js'))};
