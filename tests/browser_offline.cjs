@@ -37,7 +37,7 @@ const base=process.env.OMEGA_TEST_URL||'http://127.0.0.1:8765/';
   // The diagnostic report is generated and readable even with no network.
   await page.locator('#evDiagnosticShow').click();
   const diag=JSON.parse(await page.locator('#evDiagnosticText').inputValue());
-  assert.equal(diag.version,'3.10');
+  assert.equal(diag.version,'3.11');
   assert.equal(diag.mode,'all');
   assert.equal(diag.knownRemaining,413);
   assert.equal(diag.player.join(','),'10,5');
@@ -63,6 +63,28 @@ const base=process.env.OMEGA_TEST_URL||'http://127.0.0.1:8765/';
   await page.locator('#evSplitCompute').click();
   await page.waitForFunction(()=>document.querySelector('#evStatus').textContent.includes('Расчёт завершён'),{timeout:20000});
   assert.match(await page.locator('#evResult').innerText(),/0,472412/);
+  // Real 389-unknown-card Android report, reproduced in an offline 390px browser.
+  await page.evaluate(()=>{
+    const entries={'2':3,'3':1,'4':1,'5':2,'6':4,'9':4,'10':9};
+    const other=Object.entries(entries).flatMap(([rank,count])=>Array(count).fill(rank));
+    window.__OMEGA_MINI_TEST__.setState({
+      player:['7','7'],dealer:['5'],other,history:[],
+      selected:'player',surrender:true,splitPolicy:'rank'
+    });
+  });
+  await page.locator('#evSplitCompute').click();
+  await page.waitForFunction(
+    ()=>document.querySelector('#evStatus').textContent.includes('Расчёт завершён'),
+    null,{timeout:29000});
+  const reportedText=await page.locator('#evResult').innerText();
+  assert.match(reportedText,/SPLIT · две полные руки/);
+  assert.match(reportedText,/SPLIT · по одной карте/);
+  await page.locator('#evDiagnosticShow').click();
+  const reported=JSON.parse(await page.locator('#evDiagnosticText').inputValue());
+  assert.equal(reported.version,'3.11');
+  assert.equal(reported.knownRemaining,389);
+  assert.equal(reported.status,'complete');
+  assert.equal(reported.stage,'split-complete');
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Mobile horizontal overflow');
   assert.deepEqual(issues,[], 'No page Javascript errors');
   console.log('PASS Chromium offline PWA: cached Worker, full EV, DOUBLE, SPLIT, mobile layout');
