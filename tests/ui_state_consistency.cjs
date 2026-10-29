@@ -11,7 +11,7 @@ const defaults={evSoft:'s17',evPeek:'yes',evCharlie:'6',evDAS:'no',
  evDealerBJSettlement:'loseAll',evBJPayout:'1.5',surrenderTiming:'late',
  rulePlayer:'20',ruleDealer:'19',evUnit:'Виртуальные учебные очки'};
 function boot(store=new Map(),faults={}){
- const elements=new Map(),workers=[],timers=new Map();
+ const elements=new Map(),workers=[],timers=new Map(),events={};
  let seq=0;
  function el(id){
   if(!elements.has(id))elements.set(id,{
@@ -30,15 +30,15 @@ function boot(store=new Map(),faults={}){
   terminate(){this.terminated=true;}
  }
  const context={
-  window:{OmegaFiniteEV:E},
-  document:{getElementById:el,createElement:()=>({dataset:{},addEventListener(){},classList:{toggle(){}}})},
+  window:{OmegaFiniteEV:E,addEventListener:(name,fn)=>events[name]=fn},
+  document:{addEventListener(){},getElementById:el,createElement:()=>({dataset:{},addEventListener(){},classList:{toggle(){}}})},
   localStorage:{getItem:k=>{if(faults.read)throw Error('SecurityError');return store.get(k)??null;},setItem:(k,v)=>{if(faults.write===true||faults.write===k)throw Error('QuotaExceededError');store.set(k,v);}},
   Worker,console,confirm:()=>true,alert:message=>{throw Error(message);},
   setTimeout(cb,ms){timers.set(++seq,{cb,ms});return seq;},
   clearTimeout(id){timers.delete(id);}
  };
  vm.runInNewContext(script,context,{filename:'omega-ui.js'});
- return {el,workers,store,api:context.window.__OMEGA_MINI_TEST__};
+ return {el,workers,store,events,storage:context.localStorage,api:context.window.__OMEGA_MINI_TEST__};
 }
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-12,a+' differs '+b);
 const env=boot();
@@ -180,3 +180,28 @@ assert.equal(denied.el('evCompute').disabled,true);
 assert.match(denied.el('storageNotice').textContent,/прочитать/);
 assert.equal(inaccessible.get(KEY),JSON.stringify(valid));
 console.log('PASS storage: malformed/partial cards, rank counts, hand limits, safe preferences, damaged rules, read denial, per-key write failure and recovery');
+
+// Missed or delayed storage events must not allow a stale write or calculation.
+const shared=new Map([[KEY,JSON.stringify(valid)]]),tabA=boot(shared),tabB=boot(shared);
+tabB.api.calculateEV('double');const pending=tabB.workers[0];
+pending.onmessage({data:{type:'basic',value:{actions:{double:123},splitEligible:false}}});
+tabA.api.setState({...valid,other:['A','2']});
+const winner=shared.get(KEY);
+tabB.el('next').onclick();
+assert.equal(shared.get(KEY),winner);
+assert.equal(pending.terminated,true);
+assert.equal(tabB.el('evResult').innerHTML,'');
+assert.equal(tabB.el('tabConflictNotice').hidden,false);
+pending.onmessage({data:{type:'basic',value:{actions:{double:999}}}});
+assert.equal(tabB.el('evResult').innerHTML,'');
+tabB.api.calculateEV('double');assert.equal(tabB.workers.length,1);
+// Unrelated and sessionStorage events are ignored, clear() invalidates.
+const clean=boot(shared);
+clean.events.storage({key:'other',storageArea:clean.storage});
+assert.equal(clean.el('evCompute').disabled,false);
+clean.events.storage({key:KEY,storageArea:{}});
+assert.equal(clean.el('evCompute').disabled,false);
+shared.clear();clean.events.storage({key:null,storageArea:clean.storage});
+assert.equal(clean.el('evCompute').disabled,true);
+assert.equal(shared.size,0);
+console.log('PASS tab conflict: delayed event, stale writer/Worker, manual-only recovery, unrelated/session storage and clear');

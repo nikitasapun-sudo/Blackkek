@@ -29,3 +29,4 @@ jobs:
           node tests/browser_offline.cjs
           node tests/browser_upgrade.cjs
           node tests/browser_storage.cjs
+          node tests/browser_tabs.cjs

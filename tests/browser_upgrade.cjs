@@ -11,9 +11,9 @@ const path=require('node:path');
 const {chromium}=require('playwright');
 const latestHTML=fs.readFileSync('index.html','utf8');
 const latestSW=fs.readFileSync('sw.js','utf8');
-assert.match(latestSW,/omega-ii-v316-1/);
-const oldHTML=latestHTML.replaceAll('v3.16','v3.14');
-const oldSW=latestSW.replaceAll('omega-ii-v316-1','omega-ii-v314-upgrade-fixture').replace('RELEASE_NUMBER=316','RELEASE_NUMBER=314');
+assert.match(latestSW,/omega-ii-v317-1/);
+const oldHTML=latestHTML.replaceAll('v3.17','v3.14');
+const oldSW=latestSW.replaceAll('omega-ii-v317-1','omega-ii-v314-upgrade-fixture').replace('RELEASE_NUMBER=317','RELEASE_NUMBER=314');
 let upgraded=false;
 const server=http.createServer((req,res)=>{
  const url=new URL(req.url,'http://localhost');
@@ -95,7 +95,7 @@ const stop=()=>new Promise(resolve=>server.close(resolve));
   const active=await page.evaluate(async()=>{
    const registration=await navigator.serviceWorker.ready;
    const keys=await caches.keys();
-   const cached=await caches.open('omega-ii-v316-1');
+   const cached=await caches.open('omega-ii-v317-1');
    return {
     script:registration.active?.scriptURL,
     keys,
@@ -105,11 +105,11 @@ const stop=()=>new Promise(resolve=>server.close(resolve));
    };
   });
   assert.match(active.script,/sw\.js$/);
-  assert.ok(active.keys.includes('omega-ii-v316-1'));
+  assert.ok(active.keys.includes('omega-ii-v317-1'));
   assert.ok(active.html&&active.math&&active.worker,'New version cache must be complete');
   await page.locator('#appUpdateReload').click();
   await page.waitForLoadState('domcontentloaded');
-  assert.match(await page.title(),/v3.16/);
+  assert.match(await page.title(),/v3.17/);
   assert.deepEqual(await page.evaluate(()=>window.__OMEGA_MINI_TEST__.getState()),saved.cards);
   for(const [id,expected] of [['evPeek','no'],['evSoft','h17'],['evCharlie','7'],['evBJPayout','1.2']])
    assert.equal(await page.locator('#'+id).inputValue(),expected,id+' lost after upgrade');
@@ -118,14 +118,14 @@ const stop=()=>new Promise(resolve=>server.close(resolve));
   // cache recreated during controller handoff, without touching new releases.
   await page.waitForFunction(async()=>{
    const keys=(await caches.keys()).filter(x=>x.startsWith('omega-ii-'));
-   return keys.length===1&&keys[0]==='omega-ii-v316-1';
+   return keys.length===1&&keys[0]==='omega-ii-v317-1';
   },null,{timeout:10000});
   await ctx.setOffline(true);
   await page.close();
   page=await ctx.newPage();
   page.on('pageerror',err=>errors.push(err.message));
-  await page.goto(base+'?update=316',{waitUntil:'domcontentloaded',timeout:15000});
-  assert.match(await page.title(),/v3.16/);
+  await page.goto(base+'?update=317',{waitUntil:'domcontentloaded',timeout:15000});
+  assert.match(await page.title(),/v3.17/);
   assert.deepEqual(await page.evaluate(()=>window.__OMEGA_MINI_TEST__.getState()),saved.cards);
   assert.equal(await page.locator('#evSoft').inputValue(),'h17');
   await page.locator('#evDoubleCompute').click();

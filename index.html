@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0c1b24"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icons/icon.svg"><title>Blackjack Omega II v3.16 · Offline EV</title>
+<meta name="theme-color" content="#0c1b24"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icons/icon.svg"><title>Blackjack Omega II v3.17 · Offline EV</title>
 <style>
 :root{color-scheme:dark;--bg:#0a1720;--panel:#132832;--border:#35515d;--ink:#eff9f8;--muted:#b1c7cc;--mint:#60dfbb;--gold:#ffda91;--red:#ff969d}*{box-sizing:border-box}body{margin:0;font:15px/1.45 system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:radial-gradient(ellipse at 45% -10%,#22545b 0%,#0b202b 40%,var(--bg) 80%)}button,input,select{font:inherit}button{color:var(--ink);background:#24424d;border:1px solid #52717a;border-radius:11px;padding:9px 11px;cursor:pointer;font-weight:700;touch-action:manipulation}button:hover{border-color:#9edfcc}button:focus-visible,select:focus-visible{outline:2px solid var(--mint);outline-offset:2px}button:disabled{opacity:.35;cursor:not-allowed}select{color:var(--ink);background:#102c36;border:1px solid var(--border);padding:8px;border-radius:9px;max-width:100%}.wrap{max-width:880px;margin:auto;padding:14px 12px 44px}header{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin:2px 0 12px}header h1{margin:0;font-size:clamp(21px,4.5vw,28px);letter-spacing:-.5px}header p{margin:3px 0 0;color:var(--muted);font-size:12px}.pill{font-size:11px;font-weight:800;background:#1d4846;border:1px solid #397768;color:#caffea;border-radius:999px;padding:5px 9px;white-space:nowrap}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.stat{background:#0f2a35;border:1px solid #315260;border-radius:12px;padding:10px 12px}.stat label{display:block;color:var(--muted);font-size:11px}.stat strong{display:block;font-size:clamp(19px,4vw,25px);line-height:1.22;margin:5px 0;font-variant-numeric:tabular-nums}.panel{background:linear-gradient(140deg,#152e38,#11232d);border:1px solid var(--border);border-radius:15px;padding:14px;margin-bottom:10px}.panel h2{font-size:16px;margin:0 0 9px}.hint,.small{font-size:12px;color:var(--muted)}.muted{color:var(--muted)}.modes{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.modes button{flex:1 0 auto;padding:7px;font-size:12px}.modes button.active{border-color:var(--mint);background:#286153;color:#fff}.cards{display:flex;gap:7px;flex-wrap:wrap;min-height:39px;margin:9px 0}.chip{position:relative;display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:46px;padding:0 8px;border-radius:9px;background:#f0f9f5;color:#17404a;border:1px solid #d4f2e4;font-size:18px;font-weight:900}.chip button{position:absolute;top:-8px;right:-8px;border:0;background:#3b5861;font-size:13px;padding:0;width:20px;height:20px;border-radius:50%}.ranks{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:4px}.ranks button{padding:10px 0;font-size:13px;border-radius:7px}.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.row button{font-size:12px}.row .spacer{flex:1}.signal{padding:12px;background:#123c38;border:1px solid #377d69;border-radius:12px}.signal b{font-size:19px;color:#c6ffe3}.explainer{margin-top:5px;font-size:13px;color:#d4f3e9}.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}.action{border:1px solid #375663;background:#112c38;border-radius:12px;padding:10px}.action b{font-size:14px}.action .status{display:inline-block;margin-left:5px;font-size:10px;font-weight:800;color:#aff4dc}.action .status.off{color:#edabb0}.action p{font-size:12px;color:#c4d8dc;margin:4px 0 0}.numbers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.number{padding:9px;border:1px solid #2d4b55;border-radius:11px;background:#0e2630}.number strong{display:block;font-size:20px;font-variant-numeric:tabular-nums}.number span{font-size:11px;color:var(--muted)}.disclose{margin-top:13px;border-top:1px solid #36545e;padding-top:10px}summary{font-weight:700;cursor:pointer}.ranktable{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}.ranktable td{padding:6px;border-bottom:1px solid #2d4852}.ranktable td:last-child{text-align:right;font-variant-numeric:tabular-nums}.warn{background:#3e3426;color:#fbe5ac;border-left:3px solid var(--gold);border-radius:8px;padding:9px 10px;margin-top:10px;font-size:12px}.footer{font-size:12px;color:var(--muted);margin-top:17px}.inline-select{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.inline-select label{font-size:12px;color:var(--muted)}@media(max-width:500px){.wrap{padding:10px 8px 30px}.panel{padding:11px}.stats{gap:5px}.stat{padding:8px}.ranks{grid-template-columns:repeat(7,minmax(0,1fr))}.actions{grid-template-columns:1fr 1fr}.action{padding:8px}.numbers{gap:5px}.number{padding:7px}.number strong{font-size:17px}}
 
@@ -11,8 +11,9 @@
 .rule-accordion>summary{font-size:16px;line-height:1.5;color:var(--ink);padding:2px 0}.rule-accordion[open]>summary{margin-bottom:10px}.evsettings{grid-template-columns:repeat(2,minmax(0,1fr))}.evbutton{flex:1}.evresult .evtable{min-width:0}.evnote{font-size:12px;padding:10px;background:#0e303b;border:1px solid #42616e;border-radius:10px;margin-top:10px}.evpass{color:#9ef0d2}.evlimit{color:#ffdca1}@media(max-width:440px){.evsettings{grid-template-columns:1fr 1fr}.evsettings label{min-height:28px}.evtable td:last-child{max-width:115px}}
 </style></head>
 <body><main class="wrap">
-<header><div><h1>♠ Blackjack Omega II <span class="muted">· v3.16</span></h1><p>Учебная finite-shoe модель · SPLIT без resplit · 8 колод</p></div><span class="pill">ОФЛАЙН · БЕЗ ДЕНЕГ</span></header>
+<header><div><h1>♠ Blackjack Omega II <span class="muted">· v3.17</span></h1><p>Учебная finite-shoe модель · SPLIT без resplit · 8 колод</p></div><span class="pill">ОФЛАЙН · БЕЗ ДЕНЕГ</span></header>
 <div class="stats"><div class="stat"><label>Omega II RC</label><strong id="rc">0</strong></div><div class="stat"><label>True Count*</label><strong id="tc">0,00</strong></div><div class="stat"><label>Карт осталось</label><strong id="remaining">416</strong></div></div>
+<div class="warn" id="tabConflictNotice" role="status" aria-live="polite" hidden>Карты или правила изменены в другой вкладке. Старый расчёт очищен; сохранение из этой вкладки остановлено. Загрузка заменит её текущие данные сохранёнными.<button type="button" id="tabConflictReload">Загрузить сохранённые данные</button></div>
 <div class="warn" id="storageNotice" role="status" aria-live="polite" hidden></div>
 <section class="panel"><h2>1. Ввод карт</h2><div class="modes" id="target"><button class="active" data-target="player">Моя рука</button><button data-target="dealer">Дилер</button><button data-target="other">Остальные</button></div>
 <div class="cards" id="cards" aria-live="polite"></div><div class="ranks" id="ranks"></div>
@@ -535,20 +536,56 @@ const SAVED_RULE_OPTIONS={
  surrenderTiming:['late','early']
 };
 const storageProblems=new Map();
-let cardsNeedReset=false;
+let cardsNeedReset=false,tabConflict=false;
+const observedStorage=new Map();
+function markTabConflict(){
+ if(tabConflict)return;
+ tabConflict=true;
+ if(activeWorker)cancelEV('Данные изменены в другой вкладке — расчёт остановлен.');
+ lastEVReport=null;
+ $('evResult').innerHTML='';$('evDiagnosticText').value='';$('evDiagnosticText').hidden=true;
+ $('evDiagnosticState').textContent='Отчёт устарел: данные изменены в другой вкладке.';
+ $('evStatus').textContent='Загрузи сохранённые данные перед новым расчётом.';
+ $('tabConflictNotice').hidden=false;
+ updateActionAvailability();
+}
+function storageIsCurrent(){
+ if(tabConflict)return false;
+ try{
+  for(const [key,value] of observedStorage){
+   if(localStorage.getItem(key)!==value){markTabConflict();return false;}
+  }
+  return true;
+ }catch(e){storageNotice('sync','Не удалось проверить актуальность данных. Сохранение и новый расчёт остановлены; открой приложение заново.');return false;}
+}
 function storageNotice(key,message){
  if(message)storageProblems.set(key,message);else storageProblems.delete(key);
  const box=document.getElementById('storageNotice');
  if(box){box.textContent=[...storageProblems.values()].join(' ');box.hidden=storageProblems.size===0;}
 }
 function readSaved(key){
- try{return localStorage.getItem(key);}
+ try{const raw=localStorage.getItem(key);observedStorage.set(key,raw);return raw;}
  catch(e){storageNotice('read-'+key,'Не удалось прочитать сохранённые данные. Они не будут перезаписаны; попробуй открыть приложение заново.');return undefined;}
 }
 function writeSaved(key,value){
- if(storageProblems.has('read-'+key))return;
- try{localStorage.setItem(key,JSON.stringify(value));storageNotice('write-'+key,'');}
- catch(e){storageNotice('write-'+key,'Не удалось сохранить '+(key===KEY?'карты':'правила')+'. Изменения доступны только в этой вкладке; не закрывай её до успешного сохранения.');}
+ if(tabConflict||storageProblems.has('read-'+key))return;
+ const serialized=JSON.stringify(value);
+ const failed=()=>storageNotice('write-'+key,'Не удалось сохранить '+(key===KEY?'карты':'правила')+'. Изменения доступны только в этой вкладке; не закрывай её до успешного сохранения.');
+ const write=()=>{
+  if(!storageIsCurrent())return;
+  try{
+   localStorage.setItem(key,serialized);observedStorage.set(key,serialized);
+   storageNotice('write-'+key,'');
+  }catch(e){failed();}
+ };
+ // The comparison AND write share a lock across tabs of this origin.
+ // Queued writes re-check both keys, so an external update cannot be overwritten.
+ if(typeof navigator!=='undefined'&&navigator.locks){
+  navigator.locks.request('omega-mini-storage',write).catch(failed);
+ }else{
+  if(typeof navigator!=='undefined')storageNotice('locks','Браузер не поддерживает защиту одновременных записей. Используй одну вкладку приложения.');
+  write();
+ }
 }
 function restoreEVSettings(){
  const raw=readSaved(RULE_KEY);if(raw==null)return;
@@ -630,11 +667,11 @@ function stats(){const counts=shoe();const n=countTotal(counts),p=state.player,h
   rc:allKnown().reduce((a,r)=>a+TAG[r],0)}}
 function snapshot(){undoStack.push(JSON.stringify(state));if(undoStack.length>60)undoStack.shift()}
 function save(){if(!cardsNeedReset)writeSaved(KEY,state);}
-function add(r){if(cardsNeedReset)return;try{const c=shoe();if(c[r]<1)return;if(state.selected==='player'&&state.player.length>=21)return;if(state.selected==='dealer'&&state.dealer.length>=11)return;snapshot();state[state.selected].push(r);render()}catch(e){alert('Ошибка состава башмака: '+e.message)}}
-function remove(i){if(cardsNeedReset)return;const a=state[state.selected];if(i<0||i>=a.length)return;snapshot();a.splice(i,1);render()}
-function nextRound(){if(cardsNeedReset)return;snapshot();state.history.push(...state.player,...state.dealer,...state.other);state.player=[];state.dealer=[];state.other=[];render()}
-function reset(){if(!confirm('Начать новый восьмиколодный башмак и сбросить историю?'))return;if(cardsNeedReset)undoStack=[];else snapshot();cardsNeedReset=false;storageNotice('read-'+KEY,'');storageNotice('cards','');storageNotice('cards-settings','');state=initial();render()}
-function selectTarget(t){state.selected=t;render()}
+function add(r){if(cardsNeedReset||!storageIsCurrent())return;try{const c=shoe();if(c[r]<1)return;if(state.selected==='player'&&state.player.length>=21)return;if(state.selected==='dealer'&&state.dealer.length>=11)return;snapshot();state[state.selected].push(r);render()}catch(e){alert('Ошибка состава башмака: '+e.message)}}
+function remove(i){if(cardsNeedReset||!storageIsCurrent())return;const a=state[state.selected];if(i<0||i>=a.length)return;snapshot();a.splice(i,1);render()}
+function nextRound(){if(cardsNeedReset||!storageIsCurrent())return;snapshot();state.history.push(...state.player,...state.dealer,...state.other);state.player=[];state.dealer=[];state.other=[];render()}
+function reset(){if(!storageIsCurrent())return;if(!confirm('Начать новый восьмиколодный башмак и сбросить историю?'))return;if(!storageIsCurrent())return;if(cardsNeedReset)undoStack=[];else snapshot();cardsNeedReset=false;storageNotice('read-'+KEY,'');storageNotice('cards','');storageNotice('cards-settings','');state=initial();render()}
+function selectTarget(t){if(!storageIsCurrent())return;state.selected=t;render()}
 function renderGuide(x){const p=x.p,h=x.h;
  if(p.length<2){$('guide').innerHTML='<div class="small">Для анализа введи минимум две карты игрока. Карта дилера нужна только для обозначения учебного состояния.</div>';return}
  let text='',intro='';if(h.bust){intro='Перебор: учебная рука завершена.';text='Сумма превышает 21, дальнейшие действия не рассматриваются.'}
@@ -668,7 +705,7 @@ function render(){if(typeof activeWorker!=='undefined' && activeWorker)cancelEV(
  $('rc').textContent=(x.rc>0?'+':'')+x.rc;$('tc').textContent=fmt(x.n?x.rc/(x.n/52):0,2);$('remaining').textContent=x.n;
  for(const btn of $('target').querySelectorAll('button'))btn.classList.toggle('active',btn.dataset.target===state.selected);
  const a=state[state.selected];$('cards').innerHTML=a.length?a.map((r,i)=>`<span class="chip">${r}<button type="button" data-remove="${i}" title="Удалить">×</button></span>`).join(''):'<span class="small">Добавь карты кнопками ниже</span>';
- for(const b of $('ranks').children)b.disabled=cardsNeedReset||x.counts[b.dataset.rank]<=0||(state.selected==='player'&&state.player.length>=21);
+ for(const b of $('ranks').children)b.disabled=tabConflict||cardsNeedReset||x.counts[b.dataset.rank]<=0||(state.selected==='player'&&state.player.length>=21);
  $('surrender').value=state.surrender?'yes':'no';$('splitpolicy').value=state.splitPolicy==='value'?'value':'rank';
  $('bust').textContent=state.player.length&&x.canDraw?fmt(x.bust*100,1)+'%':'—';
  $('ten').textContent=x.canDraw?fmt(x.ten*100,1)+'%':'—';
@@ -688,7 +725,7 @@ function render(){if(typeof activeWorker!=='undefined' && activeWorker)cancelEV(
 for(const r of RANKS){const b=document.createElement('button');b.textContent=r;b.type='button';b.dataset.rank=r;b.addEventListener('click',()=>add(r));$('ranks').append(b)}
 $('cards').addEventListener('click',e=>{const b=e.target.closest('button[data-remove]');if(b)remove(Number(b.dataset.remove))});
 $('target').addEventListener('click',e=>{const b=e.target.closest('button[data-target]');if(b)selectTarget(b.dataset.target)});
-$('undo').onclick=()=>{const prev=undoStack.pop();if(prev){state=JSON.parse(prev);render()}};
+$('undo').onclick=()=>{if(!storageIsCurrent())return;const prev=undoStack.pop();if(prev){state=JSON.parse(prev);render()}};
 $('next').onclick=nextRound;$('reset').onclick=reset;
 $('surrender').onchange=e=>{snapshot();state.surrender=e.target.value==='yes';render()};
 $('splitpolicy').onchange=e=>{snapshot();state.splitPolicy=e.target.value;render()};
@@ -696,6 +733,15 @@ $('surrenderTiming').addEventListener('change',()=>{saveEVSettings();if(activeWo
 for(const id of ['rulePlayer','ruleDealer'])$(id).addEventListener('change',renderRuleLesson);
 
 let activeWorker=null,activeEVTimer=null,lastEVReport=null;
+$('tabConflictReload').addEventListener('click',()=>location.reload());
+if(window.addEventListener){
+ window.addEventListener('storage',event=>{
+  if(event.storageArea!==localStorage)return;
+  if(event.key===null||event.key===KEY||event.key===RULE_KEY)storageIsCurrent();
+ });
+ window.addEventListener('focus',()=>storageIsCurrent());
+ document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')storageIsCurrent();});
+}
 function onAppVersionChanged(){
  if(activeWorker)cancelEV('Новая версия готова: прежнее вычисление прервано.');
  lastEVReport=null;
@@ -767,14 +813,20 @@ function renderEVTable(v,split,focus='all'){
 }
 function updateActionAvailability(){
  const hv=window.OmegaFiniteEV.handValue(state.player);
- const ready=!cardsNeedReset&&state.dealer.length===1&&hv.number===2&&hv.total<21&&!hv.natural;
+ const ready=!tabConflict&&!cardsNeedReset&&state.dealer.length===1&&hv.number===2&&hv.total<21&&!hv.natural;
  const remaining=window.OmegaFiniteEV.numCards(window.OmegaFiniteEV.makeCounts(allKnown()));
  $('evDoubleCompute').disabled=Boolean(activeWorker)||!ready||!window.OmegaFiniteEV.doubleAllowed(hv.total,$('evDoublePolicy').value);
  $('evSplitCompute').disabled=Boolean(activeWorker)||!ready||remaining<3||!canSplit(state.player);
- $('evCompute').disabled=cardsNeedReset||Boolean(activeWorker);
- $('next').disabled=cardsNeedReset;$('undo').disabled=cardsNeedReset;
+ $('evCompute').disabled=tabConflict||cardsNeedReset||Boolean(activeWorker);
+ $('next').disabled=tabConflict||cardsNeedReset;$('undo').disabled=tabConflict||cardsNeedReset;
+ $('reset').disabled=tabConflict;
+ if(tabConflict){
+  for(const b of $('ranks').children)b.disabled=true;
+  for(const id of [...Object.keys(SAVED_RULE_OPTIONS),'surrender','splitpolicy'])$(id).disabled=true;
+ }
 }
 function calculateEV(mode='all'){
+ if(!storageIsCurrent())return;
  if(cardsNeedReset){$('evStatus').textContent='Восстанови состав карт: нажми «Тасовка» для нового башмака.';return;}
  if(!['all','double','split'].includes(mode))mode='all';
  if(activeWorker)cancelEV('Предыдущий расчёт отменён.');
@@ -794,7 +846,7 @@ function calculateEV(mode='all'){
  }catch(e){status.textContent='Несовместимые правила или карты: '+e.message;return;}
  const knownCounts=Object.fromEntries(window.OmegaFiniteEV.R.map(rank=>[rank,0]));
  for(const card of input.visible)knownCounts[window.OmegaFiniteEV.bucket(card)]++;
- lastEVReport={version:'3.16',mode,player:input.player,up:input.up,
+ lastEVReport={version:'3.17',mode,player:input.player,up:input.up,
   visibleCounts:knownCounts,rules:input.rules,limitMs:input.limitMs,
   knownRemaining:window.OmegaFiniteEV.numCards(window.OmegaFiniteEV.inputCounts(input)),
   status:'running',stage:'created',startedAtMs:Date.now()};
@@ -808,7 +860,7 @@ function calculateEV(mode='all'){
   let basic=null,split=null;
   armEVWatchdog(worker,false);
   worker.onmessage=e=>{
-   if(activeWorker!==worker)return;
+   if(activeWorker!==worker||!storageIsCurrent())return;
    const m=e.data;
    if(m.type==='progress'){
     if(lastEVReport){lastEVReport.stage=m.value.stage;lastEVReport.progress=m.value;}
