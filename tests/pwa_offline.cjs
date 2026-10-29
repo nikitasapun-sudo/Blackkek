@@ -26,6 +26,7 @@ const caches = {
     if (!entries.has(name)) entries.set(name, new Map());
     const items = entries.get(name);
     return {
+      async match(request) { return items.get(normalize(request)); },
       async addAll(urls) {
         if (!networkOnline) throw Error('Network unavailable during install');
         for (const url of urls) items.set(normalize(url), { source: 'cache', url: normalize(url) });
