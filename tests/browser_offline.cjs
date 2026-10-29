@@ -11,8 +11,11 @@ const base=process.env.OMEGA_TEST_URL||'http://127.0.0.1:8765/';
  page.on('pageerror',e=>issues.push(e.message));
  try{
   await page.goto(base,{waitUntil:'domcontentloaded'});
-  await page.evaluate(()=>navigator.serviceWorker.ready);
-  await page.waitForFunction(()=>navigator.serviceWorker.controller!==null,{timeout:15000});
+  await page.evaluate(()=>Promise.race([
+    navigator.serviceWorker.ready,
+    new Promise((_,reject)=>setTimeout(()=>reject(Error('Service Worker did not activate')),15000))
+  ]));
+  await page.waitForFunction(()=>navigator.serviceWorker.controller!==null,null,{timeout:15000});
   const cache=await page.evaluate(async()=>{
     const all=await caches.keys();
     const key=all.find(k=>k.startsWith('omega-ii-v35-'));
