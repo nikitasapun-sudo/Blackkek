@@ -72,7 +72,7 @@ async function request(url, method = 'GET') {
   assert.equal(skippedWaiting, true);
   const current = [...entries.keys()].find(k => k.startsWith('omega-ii-') && k !== 'omega-ii-old-release');
   assert.ok(current, 'New versioned app cache must exist');
-  assert.equal(entries.get(current).size, 4, 'Four app-shell paths must be precached');
+  assert.equal(entries.get(current).size, 6, 'Six app and compute files must be precached');
 
   await lifecycle('activate');
   assert.equal(claimed, true);
@@ -84,7 +84,9 @@ async function request(url, method = 'GET') {
   const htmlCached = await request(origin + 'index.html');
   const manifest = await request(origin + 'manifest.webmanifest');
   const icon = await request(origin + 'icons/icon.svg');
-  for (const result of [home, htmlCached, manifest, icon])
+  const worker = await request(origin + 'omega_worker.js');
+  const core = await request(origin + 'omega_v34_core.js');
+  for (const result of [home, htmlCached, manifest, icon, worker, core])
     assert.equal(result.source, 'cache', 'App shell must be available offline');
   assert.equal(fetchCalls, 0, 'Offline app-shell requests must not hit the network');
 

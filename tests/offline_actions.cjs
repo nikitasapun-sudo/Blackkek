@@ -1,0 +1,40 @@
+'use strict';
+const fs=require('node:fs');
+const vm=require('node:vm');
+const assert=require('node:assert/strict');
+const E=require('../omega_v34_core.js');
+const code=fs.readFileSync('omega_worker.js','utf8');
+const messages=[];
+let imports=0;
+const self={postMessage(value){messages.push(value)}};
+const ctx={self,OmegaFiniteEV:E,importScripts(path){
+ assert.equal(path,'./omega_v34_core.js');
+ imports++;
+}};
+vm.runInNewContext(code,ctx,{filename:'omega_worker.js'});
+assert.equal(imports,1);
+function exec(mode,player,up,rules={}){
+ messages.length=0;
+ const input={player,up,visible:[...player,up],rules,limitMs:20000};
+ self.onmessage({data:{mode,input}});
+ return [...messages];
+}
+const ordinary=exec('all',['10','5'],'7');
+assert.deepEqual(ordinary.map(x=>x.type),['basic','done']);
+assert.ok(Math.abs(ordinary[0].value.actions.stand+0.47561837175676747)<1e-9);
+const doubled=exec('double',['5','6'],'7');
+assert.deepEqual(doubled.map(x=>x.type),['basic','done']);
+assert.ok(Number.isFinite(doubled[0].value.actions.double));
+const split=exec('split',['A','A'],'7',{splitAcesOneCard:true});
+assert.deepEqual(split.map(x=>x.type),['split','done']);
+assert.ok(Math.abs(split[0].value.ev-0.47241182959770595)<1e-9);
+assert.equal(split[0].value.exact,true);
+const both=exec('all',['A','A'],'7',{splitAcesOneCard:true});
+assert.deepEqual(both.map(x=>x.type),['basic','split','done']);
+assert.ok(Math.abs(both[1].value.ev-split[0].value.ev)<1e-12);
+const invalid=exec('split',['9','8'],'7');
+assert.equal(invalid.length,1);
+assert.equal(invalid[0].type,'error');
+assert.ok(!messages.some(x=>x.type==='done'));
+assert.ok(!code.includes('fetch('),'Worker must not require internet');
+console.log('PASS static offline Worker: ordinary, double, split, all, invalid pair and network independence');

@@ -1,0 +1,29 @@
+name: Real browser offline PWA smoke
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-chromium:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium and Playwright
+        run: |
+          npm install --no-save playwright@1.56.0
+          npx playwright install --with-deps chromium
+      - name: Start same-origin static server and test offline
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/omega-http.log 2>&1 &
+          node tests/browser_offline.cjs

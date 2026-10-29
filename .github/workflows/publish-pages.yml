@@ -33,10 +33,11 @@ jobs:
           node tests/pwa_offline.cjs
           node tests/worker_watchdog.cjs
           node tests/performance.cjs
+          node tests/offline_actions.cjs
       - name: Stage static-only PWA
         run: |
           mkdir -p _site/icons
-          cp index.html manifest.webmanifest sw.js _site/
+          cp index.html manifest.webmanifest sw.js omega_worker.js omega_v34_core.js _site/
           cp icons/icon.svg _site/icons/
           touch _site/.nojekyll
       - name: Configure GitHub Pages
