@@ -101,19 +101,19 @@ async function request(url, method = 'GET', mode = 'cors') {
   // cache after the new release activated. A navigation must remove only
   // earlier Omega caches, never a concurrently installing *newer* release.
   entries.set('omega-ii-v314-recreated-after-activation',new Map());
-  entries.set('omega-ii-v318-installing',new Map());
-  const queryHome=await request(origin+'?update=317','GET','navigate');
-  const queryIndex=await request(origin+'index.html?update=317','GET','navigate');
+  entries.set('omega-ii-v319-installing',new Map());
+  const queryHome=await request(origin+'?update=318','GET','navigate');
+  const queryIndex=await request(origin+'index.html?update=318','GET','navigate');
   assert.equal(entries.has('omega-ii-v314-recreated-after-activation'),false);
-  assert.equal(entries.has('omega-ii-v318-installing'),true,
+  assert.equal(entries.has('omega-ii-v319-installing'),true,
     'An already installing newer release must not be deleted');
   assert.equal(queryHome.url,normalize('./index.html'));
   assert.equal(queryIndex.url,normalize('./index.html'));
   assert.equal(fetchCalls,0,'Offline query navigation cannot request the network');
   // Do not silently serve the app shell for an arbitrary missing page.
-  await assert.rejects(request(origin+'unrelated.html?update=317','GET','navigate'),/Network offline/);
+  await assert.rejects(request(origin+'unrelated.html?update=318','GET','navigate'),/Network offline/);
   // Other web apps on the same origin must never receive this app's shell.
-  await assert.rejects(request('https://example.test/other-app/?update=317','GET','navigate'),/Network offline/);
+  await assert.rejects(request('https://example.test/other-app/?update=318','GET','navigate'),/Network offline/);
 
   const otherOrigin = await request('https://other.test/style.css');
   assert.equal(otherOrigin, undefined, 'Cross-origin traffic is not intercepted');

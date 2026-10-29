@@ -19,6 +19,7 @@ assert.ok(html.includes("navigator.serviceWorker.register('./sw.js')"));
 assert.ok(!html.includes('id="evResplit"'));
 assert.ok(html.includes("new Worker('./omega_worker.js')"));
 assert.ok(html.includes('id="evSplitCompute"') && html.includes('id="evDoubleCompute"'));
+assert.ok(html.includes('id="betGuide"') && html.includes('Когда ставку рассматривать'));
 const worker=fs.readFileSync('omega_worker.js','utf8');
 new vm.Script(worker);
 assert.ok(worker.includes("importScripts('./omega_v34_core.js')"));
