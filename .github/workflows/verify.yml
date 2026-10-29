@@ -36,6 +36,7 @@ jobs:
           node --check tests/shared_dealer_cache.cjs
           node --check tests/diagnostic_report.cjs
           node --check tests/user_split_repro.cjs
+          node --check tests/dealer_hotpath.cjs
           node --check omega_worker.js
       - name: Mathematical regression
         run: node tests/v34.cjs
@@ -56,3 +57,4 @@ jobs:
           node tests/shared_dealer_cache.cjs
           node tests/diagnostic_report.cjs
           node tests/user_split_repro.cjs
+          node tests/dealer_hotpath.cjs
