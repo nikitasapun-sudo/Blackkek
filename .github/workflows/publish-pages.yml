@@ -30,6 +30,7 @@ jobs:
           node tests/v34.cjs
           node tests/depleted_oracle.cjs
           node tests/integrity.cjs
+          node tests/pwa_offline.cjs
       - name: Stage static-only PWA
         run: |
           mkdir -p _site/icons

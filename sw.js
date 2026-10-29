@@ -1,5 +1,5 @@
 // Static same-origin PWA shell; no analytics or remote game services.
-const CACHE='omega-ii-v34-1';
+const CACHE='omega-ii-v34-2';
 const ASSETS=['./','./index.html','./manifest.webmanifest','./icons/icon.svg'];
 self.addEventListener('install', event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));
@@ -7,7 +7,7 @@ self.addEventListener('install', event=>{
 });
 self.addEventListener('activate', event=>{
   event.waitUntil((async()=>{
-    for(const key of await caches.keys()) if(key!==CACHE) await caches.delete(key);
+    for(const key of await caches.keys()) if(key.startsWith('omega-ii-')&&key!==CACHE) await caches.delete(key);
     await self.clients.claim();
   })());
 });

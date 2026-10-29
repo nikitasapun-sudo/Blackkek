@@ -2,7 +2,7 @@ name: Verify educational finite-shoe model
 
 on:
   push:
-    branches: [main, feature/omega-ii-v34-pwa]
+    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -26,9 +26,12 @@ jobs:
           node --check tests/v34.cjs
           node --check tests/depleted_oracle.cjs
           node --check tests/integrity.cjs
+          node --check tests/pwa_offline.cjs
       - name: Mathematical regression
         run: node tests/v34.cjs
       - name: Independent depleted-shoe oracle
         run: node tests/depleted_oracle.cjs
       - name: PWA integrity
-        run: node tests/integrity.cjs
+        run: |
+          node tests/integrity.cjs
+          node tests/pwa_offline.cjs
