@@ -468,8 +468,19 @@ $('splitpolicy').onchange=e=>{snapshot();state.splitPolicy=e.target.value;render
 $('surrenderTiming').addEventListener('change',()=>{if(activeWorker)cancelEV();$('evResult').innerHTML='';$('evStatus').textContent='Тип сдачи изменён: пересчитай EV.';});
 for(const id of ['rulePlayer','ruleDealer'])$(id).addEventListener('change',renderRuleLesson);
 
-let activeWorker=null;
+let activeWorker=null,activeEVTimer=null;
+const EV_WATCHDOG_MS=30000;
+function armEVWatchdog(worker,hasBasic){
+ if(activeEVTimer!==null)clearTimeout(activeEVTimer);
+ activeEVTimer=setTimeout(()=>{
+  if(activeWorker!==worker)return;
+  cancelEV(hasBasic
+   ?'Лимит времени ожидания SPLIT: точный результат не получен. Завершённые основные EV сохранены.'
+   :'Лимит времени ожидания: точный расчёт не завершён. Попробуй менее сложное учебное состояние.');
+ },EV_WATCHDOG_MS);
+}
 function cancelEV(message='Вычисление прервано.'){
+ if(activeEVTimer!==null){clearTimeout(activeEVTimer);activeEVTimer=null;}
  if(activeWorker){activeWorker.terminate();activeWorker=null;}
  $('evCompute').disabled=false;$('evCancel').hidden=true;
  if(message)$('evStatus').textContent=message;
@@ -495,11 +506,13 @@ function calculateEV(){
   const blob=new Blob([code],{type:'text/javascript'}),url=URL.createObjectURL(blob);
   const worker=new Worker(url);activeWorker=worker;setTimeout(()=>URL.revokeObjectURL(url),3000);
   let basic=null,split=null;
+  armEVWatchdog(worker,false);
   worker.onmessage=e=>{
    if(activeWorker!==worker)return;
    const m=e.data;
    if(m.type==='basic'){
     basic=m.value;renderEVTable(basic,null);
+    if(basic.splitEligible)armEVWatchdog(worker,true);
     status.textContent=basic.splitEligible?'Основные EV готовы. Считается точный SPLIT двух рук (без resplit)…':'Расчёт обычных учебных сценариев готов; SPLIT недоступен для этих карт.';
    }else if(m.type==='split'){
     split=m.value;renderEVTable(basic,split);
@@ -510,7 +523,7 @@ function calculateEV(){
     cancelEV('Точный расчёт прерван: '+m.message+(basic?' Основные EV уже показаны.':''));
    }
   };
-  worker.onerror=e=>cancelEV('Ошибка Web Worker: '+(e.message||'недоступен'));
+  worker.onerror=e=>{if(activeWorker===worker)cancelEV('Ошибка Web Worker: '+(e.message||'недоступен'));};
   worker.postMessage(input);
  }catch(e){cancelEV('Не удалось запустить автономный Web Worker: '+e.message);}
 }
