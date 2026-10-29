@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0c1b24"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icons/icon.svg"><title>Blackjack Omega II v3.4 · Mini EV</title>
+<style>
+:root{color-scheme:dark;--bg:#0a1720;--panel:#132832;--border:#35515d;--ink:#eff9f8;--muted:#b1c7cc;--mint:#60dfbb;--gold:#ffda91;--red:#ff969d}*{box-sizing:border-box}body{margin:0;font:15px/1.45 system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:radial-gradient(ellipse at 45% -10%,#22545b 0%,#0b202b 40%,var(--bg) 80%)}button,input,select{font:inherit}button{color:var(--ink);background:#24424d;border:1px solid #52717a;border-radius:11px;padding:9px 11px;cursor:pointer;font-weight:700;touch-action:manipulation}button:hover{border-color:#9edfcc}button:focus-visible,select:focus-visible{outline:2px solid var(--mint);outline-offset:2px}button:disabled{opacity:.35;cursor:not-allowed}select{color:var(--ink);background:#102c36;border:1px solid var(--border);padding:8px;border-radius:9px;max-width:100%}.wrap{max-width:880px;margin:auto;padding:14px 12px 44px}header{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin:2px 0 12px}header h1{margin:0;font-size:clamp(21px,4.5vw,28px);letter-spacing:-.5px}header p{margin:3px 0 0;color:var(--muted);font-size:12px}.pill{font-size:11px;font-weight:800;background:#1d4846;border:1px solid #397768;color:#caffea;border-radius:999px;padding:5px 9px;white-space:nowrap}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.stat{background:#0f2a35;border:1px solid #315260;border-radius:12px;padding:10px 12px}.stat label{display:block;color:var(--muted);font-size:11px}.stat strong{display:block;font-size:clamp(19px,4vw,25px);line-height:1.22;margin:5px 0;font-variant-numeric:tabular-nums}.panel{background:linear-gradient(140deg,#152e38,#11232d);border:1px solid var(--border);border-radius:15px;padding:14px;margin-bottom:10px}.panel h2{font-size:16px;margin:0 0 9px}.hint,.small{font-size:12px;color:var(--muted)}.muted{color:var(--muted)}.modes{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.modes button{flex:1 0 auto;padding:7px;font-size:12px}.modes button.active{border-color:var(--mint);background:#286153;color:#fff}.cards{display:flex;gap:7px;flex-wrap:wrap;min-height:39px;margin:9px 0}.chip{position:relative;display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:46px;padding:0 8px;border-radius:9px;background:#f0f9f5;color:#17404a;border:1px solid #d4f2e4;font-size:18px;font-weight:900}.chip button{position:absolute;top:-8px;right:-8px;border:0;background:#3b5861;font-size:13px;padding:0;width:20px;height:20px;border-radius:50%}.ranks{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:4px}.ranks button{padding:10px 0;font-size:13px;border-radius:7px}.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.row button{font-size:12px}.row .spacer{flex:1}.signal{padding:12px;background:#123c38;border:1px solid #377d69;border-radius:12px}.signal b{font-size:19px;color:#c6ffe3}.explainer{margin-top:5px;font-size:13px;color:#d4f3e9}.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}.action{border:1px solid #375663;background:#112c38;border-radius:12px;padding:10px}.action b{font-size:14px}.action .status{display:inline-block;margin-left:5px;font-size:10px;font-weight:800;color:#aff4dc}.action .status.off{color:#edabb0}.action p{font-size:12px;color:#c4d8dc;margin:4px 0 0}.numbers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.number{padding:9px;border:1px solid #2d4b55;border-radius:11px;background:#0e2630}.number strong{display:block;font-size:20px;font-variant-numeric:tabular-nums}.number span{font-size:11px;color:var(--muted)}.disclose{margin-top:13px;border-top:1px solid #36545e;padding-top:10px}summary{font-weight:700;cursor:pointer}.ranktable{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}.ranktable td{padding:6px;border-bottom:1px solid #2d4852}.ranktable td:last-child{text-align:right;font-variant-numeric:tabular-nums}.warn{background:#3e3426;color:#fbe5ac;border-left:3px solid var(--gold);border-radius:8px;padding:9px 10px;margin-top:10px;font-size:12px}.footer{font-size:12px;color:var(--muted);margin-top:17px}.inline-select{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.inline-select label{font-size:12px;color:var(--muted)}@media(max-width:500px){.wrap{padding:10px 8px 30px}.panel{padding:11px}.stats{gap:5px}.stat{padding:8px}.ranks{grid-template-columns:repeat(7,minmax(0,1fr))}.actions{grid-template-columns:1fr 1fr}.action{padding:8px}.numbers{gap:5px}.number{padding:7px}.number strong{font-size:17px}}
+
+.evsettings{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.evsettings label{display:block;font-size:11px;color:var(--muted);margin:0 0 4px}.evsettings select{width:100%}.evstatus{border:1px solid #385965;background:#102a35;border-radius:10px;padding:10px;color:var(--muted);font-size:12px;line-height:1.5;margin-top:10px}.evtable{width:100%;border-collapse:collapse;font-size:13px}.evtable td,.evtable th{padding:9px 7px;border-bottom:1px solid #35515d;text-align:left}.evtable td:nth-child(2),.evtable th:nth-child(2){text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.evtable td:last-child{font-size:11px;color:var(--muted)}.evtable th{color:#b6ccd0;font-size:11px}.evtable td strong{font-size:16px;color:#ebfffa}.evbutton{background:#275b51;border-color:#51a68a;color:white;width:100%;padding:11px 12px;margin-top:4px}.evfoot{font-size:11px;color:var(--muted);margin:9px 0 0}.evresult{overflow-x:auto;margin-top:9px}@media(max-width:500px){.evsettings{gap:6px}.evtable td,.evtable th{padding:7px 4px}.evtable td:last-child{max-width:132px}}
+
+.rule-accordion>summary{font-size:16px;line-height:1.5;color:var(--ink);padding:2px 0}.rule-accordion[open]>summary{margin-bottom:10px}.evsettings{grid-template-columns:repeat(2,minmax(0,1fr))}.evbutton{flex:1}.evresult .evtable{min-width:0}.evnote{font-size:12px;padding:10px;background:#0e303b;border:1px solid #42616e;border-radius:10px;margin-top:10px}.evpass{color:#9ef0d2}.evlimit{color:#ffdca1}@media(max-width:440px){.evsettings{grid-template-columns:1fr 1fr}.evsettings label{min-height:28px}.evtable td:last-child{max-width:115px}}
+</style></head>
+<body><main class="wrap">
+<header><div><h1>♠ Blackjack Omega II <span class="muted">· v3.4</span></h1><p>Учебная finite-shoe модель · SPLIT без resplit · 8 колод</p></div><span class="pill">ОФЛАЙН · БЕЗ ДЕНЕГ</span></header>
+<div class="stats"><div class="stat"><label>Omega II RC</label><strong id="rc">0</strong></div><div class="stat"><label>True Count*</label><strong id="tc">0,00</strong></div><div class="stat"><label>Карт осталось</label><strong id="remaining">416</strong></div></div>
+<section class="panel"><h2>1. Ввод карт</h2><div class="modes" id="target"><button class="active" data-target="player">Моя рука</button><button data-target="dealer">Дилер</button><button data-target="other">Остальные</button></div>
+<div class="cards" id="cards" aria-live="polite"></div><div class="ranks" id="ranks"></div>
+<div class="row" style="margin-top:11px"><button id="undo">↶ Отменить</button><button id="next">Новая рука</button><span class="spacer"></span><button id="reset">↻ Тасовка</button></div><div class="small" style="margin-top:8px">«Новая рука» сохраняет известные карты; «Тасовка» очищает историю и счёт. Карты дилера вводятся только после раскрытия.</div><div class="warn" id="shuffleWarn" hidden></div></section>
+<section class="panel"><h2>2. Учебные подсказки по действиям</h2><div id="guide"><div class="small">Введи две карты в «Моя рука» и одну открытую карту дилера.</div></div>
+<div class="inline-select" style="margin-top:12px"><label for="surrender">Сдача руки в модели:</label><select id="surrender"><option value="no">Не разрешена</option><option value="yes">Разрешена (учебное допущение)</option></select></div>
+<div class="inline-select" style="margin-top:8px"><label for="surrenderTiming">Тип сдачи:</label><select id="surrenderTiming"><option value="late">Поздняя (приоритет блэкджека дилера)</option><option value="early">Ранняя (до проверки)</option></select></div>
+<div class="inline-select" style="margin-top:8px"><label for="splitpolicy">Разделение:</label><select id="splitpolicy"><option value="rank">Одинаковый ранг</option><option value="value">Одинаковое значение</option></select></div>
+<p class="hint">Доступность действий зависит от настроек. Подсказки поясняют математику виртуальных рук, но не советуют размеры реальных ставок.</p></section>
+
+<section class="panel" id="evPanel"><h2>3. Finite-shoe EV · учебные сценарии</h2>
+<p class="small">Математическое ожидание результата на 1 условную единицу; карты извлекаются без возвращения. Скрытая карта дилера неизвестна и не используется при выборе продолжения.</p>
+<div class="evsettings">
+  <div><label for="evPeek">Проверка блэкджека</label><select id="evPeek"><option value="yes">Peek: дилер проверил</option><option value="no">Без peek · закрытая карта выдана</option></select></div>
+  <div><label for="evSoft">Правило дилера</label><select id="evSoft"><option value="s17">S17 · стоит на soft 17</option><option value="h17">H17 · берёт на soft 17</option></select></div>
+  <div><label for="evCharlie">Charlie (карт)</label><select id="evCharlie"><option value="6">6 карт</option><option value="7">7 карт</option><option value="0">Выключено</option></select></div>
+  <div><label for="evDoublePolicy">DOUBLE разрешено</label><select id="evDoublePolicy"><option value="any2">На любых двух картах</option><option value="9-11">При сумме 9–11</option><option value="10-11">При сумме 10–11</option></select></div>
+  <div><label for="evDealerBJSettlement">Без peek: натуральный BJ дилера</label><select id="evDealerBJSettlement"><option value="loseAll">Теряются все условные единицы</option><option value="originalOnly">Только первоначальная единица</option></select></div>
+  <div><label for="evBJPayout">Выплата за натуральный BJ</label><select id="evBJPayout"><option value="1.5">3:2 (+1,5)</option><option value="1.2">6:5 (+1,2)</option></select></div>
+  <div><label for="evDAS">Удвоение после SPLIT</label><select id="evDAS"><option value="no">Нет</option><option value="yes">Да (DAS)</option></select></div>
+  <div><label for="evSplitAces">Разделённые тузы</label><select id="evSplitAces"><option value="one">Одна карта на руку</option><option value="hit">Можно продолжать добор</option></select></div>
+  <div><label for="evCharlieSplit">Charlie после SPLIT</label><select id="evCharlieSplit"><option value="no">Нет</option><option value="yes">Да</option></select></div>
+  <div class="evnote"><b>Повторный SPLIT:</b> отключён во всей учебной модели.</div>
+  <div><label for="evUnit">Единицы</label><select id="evUnit" disabled><option>Виртуальные учебные очки</option></select></div>
+</div>
+<div class="row"><button type="button" class="evbutton" id="evCompute">Рассчитать finite-shoe EV</button><button type="button" id="evCancel" hidden>Прервать вычисление</button></div>
+<div class="row" style="margin-top:9px"><button type="button" id="selfTest">Проверить базовую математику</button><span class="small" id="selfTestResult" role="status">Это быстрая проверка, не доказательство точности всех сценариев.</span></div>
+<div id="evStatus" class="evstatus" role="status">Введи от 2 карт игрока и одну карту дилера. Точный SPLIT рассчитывается для двух рук без повторного разделения.</div>
+<div class="evresult" id="evResult"></div>
+<p class="evfoot"><b>Допущение модели:</b> «без peek» означает, что дилер уже получил закрытую карту, но не проверил её. Это не European no-hole-card. Ранняя сдача и EV после peek не сопоставляются в одной таблице; движок откажет в несовместимой конфигурации. Неподтверждённые правила мобильного приложения задаются вручную.</p>
+<p class="evfoot">При Charlie=нет продолжение после 6 карт разрешено. В тяжёлых состояниях точный расчёт может быть отменён по лимиту времени, без подстановки приблизительного ответа. <b>Late surrender и no-peek</b> учитывают возможный натуральный блэкджек дилера. Страховка имеет отдельный учебный EV и не смешивается с основным результатом.</p>
+<p class="evfoot">Сравнение математических сценариев — не инструкция по реальным ставкам. «Ещё карта»: после первого добора продолжение рассчитывается рекурсивно. В v3.4 две разделённые руки могут добирать карты и удваивать (если разрешено); общий остаток и скрытая карта учитываются. Повторный SPLIT не моделируется. Настройки — учебные допущения, а не подтверждённые правила конкретного мобильного приложения.</p>
+</section>
+<details class="panel rule-accordion" id="rulePanel"><summary>4. Особые исходы: блэкджек, страховка, перебор</summary>
+<p class="small">Учебные примеры: правила завершения руки. Этот блок не меняет EV, не выбирает страховку и не подсказывает ставки.</p>
+<div class="evsettings">
+ <div><label for="rulePlayer">Состояние игрока</label><select id="rulePlayer"><option value="bust">Перебор (22 и больше)</option><option value="20">Обычная сумма 20</option><option value="natural">Натуральный блэкджек</option><option value="charlie">6 карт без перебора (Charlie)</option></select></div>
+ <div><label for="ruleDealer">Состояние дилера</label><select id="ruleDealer"><option value="bust">Перебор (22 и больше)</option><option value="20">Обычная сумма 20</option><option value="19">Обычная сумма 19</option><option value="natural">Натуральный блэкджек</option></select></div>
+</div>
+<div class="evnote" id="ruleOutcome" role="status"></div>
+<div class="evnote"><b>Страховка (учебное объяснение)</b><div id="insuranceLesson" class="small" style="margin-top:5px"></div>
+<div id="insuranceMath" class="small" style="margin-top:8px" aria-live="polite"></div>
+<p class="small">В распространённой модели страховая часть рассчитывается отдельно и выплачивается 2:1 только при натуральном блэкджеке дилера. Страховка не меняет исход основной руки, не превращает двойной перебор в ничью и <b>не включена в показанный выше EV</b>. Здесь нет подсказок о выборе страховки.</p></div>
+</details>
+<section class="panel"><h2>5. Следующая случайная карта</h2><div class="numbers"><div class="number"><strong id="bust">—</strong><span>Перебор при доборе</span></div><div class="number"><strong id="ten">—</strong><span>Карта со значением 10</span></div><div class="number"><strong id="charlie">—</strong><span>Charlie после добора</span></div></div><details class="disclose"><summary>Показать все вероятности</summary><div id="probTable"></div><p class="hint">Вычисление точное для следующего неизвестного ранга из известного остатка; историю скрытых карт приложение не знает. Условия dealer peek здесь не учитываются.</p></details></section>
+<p class="footer">* True Count = Running Count ÷ оставшиеся колоды. Без полного знания вышедших карт значение может быть недостоверным. Режим предназначен для самостоятельного изучения вероятностей с виртуальными картами; реальные ставки и финансовые советы отсутствуют.</p>
+</main><script id="omegaCore">/* Blackjack Omega II: offline finite-shoe teaching calculation.
+   All player choices use PUBLIC information only; never peek at simulated dealer hole.
+   No financial/betting integrations. */
+(function(root){
+'use strict';
+const R=['2','3','4','5','6','7','8','9','10','A'];
+const MAX=[32,32,32,32,32,32,32,32,128,32];
+const V=[2,3,4,5,6,7,8,9,10,11];
+const K=10;
+function bucket(rank){return ['J','Q','K'].includes(rank)?'10':String(rank)}
+function makeCounts(visible){const c=MAX.slice();for(const rank of visible){const i=R.indexOf(bucket(rank));if(i<0||!c[i])throw Error('Недопустимый состав известных карт: '+rank);c[i]--;}return c}
+function numCards(c){let n=0;for(let i=0;i<K;i++)n+=c[i];return n}
+function inputCounts(input){
+ if(!input||!Array.isArray(input.player)||!R.includes(bucket(input.up)))
+   throw Error('Заданы не все карты игрока и открытая карта дилера');
+ const required=[...input.player,input.up];
+ const visible=input.visible===undefined?required:input.visible;
+ if(!Array.isArray(visible))throw Error('visible должен быть массивом карт');
+ const need=new Array(K).fill(0),given=new Array(K).fill(0);
+ for(const rank of required){const i=R.indexOf(bucket(rank));if(i<0)throw Error('Неизвестная карта: '+rank);need[i]++;}
+ for(const rank of visible){const i=R.indexOf(bucket(rank));if(i<0)throw Error('Неизвестная карта: '+rank);given[i]++;}
+ for(let i=0;i<K;i++)if(given[i]<need[i])throw Error('В known/visible пропущена карта игрока или дилера: '+R[i]);
+ return makeCounts(visible);
+}
+function validateRules(r){
+ if(r?.resplit===true)throw Error('Повторный SPLIT намеренно не поддерживается');
+ const rules=parseRules(r);
+ if(rules.surrender&&rules.surrenderTiming==='early'&&rules.peek)
+   throw Error('Ранняя сдача рассматривается ДО peek, а EV остальных действий задан ПОСЛЕ peek. Для сопоставимого учебного расчёта выбери режим без peek.');
+ return rules;
+}
+
+function cardAdd(total,soft,index){total+=V[index];if(index===9)soft++;while(total>21&&soft){total-=10;soft--;}return [total,soft]}
+function handValue(cards){let t=0,s=0;for(const r of cards){const i=R.indexOf(bucket(r));if(i<0)throw Error('Неизвестная карта '+r);[t,s]=cardAdd(t,s,i)}return {total:t,soft:s>0,acesSoft:s,number:cards.length,natural:cards.length===2&&t===21}}
+function dealerBJ(up,hole){return (up===8&&hole===9)||(up===9&&hole===8)}
+function parseRules(r={}){
+ const charlieCards=r.charlieCards===0||r.charlie===false?0:(r.charlieCards??6);
+ const doublePolicy=r.doublePolicy||'any2';
+ const dealerBJSettlement=r.dealerBJSettlement||'loseAll';
+ const blackjackPayout=r.blackjackPayout??1.5;
+ if(![0,6,7].includes(charlieCards))throw Error('Charlie: 0, 6 или 7 карт');
+ if(!['any2','9-11','10-11'].includes(doublePolicy))throw Error('Неизвестные ограничения DOUBLE');
+ if(!['loseAll','originalOnly'].includes(dealerBJSettlement))throw Error('Неизвестный режим dealer BJ settlement');
+ if(!(Number.isFinite(blackjackPayout)&&blackjackPayout>0&&blackjackPayout<=3))throw Error('Некорректная выплата blackjack');
+ return {s17:r.s17!==false,charlie:charlieCards>0,charlieCards,peek:r.peek!==false,
+  charlieAfterSplit:r.charlieAfterSplit===true,splitPolicy:r.splitPolicy||'sameRank',surrender:r.surrender===true,
+  surrenderTiming:r.surrenderTiming==='early'?'early':'late',doubleAfterSplit:r.doubleAfterSplit===true,
+  splitAcesOneCard:r.splitAcesOneCard!==false,doublePolicy,dealerBJSettlement,blackjackPayout};
+}
+function doubleAllowed(total,policy){return policy==='any2'||(policy==='9-11'?total>=9&&total<=11:total>=10&&total<=11)}
+function solve(input){
+  const start=Date.now(),rules=validateRules(input.rules),limitMs=input.limitMs??15000;
+  const hand=input.player||[],up=R.indexOf(bucket(input.up)),c=inputCounts(input),hv=handValue(hand),N=numCards(c);
+  if(hand.length<2||hand.length>21)throw Error('Для EV нужно от 2 до 21 карт игрока');
+  if(up<0)throw Error('Выбери открытую карту дилера');
+  if(N<2)throw Error('Недостаточно карт');
+  const dm=new Map(),pm=new Map(),sm=new Map();
+  const stat={dealerStates:0,playerStates:0,settleStates:0,publicBranches:0};
+  const dealerKey=(t,s,c)=>t+'|'+s+'|'+c.join(',');
+  function dealerDist(t,s,c,n){
+    if(t>21)return [1,0,0,0,0,0];
+    if(t>17||(t===17&&(rules.s17||s===0)))return [0,+(t===17),+(t===18),+(t===19),+(t===20),+(t===21)];
+    const key=dealerKey(t,s,c),cached=dm.get(key);if(cached)return cached;
+    if(!n)throw Error('Недостаточно карт для дилера');
+    const out=[0,0,0,0,0,0];
+    for(let i=0;i<K;i++)if(c[i]){
+      const p=c[i]/n;c[i]--;
+      const [nt,ns]=cardAdd(t,s,i),a=dealerDist(nt,ns,c,n-1);
+      for(let j=0;j<6;j++)out[j]+=p*a[j];
+      c[i]++;
+    }
+    dm.set(key,out);stat.dealerStates++;if((stat.dealerStates&1023)===0&&Date.now()-start>limitMs)throw Error('Лимит времени распределения дилера; EV не подтверждён');if(dm.size>400000)throw Error('Превышен лимит кэша дилера');return out;
+  }
+  // P(hole=h | public cards, dealer peek result) and n unknown cards incl hole.
+  function holes(c,n){
+    const weights=new Array(K).fill(0);
+    let M=0;
+    for(let h=0;h<K;h++)if(c[h]&&!(rules.peek&&dealerBJ(up,h))){weights[h]=c[h];M+=c[h];}
+    if(M===0)throw Error('Нет допустимых закрытых карт');
+    for(let h=0;h<K;h++)weights[h]/=M;
+    return weights;
+  }
+  function publicDraws(c,n){
+    if(n<=1)throw Error('Недостаточно карт для добора при скрытой карте');
+    const w=holes(c,n),out=[];
+    for(let i=0;i<K;i++)if(c[i]){
+      // Dealer hole has already been dealt, so public draws are conditional.
+      const p=(c[i]-w[i])/(n-1);
+      if(p>0){out.push({index:i,p});stat.publicBranches++;}
+    }
+    return out;
+  }
+  function settleForHole(t,s,len,c,n,hole,isBJ,afterSplit){
+    if(t>21)return -1;
+    if(isBJ)return -1; // non-natural player loses; dealer BJ beats Charlie in this ruleset.
+    if(rules.charlie&&len>=rules.charlieCards&&(!afterSplit||rules.charlieAfterSplit))return 1;
+    const [dt,ds]=cardAdd(...cardAdd(0,0,up),hole);
+    const dist=dealerDist(dt,ds,c,n);
+    let ev=dist[0];
+    for(let k=17;k<=21;k++){const p=dist[k-16];ev+=p*(t>k?1:t===k?0:-1);}
+    return ev;
+  }
+  // Information-state stand EV. Hole remains unknown; average over its posterior.
+  function standEV(t,s,len,c,n,afterSplit=false){
+    if(t>21)return -1;
+    const key=(afterSplit?'s':'o')+'|'+t+'|'+len+'|'+c.join(',');
+    const old=sm.get(key);if(old!==undefined)return old;
+    let sum=0;const w=holes(c,n);
+    for(let hole=0;hole<K;hole++)if(w[hole]>0){c[hole]--;
+      const v=settleForHole(t,s,len,c,n-1,hole,dealerBJ(up,hole),afterSplit);
+      sum+=w[hole]*v;c[hole]++;
+    }
+    sm.set(key,sum);stat.settleStates++;if((stat.settleStates&1023)===0&&Date.now()-start>limitMs)throw Error('Лимит времени расчёта; EV не подтверждён');return sum;
+  }
+  function dealerNaturalPosterior(c,n){
+    const w=holes(c,n);let p=0;for(let h=0;h<K;h++)if(dealerBJ(up,h))p+=w[h];return p;
+  }
+  // Bellman continuation under observable information only. No double after first hit.
+  function continueEV(t,s,len,c,n){
+    if(t>21)return -1;
+    if((len>=rules.charlieCards&&rules.charlie)||t>=21)return standEV(t,s,len,c,n);
+    const key=t+'|'+s+'|'+len+'|'+c.join(',');const found=pm.get(key);if(found!==undefined)return found;
+    const stop=standEV(t,s,len,c,n);
+    let hit=0;
+    for(const b of publicDraws(c,n)){c[b.index]--;
+      const [nt,ns]=cardAdd(t,s,b.index);
+      hit+=b.p*continueEV(nt,ns,len+1,c,n-1);
+      c[b.index]++;
+    }
+    const value=Math.max(stop,hit);
+    pm.set(key,value);stat.playerStates++;
+    if((stat.playerStates&1023)===0&&Date.now()-start>limitMs)throw Error('Превышено время вычисления');
+    return value;
+  }
+  if(hv.total>21)return {actions:{stand:-1},status:'bust',stats:stat};
+  if(hv.number>=rules.charlieCards&&rules.charlie)return {actions:{stand:standEV(hv.total,hv.acesSoft,hv.number,c,N)},status:'charlie',stats:stat};
+  if(hv.natural){
+    let pBJ=0;const ww=holes(c,N);
+    // Use exactly the same conditional information state as all other actions.
+    for(let h=0;h<K;h++)if(dealerBJ(up,h))pBJ+=ww[h];
+    return {actions:{stand:rules.blackjackPayout*(1-pBJ)},dealerBJ:pBJ,status:'natural',stats:stat};
+  }
+  const actions={stand:standEV(hv.total,hv.acesSoft,hv.number,c,N)};
+  if(hv.total<21&&(!rules.charlie||hv.number<rules.charlieCards)){
+    let hit=0,double=0;
+    for(const b of publicDraws(c,N)){
+      c[b.index]--;const [t,s]=cardAdd(hv.total,hv.acesSoft,b.index);
+      hit+=b.p*continueEV(t,s,hv.number+1,c,N-1);
+      if(hv.number===2&&doubleAllowed(hv.total,rules.doublePolicy)){
+        const one=standEV(t,s,hv.number+1,c,N-1);
+        const extra=(!rules.peek&&rules.dealerBJSettlement==='originalOnly')?dealerNaturalPosterior(c,N-1):0;
+        // Original-only settlement: two units lose normally, but one is returned on dealer BJ.
+        double+=b.p*(2*one+extra);
+      }
+      c[b.index]++;
+    }
+    actions.hit=hit;
+    if(hv.number===2&&doubleAllowed(hv.total,rules.doublePolicy))actions.double=double;
+  }
+  if(rules.surrender&&hv.number===2){
+    // Before peek, a late surrender loses the full unit to a dealer natural.
+    // After a successful peek the main action is conditional on no dealer BJ.
+    const dealerNatural=(up===9?c[8]/N:up===8?c[9]/N:0);
+    actions.surrender=(rules.surrenderTiming==='late'&&!rules.peek)
+      ? -0.5*(1-dealerNatural)-dealerNatural : -0.5;
+  }
+  // Exact joint-shoe EV for a restricted split scenario: draw 1 card to each hand, then stand.
+  const [a,b]=hand.map(bucket),eligible=hv.number===2&&(String(hand[0])===String(hand[1])||(rules.splitPolicy==='sameValue'&&a==='10'&&b==='10'));
+  if(eligible){
+    const child=R.indexOf(a),splitPost=(t1,s1,t2,s2,c,n)=>{
+      // Same dealer path settles both split hands; compute one distribution per hole.
+      let sum=0;const w=holes(c,n);
+      for(let h=0;h<K;h++)if(w[h]){
+        c[h]--;const bj=dealerBJ(up,h);
+        sum+=w[h]*(bj&&rules.dealerBJSettlement==='originalOnly'&&!rules.peek?-1:
+          settleForHole(t1,s1,2,c,n-1,h,bj,true)+settleForHole(t2,s2,2,c,n-1,h,bj,true));
+        c[h]++;
+      }
+      return sum;
+    };
+    let splitEV=0;
+    for(const x of publicDraws(c,N)){
+      c[x.index]--;const [t1,s1]=cardAdd(...cardAdd(0,0,child),x.index);
+      for(const y of publicDraws(c,N-1)){
+        c[y.index]--;const [t2,s2]=cardAdd(...cardAdd(0,0,child),y.index);
+        splitEV+=x.p*y.p*splitPost(t1,s1,t2,s2,c,N-2);
+        c[y.index]++;
+      }
+      c[x.index]++;
+    }
+    actions.splitTwoCardStop=splitEV;
+  }
+  return {actions,status:'ok',stats:{...stat,dealerCache:dm.size,ms:Date.now()-start},rules,splitEligible:eligible,splitDefinition:'Каждая часть разделённой пары получает одну карту и останавливается. Этот ограниченный сценарий рассчитан точно, но это не полный SPLIT с дальнейшими решениями.',postPeek:rules.peek,knownRemaining:N};
+}
+// Exact finite-shoe, two-hand, split-once educational expectation.
+// No resplitting: two children draw from one shoe, dealer hole remains unobserved.
+function solveSplit(input){
+ const start=Date.now(), rules=validateRules(input.rules), limitMs=input.limitMs??25000;
+ const hands=input.player||[], up=R.indexOf(bucket(input.up)), c=inputCounts(input), N=numCards(c);
+ if(hands.length!==2||up<0)throw Error('Для SPLIT укажи пару и открытую карту дилера');
+ const policy=rules.splitPolicy;
+ if(!(hands[0]===hands[1]||(policy==='sameValue'&&bucket(hands[0])==='10'&&bucket(hands[1])==='10'))){throw Error('Карты не образуют пару по выбранному правилу');}
+ const base=R.indexOf(bucket(hands[0]));
+ if(N<5)throw Error('Недостаточно неизвестных карт для разделения');
+ const aceBase=base===9;
+ const das=rules.doubleAfterSplit===true, aceOne=rules.splitAcesOneCard!==false;
+ const dm=new Map(),firstMemo=new Map(),secondMemo=new Map(),terminalMemo=new Map();
+ const counters={first:0,second:0,dealer:0,terminal:0,transitions:0};
+ function budget(){if((++counters.transitions&2047)===0 && Date.now()-start>limitMs)throw Error('Превышен лимит вычисления SPLIT (без точного результата). Выбери менее сложный учебный сценарий.');}
+ function holeWeights(c,n){const w=new Array(K).fill(0);let denom=0;for(let h=0;h<K;h++)if(c[h]&&!(rules.peek&&dealerBJ(up,h))){w[h]=c[h];denom+=c[h]};if(!denom)throw Error('Нет допустимых скрытых карт');for(let h=0;h<K;h++)w[h]/=denom;return w;}
+ function branches(c,n){if(n<2)throw Error('Недостаточно карт при скрытой карте');const w=holeWeights(c,n),out=[];for(let i=0;i<K;i++)if(c[i]){const p=(c[i]-w[i])/(n-1);if(p>0)out.push([i,p]);}return out;}
+ function dealerDist(t,s,c,n){if(t>21)return [1,0,0,0,0,0];if(t>17||(t===17&&(rules.s17||s===0)))return [0,+(t===17),+(t===18),+(t===19),+(t===20),+(t===21)];
+  const key=t+'|'+s+'|'+c.join(',');const cached=dm.get(key);if(cached)return cached; if(n===0)throw Error('Дилеру не хватает карт');const out=[0,0,0,0,0,0];
+  for(let i=0;i<K;i++)if(c[i]){const p=c[i]/n;c[i]--;const [nt,ns]=cardAdd(t,s,i),a=dealerDist(nt,ns,c,n-1);for(let j=0;j<6;j++)out[j]+=p*a[j];c[i]++;}
+  dm.set(key,out);counters.dealer++;if(dm.size>500000)throw Error('Лимит памяти кэша дилера SPLIT');if((counters.dealer&2047)===0&&Date.now()-start>limitMs)throw Error('Лимит времени для точного SPLIT: состояние слишком сложно.');return out;
+ }
+ // Dealer is rolled only once, after both public child hands terminate.
+ function payoff(t1,len1,bet1,t2,len2,bet2,c,n){
+  const k=t1+'|'+len1+'|'+bet1+'|'+t2+'|'+len2+'|'+bet2+'|'+c.join(',');
+  const old=terminalMemo.get(k);if(old!==undefined)return old;
+  if(t1>21&&t2>21&&(rules.peek||rules.dealerBJSettlement==='loseAll'))return -bet1-bet2;
+  const char1=rules.charlie&&rules.charlieAfterSplit&&len1>=rules.charlieCards&&t1<=21;
+  const char2=rules.charlie&&rules.charlieAfterSplit&&len2>=rules.charlieCards&&t2<=21;
+  let ev=0;const w=holeWeights(c,n);
+  for(let hole=0;hole<K;hole++)if(w[hole]){
+   c[hole]--;
+   let v;
+   if(dealerBJ(up,hole))v=(!rules.peek&&rules.dealerBJSettlement==='originalOnly')?-1:-bet1-bet2; // originalOnly refunds additional split/DAS units
+   else if((t1>21||char1)&&(t2>21||char2))v=bet1*(t1>21?-1:1)+bet2*(t2>21?-1:1);
+   else {
+    const [dt,ds]=cardAdd(...cardAdd(0,0,up),hole),dist=dealerDist(dt,ds,c,n-1);
+    const handPay=(t,len,bet,charlie)=>{
+     if(t>21)return -bet;
+     if(charlie)return bet;
+     let ret=dist[0];for(let d=17;d<=21;d++)ret+=dist[d-16]*(t>d?1:t===d?0:-1);
+     return bet*ret;
+    };
+    v=handPay(t1,len1,bet1,char1)+handPay(t2,len2,bet2,char2);
+   }
+   ev+=w[hole]*v;c[hole]++;
+  }
+  terminalMemo.set(k,ev);counters.terminal++;budget();return ev;
+ }
+ // Terminal first hand is public information when second hand is played.
+ function playSecond(t1,len1,bet1,t2,s2,len2,bet2,c,n){
+  if(t2>=21||(rules.charlie&&rules.charlieAfterSplit&&len2>=rules.charlieCards)||(aceBase&&aceOne))return payoff(t1,len1,bet1,t2,len2,bet2,c,n);
+  const key=t1+'|'+len1+'|'+bet1+'|'+t2+'|'+s2+'|'+len2+'|'+bet2+'|'+c.join(',');const old=secondMemo.get(key);if(old!==undefined)return old;
+  let value=payoff(t1,len1,bet1,t2,len2,bet2,c,n);
+  let hit=0, dbl=0;
+  for(const [i,p] of branches(c,n)){
+   c[i]--;const [nt,ns]=cardAdd(t2,s2,i);
+   hit+=p*playSecond(t1,len1,bet1,nt,ns,len2+1,bet2,c,n-1);
+   if(das&&len2===2&&bet2===1&&doubleAllowed(t2,rules.doublePolicy))dbl+=p*payoff(t1,len1,bet1,nt,len2+1,2,c,n-1);
+   c[i]++;
+  }
+  value=Math.max(value,hit);
+  if(das&&len2===2&&bet2===1&&doubleAllowed(t2,rules.doublePolicy))value=Math.max(value,dbl);
+  secondMemo.set(key,value);counters.second++;budget();if(secondMemo.size>1000000)throw Error('Превышен лимит памяти для точного SPLIT');return value;
+ }
+ function startSecond(t1,len1,bet1,c,n){
+  let ev=0;
+  for(const [i,p] of branches(c,n)){
+   c[i]--;const [t2,s2]=cardAdd(...cardAdd(0,0,base),i);
+   ev+=p*playSecond(t1,len1,bet1,t2,s2,2,1,c,n-1);
+   c[i]++;
+  }
+  return ev;
+ }
+ function playFirst(t,s,len,bet,c,n){
+  if(t>=21||(rules.charlie&&rules.charlieAfterSplit&&len>=rules.charlieCards)||(aceBase&&aceOne))return startSecond(t,len,bet,c,n);
+  const key=t+'|'+s+'|'+len+'|'+bet+'|'+c.join(',');const old=firstMemo.get(key);if(old!==undefined)return old;
+  let value=startSecond(t,len,bet,c,n);
+  let hit=0,dbl=0;
+  for(const [i,p] of branches(c,n)){
+   c[i]--;const [nt,ns]=cardAdd(t,s,i);
+   hit+=p*playFirst(nt,ns,len+1,bet,c,n-1);
+   if(das&&len===2&&bet===1&&doubleAllowed(t,rules.doublePolicy))dbl+=p*startSecond(nt,len+1,2,c,n-1);
+   c[i]++;
+  }
+  value=Math.max(value,hit);
+  if(das&&len===2&&bet===1&&doubleAllowed(t,rules.doublePolicy))value=Math.max(value,dbl);
+  firstMemo.set(key,value);counters.first++;budget();return value;
+ }
+ let ev=0;
+ for(const [i,p] of branches(c,N)){
+   c[i]--;const [t,s]=cardAdd(...cardAdd(0,0,base),i);
+   ev+=p*playFirst(t,s,2,1,c,N-1);
+   c[i]++;
+ }
+ return {ev,rules,exact:true,assumptions:{resplit:false,afterSplitBlackjackPaysThreeToTwo:false,splitAcesOneCard:aceOne,doubleAfterSplit:das,charlieAfterSplit:rules.charlieAfterSplit},stats:{...counters,memoFirst:firstMemo.size,memoSecond:secondMemo.size,memoDealer:dm.size,ms:Date.now()-start}};
+}
+
+// Separate PRE-PEEK educational insurance experiment. Never mix with main-hand EV.
+// fraction is a preset hypothetical part of one teaching unit, not a stake-size suggestion.
+function insuranceScenario({up,visible=[],fraction=0.5,payout=2}={}){
+ if(bucket(up)!=='A')return {available:false,reason:'Стандартный сценарий страховки предполагает открытую карту дилера A.'};
+ if(!(fraction>0&&fraction<=0.5&&Number.isFinite(fraction)))throw Error('Некорректная учебная доля');
+ if(!(payout>0&&Number.isFinite(payout)))throw Error('Некорректный коэффициент');
+ const known=visible.length?visible:[up];
+ if(!known.some(r=>bucket(r)==='A'))throw Error('Открытая карта дилера A должна входить в список известных карт');
+ const counts=makeCounts(known),n=numCards(counts);
+ if(!n)throw Error('Башмак пуст');
+ const pBJ=counts[8]/n;
+ const ifBJ=+fraction*payout;
+ const ifNoBJ=-fraction;
+ return {available:true,probabilityDealerBlackjack:pBJ,probabilityNoBlackjack:1-pBJ,
+    insurancePayoffIfBJ:ifBJ,insurancePayoffIfNoBJ:ifNoBJ,
+    expectedVirtualUnits:pBJ*ifBJ+(1-pBJ)*ifNoBJ,
+    definition:'Отдельный виртуальный эксперимент ДО проверки дилером; основная рука не включена.'};
+}
+// Independent terminal outcome lesson, not used for stake sizing or side-bet optimization.
+function terminalOutcome(player,dealer){
+ const validPlayer=['bust','20','natural','charlie'];
+ const validDealer=['bust','20','19','natural'];
+ if(!validPlayer.includes(player)||!validDealer.includes(dealer))throw Error('Неизвестный учебный исход');
+ if(player==='bust')return {kind:'loss',reason:'Перебор игрока завершает руку поражением, даже если дилер тоже превысил 21.'};
+ if(dealer==='natural')return player==='natural'
+  ?{kind:'push',reason:'Оба получили натуральный блэкджек: основная рука заканчивается ничьей.'}
+  :{kind:'loss',reason:'Натуральный блэкджек дилера имеет приоритет перед обычной 21 и Charlie.'};
+ if(player==='natural')return {kind:'win',reason:'Натуральный блэкджек игрока выигрывает, когда у дилера нет натурального блэкджека.'};
+ if(player==='charlie')return {kind:'win',reason:'Six-Card Charlie выигрывает без перебора, если дилер не имеет натурального блэкджека.'};
+ if(dealer==='bust')return {kind:'win',reason:'Игрок не перебрал, а дилер превысил 21.'};
+ if(dealer==='20')return {kind:'push',reason:'Одинаковая обычная сумма 20: ничья.'};
+ return {kind:'win',reason:'Обычная сумма игрока 20 выше суммы дилера 19.'};
+}
+function insuranceLesson(upcard){
+ const v=bucket(upcard);
+ if(v==='A')return 'При открытом тузе дилера в типовых правилах может появиться предложение страховки до проверки его закрытой карты. Если у дилера натуральный блэкджек, основная рука обычно проигрывает (кроме ничьей двух блэкджеков), а страховка учитывается отдельно. Без блэкджека дилера страховая часть не компенсируется.';
+ if(v==='10')return 'При открытой карте дилера со значением 10 стандартное предложение страховки обычно отсутствует. При этом дилер всё равно может иметь натуральный блэкджек, если закрытая карта — туз.';
+ return 'При открытой карте дилера, отличной от туза, стандартная страховка обычно недоступна. Она не связана с перебором игрока или дилера.';
+}
+const API={solve,solveSplit,doubleAllowed,makeCounts,handValue,cardAdd,MAX,R,bucket,numCards,terminalOutcome,insuranceLesson,insuranceScenario,inputCounts,validateRules,parseRules};
+if(typeof module!=='undefined'&&module.exports)module.exports=API;
+root.OmegaFiniteEV=API;
+})(typeof window!=='undefined'?window:globalThis);
+</script><script>
+(function(){'use strict';
+const RANKS=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const TAG={A:0,'2':1,'3':1,'4':2,'5':2,'6':2,'7':1,'8':0,'9':-1,'10':-2,J:-2,Q:-2,K:-2};
+const KEY='omega-mini-edu-v1';
+const $=id=>document.getElementById(id);
+const initial=()=>({player:[],dealer:[],other:[],history:[],selected:'player',surrender:false,splitPolicy:'rank'});
+let state=initial();let undoStack=[];
+try{const old=JSON.parse(localStorage.getItem(KEY)||'null');if(old&&Array.isArray(old.player)&&Array.isArray(old.dealer)&&Array.isArray(old.other)&&Array.isArray(old.history)){state={...initial(),...old};}}catch(e){}
+function fmt(n,d=1){return Number(n).toLocaleString('ru-RU',{minimumFractionDigits:d,maximumFractionDigits:d})}
+function allKnown(){return [...state.history,...state.player,...state.dealer,...state.other]}
+function shoe(){const counts=Object.fromEntries(RANKS.map(r=>[r,32]));for(const r of allKnown()){if(counts[r]===undefined||counts[r]<=0)throw Error('Некорректный остаток карт');counts[r]--}return counts}
+function countTotal(counts){return RANKS.reduce((s,r)=>s+counts[r],0)}
+function hand(cards){let value=0,soft=0;for(const r of cards){if(r==='A'){value+=11;soft++}else value+=['10','J','Q','K'].includes(r)?10:Number(r);while(value>21&&soft){value-=10;soft--}}return {total:value,soft:soft>0,bust:value>21,natural:cards.length===2&&value===21}}
+function branches(counts){const n=countTotal(counts);return n?RANKS.filter(r=>counts[r]>0).map(r=>({rank:r,p:counts[r]/n,next:{...counts,[r]:counts[r]-1}})):[]}
+function canSplit(cards){if(cards.length!==2)return false;const [a,b]=cards;if(a===b)return true;return state.splitPolicy==='value'&&['10','J','Q','K'].includes(a)&&['10','J','Q','K'].includes(b)}
+function stats(){const counts=shoe();const n=countTotal(counts),p=state.player,h=hand(p);const bs=branches(counts);let bust=0,charlie=0,ten=0;for(const b of bs){if(['10','J','Q','K'].includes(b.rank))ten+=b.p;const v=hand([...p,b.rank]);if(v.bust)bust+=b.p;else if(p.length===Number($("evCharlie").value)-1&&Number($("evCharlie").value)>0)charlie+=b.p}return {counts,n,p,h,bs,bust,charlie,ten,rc:allKnown().reduce((a,r)=>a+TAG[r],0)}}
+function snapshot(){undoStack.push(JSON.stringify(state));if(undoStack.length>60)undoStack.shift()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+function add(r){try{const c=shoe();if(c[r]<1)return;if(state.selected==='player'&&state.player.length>=21)return;if(state.selected==='dealer'&&state.dealer.length>=11)return;snapshot();state[state.selected].push(r);render()}catch(e){alert('Ошибка состава башмака: '+e.message)}}
+function remove(i){const a=state[state.selected];if(i<0||i>=a.length)return;snapshot();a.splice(i,1);render()}
+function nextRound(){snapshot();state.history.push(...state.player,...state.dealer,...state.other);state.player=[];state.dealer=[];state.other=[];render()}
+function reset(){if(!confirm('Начать новый восьмиколодный башмак и сбросить историю?'))return;snapshot();state=initial();render()}
+function selectTarget(t){state.selected=t;render()}
+function renderGuide(x){const p=x.p,h=x.h;
+ if(p.length<2){$('guide').innerHTML='<div class="small">Для анализа введи минимум две карты игрока. Карта дилера нужна только для обозначения учебного состояния.</div>';return}
+ let text='',intro='';if(h.bust){intro='Перебор: учебная рука завершена.';text='Сумма превышает 21, дальнейшие действия не рассматриваются.'}
+ else if(Number($('evCharlie').value)>0&&p.length>=Number($('evCharlie').value)){intro='Шесть карт без перебора: Charlie.';text='Рука завершена согласно выбранной учебной модели.'}
+ else if(h.natural){intro='Натуральные 21 на первых двух картах.';text='Обычные дополнительные действия не рассматриваются.'}
+ else if(h.total===21){intro='Сумма 21.';text='Дополнительная карта может привести к перебору; здесь полезно изучить эффект остановки.'}
+ else if(h.total<=11){intro='Сумма '+h.total+': немедленный перебор при одной карте невозможен.';text='Даже карта со значением 10 не превышает 21. Это свойство суммы, а не прогноз результата всей раздачи.'}
+ else{intro='Сумма '+h.total+': риск перебора при одной карте — '+fmt(x.bust*100,2)+'%.';text='Остановка оставляет текущую сумму, добор меняет её. Для сравнения действий нужен полный расчёт исходов дилера, а не только риск перебора.'}
+ const charlieLimit=Number($('evCharlie').value);const isCharlie=charlieLimit>0&&p.length>=charlieLimit&&!h.bust;const ended=h.bust||isCharlie||h.natural||h.total===21;
+ const lines=[
+ ['ЕЩЁ КАРТА',!ended&&p.length<21,'Добавляет случайную карту. '+(ended?'Рука уже завершена.':'Вероятность немедленного перебора: '+fmt(x.bust*100,2)+'%.')],
+ ['ОСТАНОВИТЬСЯ',!h.bust&&!ended,'Фиксирует текущую сумму '+h.total+'; затем сравниваются результаты дилера и игрока.'],
+ ['РАЗДЕЛИТЬ',!ended&&canSplit(p),'В учебной модели доступно для пары из двух карт согласно выбранному правилу.'],
+ ['СДАТЬСЯ',!ended&&p.length===2&&state.surrender,'В учебной модели доступно только на первых двух картах, если такое правило включено.']
+ ];
+ $('guide').innerHTML=`<div class="signal"><b>${intro}</b><div class="explainer">${text}</div></div><div class="actions">${lines.map(([name,yes,description])=>`<div class="action"><b>${name}</b><span class="status ${yes?'':'off'}">${yes?'ДОСТУПНО':'НЕДОСТУПНО'}</span><p>${description}</p></div>`).join('')}</div>`
+}
+function renderRuleLesson(){
+ const info=window.OmegaFiniteEV.terminalOutcome($('rulePlayer').value,$('ruleDealer').value);
+ const name={loss:'Поражение',win:'Победа',push:'Ничья'}[info.kind];
+ $('ruleOutcome').textContent=name+' · '+info.reason;
+ $('insuranceLesson').textContent=window.OmegaFiniteEV.insuranceLesson(state.dealer.length===1?state.dealer[0]:null);
+ try {
+  const calc=window.OmegaFiniteEV.insuranceScenario({up:state.dealer.length===1?state.dealer[0]:null,visible:allKnown()});
+  $('insuranceMath').textContent=calc.available
+   ? 'Учебный пример ДО peek: P(блэкджек дилера) = '+fmt(calc.probabilityDealerBlackjack*100,2)+'%; условный результат страховки: +'+fmt(calc.insurancePayoffIfBJ,2)+' / '+fmt(calc.insurancePayoffIfNoBJ,2)+' очка; отдельное EV = '+fmt(calc.expectedVirtualUnits,6)+' очка. Это не рекомендация.'
+   : 'Отдельный численный пример доступен при открытом тузе дилера.';
+ } catch (e) { $('insuranceMath').textContent='Невозможно рассчитать пример: '+e.message; }
+}
+function render(){if(typeof activeWorker!=='undefined' && activeWorker)cancelEV('Карты изменены — предыдущий расчёт отменён.');let x; if($('evStatus')){$('evStatus').textContent='Карты или учебные правила изменены. Нажми «Рассчитать finite-shoe EV». ';$('evResult').innerHTML='';}try{x=stats()}catch(e){console.warn('Некорректный состав карт:',e);$('evStatus').textContent='Ошибка ввода/хранилища: '+e.message+'; исправь карты или нажми «Тасовка».';return;}
+ $('rc').textContent=(x.rc>0?'+':'')+x.rc;$('tc').textContent=fmt(x.n?x.rc/(x.n/52):0,2);$('remaining').textContent=x.n;
+ for(const btn of $('target').querySelectorAll('button'))btn.classList.toggle('active',btn.dataset.target===state.selected);
+ const a=state[state.selected];$('cards').innerHTML=a.length?a.map((r,i)=>`<span class="chip">${r}<button type="button" data-remove="${i}" title="Удалить">×</button></span>`).join(''):'<span class="small">Добавь карты кнопками ниже</span>';
+ for(const b of $('ranks').children)b.disabled=x.counts[b.dataset.rank]<=0||(state.selected==='player'&&state.player.length>=21);
+ $('surrender').value=state.surrender?'yes':'no';$('splitpolicy').value=state.splitPolicy==='value'?'value':'rank';
+ $('bust').textContent=state.player.length?fmt(x.bust*100,1)+'%':'—';$('ten').textContent=fmt(x.ten*100,1)+'%';$('charlie').textContent=state.player.length===Number($('evCharlie').value)-1&&Number($('evCharlie').value)>0?fmt(x.charlie*100,1)+'%':'—';
+ $('probTable').innerHTML=`<table class="ranktable"><tbody>${x.bs.map(v=>`<tr><td>${v.rank}</td><td>${x.counts[v.rank]} карт</td><td>${fmt(v.p*100,2)}%</td></tr>`).join('')}</tbody></table>`;
+ renderGuide(x);renderRuleLesson();
+ const used=416-x.n;$('shuffleWarn').hidden=used<208;$('shuffleWarn').textContent='Известно уже '+used+' карт. Если произошла тасовка, нажми «Тасовка»: иначе данные о составе башмака неверны.';
+ save()
+}
+for(const r of RANKS){const b=document.createElement('button');b.textContent=r;b.type='button';b.dataset.rank=r;b.addEventListener('click',()=>add(r));$('ranks').append(b)}
+$('cards').addEventListener('click',e=>{const b=e.target.closest('button[data-remove]');if(b)remove(Number(b.dataset.remove))});
+$('target').addEventListener('click',e=>{const b=e.target.closest('button[data-target]');if(b)selectTarget(b.dataset.target)});
+$('undo').onclick=()=>{const prev=undoStack.pop();if(prev){state=JSON.parse(prev);render()}};
+$('next').onclick=nextRound;$('reset').onclick=reset;
+$('surrender').onchange=e=>{snapshot();state.surrender=e.target.value==='yes';render()};
+$('splitpolicy').onchange=e=>{snapshot();state.splitPolicy=e.target.value;render()};
+$('surrenderTiming').addEventListener('change',()=>{if(activeWorker)cancelEV();$('evResult').innerHTML='';$('evStatus').textContent='Тип сдачи изменён: пересчитай EV.';});
+for(const id of ['rulePlayer','ruleDealer'])$(id).addEventListener('change',renderRuleLesson);
+
+let activeWorker=null;
+function cancelEV(message='Вычисление прервано.'){
+ if(activeWorker){activeWorker.terminate();activeWorker=null;}
+ $('evCompute').disabled=false;$('evCancel').hidden=true;
+ if(message)$('evStatus').textContent=message;
+}
+function renderEVTable(v,split){
+ const actions={...v.actions};if(split&&Number.isFinite(split.ev))actions.splitFull=split.ev;
+ const labels={stand:'Остановиться',hit:'Добор с продолжением',double:'Удвоение',splitFull:'SPLIT · две полные руки',splitTwoCardStop:'SPLIT · по одной карте',surrender:'Сдача'};
+ const details={stand:'Без добора',hit:'Рекурсивное продолжение',double:'Одна карта; ×2',splitFull:'Без повторного SPLIT; совместный shoe',splitTwoCardStop:'Ограниченный контрольный сценарий',surrender:'Если разрешено'};
+ const rows=Object.keys(labels).filter(k=>actions[k]!==undefined).map(k=>`<tr><td>${labels[k]}</td><td><strong>${actions[k]>=0?'+':''}${fmt(actions[k],6)}</strong></td><td>${details[k]}</td></tr>`).join('');
+ $('evResult').innerHTML=`<table class="evtable"><thead><tr><th>Модель</th><th>EV</th><th>Условие</th></tr></thead><tbody>${rows}</tbody></table>`+(split?`<div class="evnote evpass">Полный SPLIT вычислен на общем конечном башмаке. Две руки могут продолжать добор; их итог сравнивается с одним дилером. Время: ${fmt(split.stats.ms,0)} мс. Состояний двух рук: ${split.stats.first+split.stats.second}.</div>`:'');
+}
+function calculateEV(){
+ if(activeWorker)cancelEV('Предыдущий расчёт отменён.');
+ const status=$('evStatus'),result=$('evResult');result.innerHTML='';
+ if(state.player.length<2||state.dealer.length!==1){status.textContent='Нужно от 2 карт игрока и РОВНО одна открытая карта дилера. Остальные раскрытые карты вводи отдельно.';return;}
+  const rules={resplit:false,s17:$('evSoft').value==='s17',doublePolicy:$('evDoublePolicy').value,dealerBJSettlement:$('evDealerBJSettlement').value,blackjackPayout:Number($('evBJPayout').value),peek:$('evPeek').value==='yes',charlieCards:Number($('evCharlie').value),surrender:state.surrender,surrenderTiming:$('surrenderTiming').value,splitPolicy:state.splitPolicy==='value'?'sameValue':'sameRank',doubleAfterSplit:$('evDAS').value==='yes',splitAcesOneCard:$('evSplitAces').value==='one',charlieAfterSplit:$('evCharlieSplit').value==='yes'};
+ const input={player:[...state.player],up:state.dealer[0],visible:allKnown(),rules,limitMs:22000};
+ try{window.OmegaFiniteEV.validateRules(rules);window.OmegaFiniteEV.inputCounts(input);}catch(e){status.textContent='Несовместимые правила или карты: '+e.message;return;}
+ status.textContent='Расчёт finite-shoe с выбранными правилами. Скрытая карта остаётся неизвестной. Сначала обычные сценарии, затем SPLIT без повторного разделения…';
+ $('evCompute').disabled=true;$('evCancel').hidden=false;
+ try{
+  const code=$('omegaCore').textContent+`\nself.onmessage=function(event){try{const input=event.data;const basic=OmegaFiniteEV.solve(input);self.postMessage({type:'basic',value:basic});if(basic.splitEligible){const split=OmegaFiniteEV.solveSplit(input);self.postMessage({type:'split',value:split});}self.postMessage({type:'done'});}catch(error){self.postMessage({type:'error',message:error.message});}};`;
+  const blob=new Blob([code],{type:'text/javascript'}),url=URL.createObjectURL(blob);
+  const worker=new Worker(url);activeWorker=worker;setTimeout(()=>URL.revokeObjectURL(url),3000);
+  let basic=null,split=null;
+  worker.onmessage=e=>{
+   if(activeWorker!==worker)return;
+   const m=e.data;
+   if(m.type==='basic'){
+    basic=m.value;renderEVTable(basic,null);
+    status.textContent=basic.splitEligible?'Основные EV готовы. Считается точный SPLIT двух рук (без resplit)…':'Расчёт обычных учебных сценариев готов; SPLIT недоступен для этих карт.';
+   }else if(m.type==='split'){
+    split=m.value;renderEVTable(basic,split);
+    status.textContent='Точный SPLIT рассчитан для выбранных правил без повторного разделения. Результат условен на заданной информации о скрытой карте.';
+   }else if(m.type==='done'){
+    cancelEV('Расчёт завершён. Все числа относятся только к заданной учебной модели.');
+   }else if(m.type==='error'){
+    cancelEV('Точный расчёт прерван: '+m.message+(basic?' Основные EV уже показаны.':''));
+   }
+  };
+  worker.onerror=e=>cancelEV('Ошибка Web Worker: '+(e.message||'недоступен'));
+  worker.postMessage(input);
+ }catch(e){cancelEV('Не удалось запустить автономный Web Worker: '+e.message);}
+}
+function runSelfTest(){
+ const E=window.OmegaFiniteEV, checks=[];
+ const test=(name,pass)=>checks.push([name,Boolean(pass)]);
+ const near=(a,b)=>Math.abs(a-b)<1e-12;
+ try{
+  test('416 карт',E.numCards(E.makeCounts([]))===416);
+  const c=E.makeCounts(['10','5','7']),n=E.numCards(c);
+  test('413 после 10,5,7',n===413);
+  test('P(A)',near(c[9]/n,32/413));
+  test('P(10)',near(c[8]/n,127/413));
+  test('Перебор hard15',near((c[5]+c[6]+c[7]+c[8])/n,222/413));
+  test('Мягкая 17',E.handValue(['A','6']).soft);
+  test('Твёрдая 17',!E.handValue(['A','6','K']).soft);
+  test('Двойной перебор',E.terminalOutcome('bust','bust').kind==='loss');
+  test('Два блэкджека',E.terminalOutcome('natural','natural').kind==='push');
+  test('Страховка отдельно',E.insuranceScenario({up:'A',visible:['A','10']}).available);
+  let rejected=false;try{E.validateRules({peek:true,surrender:true,surrenderTiming:'early'});}catch(e){rejected=true;}
+  test('Нет сравнения до/после peek',rejected);
+  rejected=false;try{E.inputCounts({player:['5','K'],up:'7',visible:['5','K']});}catch(e){rejected=true;}
+  test('Известные карты учтены',rejected);
+  const good=checks.filter(v=>v[1]).length;
+  $('selfTestResult').textContent=good+'/'+checks.length+' быстрых проверок: '+(good===checks.length?'пройдены':'есть ошибки');
+  $('selfTestResult').style.color=good===checks.length?'#9ef0d2':'#ff969d';
+ }catch(e){$('selfTestResult').textContent='Проверка прервана: '+e.message;}
+}
+$('selfTest').addEventListener('click',runSelfTest);
+$('evCompute').addEventListener('click',calculateEV);
+$('evCancel').addEventListener('click',()=>cancelEV());
+for(const id of ['evSoft','evPeek','evCharlie','evDAS','evSplitAces','evCharlieSplit','evDoublePolicy','evDealerBJSettlement','evBJPayout'])$(id).addEventListener('change',()=>{
+ if(activeWorker)cancelEV('Настройки изменены: старый расчёт остановлен.');
+ $('evResult').innerHTML='';$('evStatus').textContent='Настройки изменены — выполни новый расчёт.';render();
+});
+render();
+window.__OMEGA_MINI_TEST__={hand,branches,stats,calculateEV,renderRuleLesson,getState:()=>JSON.parse(JSON.stringify(state)),setState:s=>{state=s;render()}};
+})();
+</script><script>if('serviceWorker' in navigator&&location.protocol==='https:')window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(console.warn));</script></body></html>
