@@ -63,6 +63,8 @@ const base=process.env.OMEGA_TEST_URL||'http://127.0.0.1:8765/';
   await page.locator('#evSplitCompute').click();
   await page.waitForFunction(()=>document.querySelector('#evStatus').textContent.includes('Расчёт завершён'),{timeout:20000});
   assert.match(await page.locator('#evResult').innerText(),/0,472412/);
+  assert.match(await page.locator('#evResult').innerText(),/по одной карте/);
+  assert.match(await page.locator('#evResult').innerText(),/две полные руки/);
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Mobile horizontal overflow');
   assert.deepEqual(issues,[], 'No page Javascript errors');
   console.log('PASS Chromium offline PWA: cached Worker, full EV, DOUBLE, SPLIT, mobile layout');
