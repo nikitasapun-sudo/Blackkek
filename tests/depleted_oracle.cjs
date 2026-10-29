@@ -66,3 +66,41 @@ for(const up of ['7','10','A'])for(const peek of [true,false])for(const settleme
  assert.ok(Math.abs(model-exact)<1e-11,`SPLIT ${up}/${peek}/${settlement}: ${model} vs ${exact}`);count++;
 }
 console.log('PASS independent depleted-shoe finite-shoe oracle:',count,'cases');
+
+
+function oracleDouble({player,up,s17,peek,settlement}){
+ const shoe=E.makeCounts(known),scoreBefore=total(player).t,n=shoe.reduce((a,b)=>a+b,0);
+ assert.ok(scoreBefore<21);
+ let denom=0;
+ for(let h=0;h<R.length;h++)if(shoe[h]&&!(peek&&natural(up,R[h])))denom+=shoe[h];
+ let ev=0;
+ for(let h=0;h<R.length;h++)if(shoe[h]&&!(peek&&natural(up,R[h]))){
+  const ph=shoe[h]/denom;shoe[h]--;
+  for(let a=0;a<R.length;a++)if(shoe[a]){
+   const pa=shoe[a]/(n-1);shoe[a]--;
+   const score=total([...player,R[a]]).t;
+   const payout=natural(up,R[h])
+    ? (settlement==='originalOnly'?-1:-2)
+    : score>21?-2:2*dealerScore(up,R[h],shoe,score,s17);
+   ev+=ph*pa*payout;
+   shoe[a]++;
+  }
+  shoe[h]++;
+ }
+ return ev;
+}
+for(const up of ['7','10','A'])for(const peek of [true,false])for(const settlement of ['loseAll','originalOnly']){
+ const player=['5','6'],rules={s17:true,peek,charlieCards:0,dealerBJSettlement:settlement};
+ const actual=E.solve({player,up,visible:known,rules}).actions.double;
+ const expected=oracleDouble({player,up,s17:true,peek,settlement});
+ assert.ok(Math.abs(actual-expected)<1e-11,`DOUBLE ${up}/${peek}/${settlement}: ${actual} vs ${expected}`);
+ count++;
+}
+for(const up of ['7','10','A'])for(const peek of [true,false])for(const settlement of ['loseAll','originalOnly']){
+ const rules={s17:true,peek,charlieCards:0,dealerBJSettlement:settlement,splitAcesOneCard:true};
+ const actual=E.solveSplit({player:['A','A'],up,visible:known,rules,limitMs:12000}).ev;
+ const expected=splitOracle({up,base:'A',peek,s17:true,settlement});
+ assert.ok(Math.abs(actual-expected)<1e-11,`FULL SPLIT ACES ${up}/${peek}/${settlement}: ${actual} vs ${expected}`);
+ count++;
+}
+console.log('PASS expanded depleted-shoe oracle including DOUBLE and full split aces:', count, 'cases');
