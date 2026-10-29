@@ -74,7 +74,7 @@ const base=process.env.OMEGA_TEST_URL||'http://127.0.0.1:8765/';
   await page.locator('#evPeek').selectOption('yes');
   const conditioned=await page.evaluate(()=>window.__OMEGA_MINI_TEST__.stats().ten);
   assert.ok(Math.abs(conditioned-127/412)<1e-12);
-  assert.match(await page.locator('#probHint').innerText(),/peek/);
+  assert.match(await page.locator('#probHint').textContent(),/peek/);
   await page.locator('#evPeek').selectOption('no');
   const ordinary=await page.evaluate(()=>window.__OMEGA_MINI_TEST__.stats().ten);
   assert.ok(Math.abs(ordinary-127/413)<1e-12);
