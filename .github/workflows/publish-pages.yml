@@ -44,6 +44,8 @@ jobs:
           node tests/julius_rational_oracle.cjs
           node tests/julius_hit_charlie_oracle.cjs
           node tests/julius_boundary_oracle.cjs
+          node tests/julius_sequential_hole_oracle.cjs
+          node tests/julius_sequential_posterior.cjs
       - name: Stage static-only PWA
         run: |
           mkdir -p _site/icons
