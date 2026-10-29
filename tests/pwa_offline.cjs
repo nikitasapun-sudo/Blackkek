@@ -101,11 +101,11 @@ async function request(url, method = 'GET', mode = 'cors') {
   // cache after the new release activated. A navigation must remove only
   // earlier Omega caches, never a concurrently installing *newer* release.
   entries.set('omega-ii-v314-recreated-after-activation',new Map());
-  entries.set('omega-ii-v320-installing',new Map());
+  entries.set('omega-ii-v321-installing',new Map());
   const queryHome=await request(origin+'?update=319','GET','navigate');
   const queryIndex=await request(origin+'index.html?update=319','GET','navigate');
   assert.equal(entries.has('omega-ii-v314-recreated-after-activation'),false);
-  assert.equal(entries.has('omega-ii-v320-installing'),true,
+  assert.equal(entries.has('omega-ii-v321-installing'),true,
     'An already installing newer release must not be deleted');
   assert.equal(queryHome.url,normalize('./index.html'));
   assert.equal(queryIndex.url,normalize('./index.html'));
