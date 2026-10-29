@@ -9,6 +9,10 @@ self.onmessage=function(event){
   input.onProgress=update=>self.postMessage({type:'progress',value:update,mode});
   if(!['all','double','split'].includes(mode))throw Error('Неизвестный режим учебного расчёта');
   if(mode==='split'){
+   // Preserve the exact but restricted one-card-per-child result before full
+   // two-hand optimization. Never present that restriction as full SPLIT.
+   const basic=OmegaFiniteEV.solve(input);
+   self.postMessage({type:'basic',value:basic,mode});
    const split=OmegaFiniteEV.solveSplit(input);
    self.postMessage({type:'split',value:split,mode});
   }else{
