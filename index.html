@@ -584,4 +584,4 @@ for(const id of ['evSoft','evPeek','evCharlie','evDAS','evSplitAces','evCharlieS
 render();
 window.__OMEGA_MINI_TEST__={hand,branches,stats,calculateEV,renderRuleLesson,getState:()=>JSON.parse(JSON.stringify(state)),setState:s=>{state=s;render()}};
 })();
-</script><script>if('serviceWorker' in navigator&&location.protocol==='https:')window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(console.warn));</script></body></html>
+</script><script>if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(console.warn));</script></body></html>
