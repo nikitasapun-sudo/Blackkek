@@ -11,14 +11,18 @@ const input={
   surrenderTiming:'late',splitPolicy:'sameRank',doubleAfterSplit:false,
   splitAcesOneCard:true,charlieAfterSplit:false}
 };
+const assert=require('node:assert/strict');
 const began=Date.now();
 let progress=null;
 try{
  const result=E.solveSplit({...input,onProgress:p=>{progress=p;}});
+ assert.equal(result.exact,true);
+ assert.ok(Math.abs(result.ev-(-0.0076741685158769925))<1e-10,
+  'Reported 7-7 vs 5 exact finite-shoe result changed');
+ assert.equal(result.stats.dealerAlgorithm,'finite-polynomial');
  console.log('REPORT_SCENARIO_COMPLETED',JSON.stringify({ms:Date.now()-began,ev:result.ev,stats:result.stats}));
 }catch(err){
- if(!/Лимит времени|Превышен лимит вычисления/.test(err.message))throw err;
- const snap=err.diagnostics||progress;
- console.log('REPORT_SCENARIO_TIMEOUT',JSON.stringify({ms:Date.now()-began,message:err.message,diagnostics:snap}));
- if(!snap)throw Error('No diagnostic snapshot produced on timeout');
+ console.error('REPORT_SCENARIO_FAILED',JSON.stringify({ms:Date.now()-began,message:err.message,
+  diagnostics:err.diagnostics||progress}));
+ throw err;
 }
