@@ -40,6 +40,8 @@ jobs:
           node --check tests/julius_rational_oracle.cjs
           node --check tests/julius_hit_charlie_oracle.cjs
           node --check tests/julius_boundary_oracle.cjs
+          node --check tests/julius_sequential_hole_oracle.cjs
+          node --check tests/julius_sequential_posterior.cjs
           node --check omega_worker.js
       - name: Mathematical regression
         run: node tests/v34.cjs
@@ -64,3 +66,5 @@ jobs:
           node tests/julius_rational_oracle.cjs
           node tests/julius_hit_charlie_oracle.cjs
           node tests/julius_boundary_oracle.cjs
+          node tests/julius_sequential_hole_oracle.cjs
+          node tests/julius_sequential_posterior.cjs
