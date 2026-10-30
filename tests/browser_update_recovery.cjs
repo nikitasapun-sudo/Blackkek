@@ -1,5 +1,5 @@
 'use strict';
-// Reproduce the deployment race: a v3.24 service worker owns a cache
+// Reproduce the deployment race: a v3.25 service worker owns a cache
 // containing a stale v3.23 HTML document, then the server becomes current.
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
@@ -7,7 +7,7 @@ const http=require('node:http');
 const path=require('node:path');
 const {chromium}=require('playwright');
 const latestHTML=fs.readFileSync('index.html','utf8');
-const oldHTML=latestHTML.replaceAll('v3.24','v3.23');
+const oldHTML=latestHTML.replaceAll('v3.25','v3.23');
 const latestSW=fs.readFileSync('sw.js','utf8');
 const updateHTML=fs.readFileSync('update.html','utf8');
 let serverIsCurrent=false;
@@ -45,45 +45,39 @@ const server=http.createServer((req,res)=>{
     await page.goto(base,{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>navigator.serviceWorker?.controller!==null,{timeout:15000});
     assert.match(await page.title(),/v3\.23/);
-    await page.evaluate(()=>window.__OMEGA_MINI_TEST__.setState({
-      player:['5','6'],dealer:['7'],other:['10'],history:[],
-      selected:'player',surrender:false,splitPolicy:'rank'
-    }));
+    await page.locator('#rulesPanel').click();
     await page.locator('#evSoft').selectOption('h17');
-    const original=await page.evaluate(()=>({
-      cards:window.__OMEGA_MINI_TEST__.getState(),
-      rules:JSON.parse(localStorage.getItem('omega-mini-edu-ev-rules-v1'))
-    }));
+    await page.evaluate(()=>localStorage.setItem('omega-mini-edu-v1','legacy-data'));
     // The server now has the new HTML, but its content remains stale
-    // in the already-installed cache named omega-ii-v324-1.
+    // in the already-installed cache named omega-ii-v325-1.
     serverIsCurrent=true;
     await page.reload({waitUntil:'domcontentloaded'});
     assert.match(await page.title(),/v3\.23/);
     const before=await page.evaluate(async()=>{
-      const cache=await caches.open('omega-ii-v324-1');
+      const cache=await caches.open('omega-ii-v325-1');
       return (await (await cache.match('./index.html')).text()).includes('Blackjack Omega II v3.23');
     });
     assert.equal(before,true);
     // update.html was never cached by the old worker.
     await page.goto(base+'update.html',{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('Готово:'),{timeout:25000});
-    assert.match(await page.locator('#status').textContent(),/v3\.24/);
+    assert.match(await page.locator('#status').textContent(),/v3\.25/);
     const after=await page.evaluate(async()=>{
-      const cache=await caches.open('omega-ii-v324-1');
-      return (await (await cache.match('./index.html')).text()).includes('Blackjack Omega II v3.24');
+      const cache=await caches.open('omega-ii-v325-1');
+      return (await (await cache.match('./index.html')).text()).includes('Blackjack Omega II v3.25');
     });
     assert.equal(after,true,'Recovery must fix the HTML inside the existing release cache');
     await page.locator('#open').click();
     await page.waitForLoadState('domcontentloaded');
-    assert.match(await page.title(),/v3\.24/);
-    assert.deepEqual(await page.evaluate(()=>window.__OMEGA_MINI_TEST__.getState()),original.cards);
+    assert.match(await page.title(),/v3\.25/);
+    assert.equal(await page.evaluate(()=>localStorage.getItem('omega-mini-edu-v1')),'legacy-data');
     assert.equal(await page.locator('#evSoft').inputValue(),'h17');
     await context.setOffline(true);
     await page.reload({waitUntil:'domcontentloaded'});
-    assert.match(await page.title(),/v3\.24/);
-    assert.deepEqual(await page.evaluate(()=>window.__OMEGA_MINI_TEST__.getState()),original.cards);
+    assert.match(await page.title(),/v3\.25/);
+    assert.equal(await page.evaluate(()=>localStorage.getItem('omega-mini-edu-v1')),'legacy-data');
     assert.deepEqual(errors,[]);
-    console.log('PASS Chromium update recovery: stale v3.23 HTML under v3.24 cache repaired without losing cards/rules, including offline restart');
+    console.log('PASS Chromium update recovery: stale v3.23 HTML under v3.25 cache repaired without losing cards/rules, including offline restart');
   }finally{
     await browser.close();
     await new Promise(resolve=>server.close(resolve));

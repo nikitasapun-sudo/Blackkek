@@ -25,7 +25,7 @@ async function probe({stale=false,online=true,existing=true}={}){
     async getRegistration(){return existing?registration:null;},
     async register(){registrations++;return registration;}
   }};
-  const latest='<title>Blackjack Omega II v3.24 · Offline EV</title>';
+  const latest='<title>Blackjack Omega II v3.25 · Offline EV</title>';
   const old='<title>Blackjack Omega II v3.23 · Offline EV</title>';
   const stored=new Map([['./index.html',makeResponse(stale?old:latest)],['./omega_worker.js',makeResponse('worker')],['./omega_v34_core.js',makeResponse('core')]]);
   const cache={
@@ -35,10 +35,10 @@ async function probe({stale=false,online=true,existing=true}={}){
   const context={
     document:{getElementById(id){return ui[id];}},
     navigator,window:{caches:true},location:{href:'https://example.test/Blackkek/update.html'},URL,Date,
-    caches:{async keys(){return ['omega-ii-v324-1'];},async open(){return cache;}},
+    caches:{async keys(){return ['omega-ii-v325-1'];},async open(){return cache;}},
     fetch:async url=>{
       if(!online)return {ok:false,status:503};
-      if(String(url).includes('sw.js'))return makeResponse("const CACHE='omega-ii-v324-1'; const RELEASE_NUMBER=324;");
+      if(String(url).includes('sw.js'))return makeResponse("const CACHE='omega-ii-v325-1'; const RELEASE_NUMBER=325;");
       if(String(url).includes('index.html'))return makeResponse(latest);
       if(String(url).includes('omega_worker.js'))return makeResponse('worker');
       if(String(url).includes('omega_v34_core.js'))return makeResponse('core');
@@ -55,14 +55,14 @@ async function probe({stale=false,online=true,existing=true}={}){
   assert.equal(current.registrations,0);
   assert.equal(current.ui.open.hidden,false);
   assert.deepEqual(current.writes,[]);
-  assert.match(current.ui.status.textContent,/v3\.24/);
+  assert.match(current.ui.status.textContent,/v3\.25/);
   const clean=await probe({existing:false});
   assert.equal(clean.registrations,1);
   assert.equal(clean.ui.open.hidden,false);
   const stale=await probe({stale:true});
   assert.equal(stale.ui.open.hidden,false);
   assert.deepEqual(stale.writes,['./index.html','./omega_worker.js','./omega_v34_core.js','./']);
-  assert.match(await (await stale.cache.match('./index.html')).text(),/v3\.24/);
+  assert.match(await (await stale.cache.match('./index.html')).text(),/v3\.25/);
   const offline=await probe({online:false});
   assert.equal(offline.updates,0);
   assert.equal(offline.ui.open.hidden,true);

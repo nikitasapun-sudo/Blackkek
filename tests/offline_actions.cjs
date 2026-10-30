@@ -19,6 +19,8 @@ function exec(mode,player,up,rules={}){
  self.onmessage({data:{mode,input}});
  return [...messages];
 }
+const single=exec('single',['A','A'],'7');
+assert.deepEqual(single.map(x=>x.type),['basic','done'],'single-hand hint must not automatically start full SPLIT');
 const ordinary=exec('all',['10','5'],'7');
 assert.deepEqual(ordinary.map(x=>x.type),['basic','done']);
 assert.ok(Math.abs(ordinary[0].value.actions.stand+0.47561837175676747)<1e-9);

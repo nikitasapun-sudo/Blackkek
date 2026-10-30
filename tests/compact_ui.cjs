@@ -1,14 +1,7 @@
 'use strict';
-const assert=require('node:assert/strict');
-const fs=require('node:fs');
-const html=fs.readFileSync('index.html','utf8');
-
-assert.match(html,/<title>Blackjack Omega II v3\.24/);
-assert.match(html,/<style id="compactUi">/);
-assert.match(html,/\.evsettings\{grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
-assert.match(html,/@media\(max-width:600px\)/);
-assert.match(html,/<details class="disclose"><summary>Тренажёр стратегии/);
-assert.match(html,/<details class="disclose"><summary>Рекомендация по виртуальным фишкам/);
-assert.match(html,/<script id="omegaCore">/);
-
-console.log('PASS compact UI contract: responsive density and collapsed optional panels without core replacement');
+const assert=require('node:assert/strict');const {html}=require('./trainer_harness.cjs');
+assert.match(html,/<title>Blackjack Omega II v3\.25/);assert.match(html,/<style id="compactUi">/);
+assert.match(html,/@media\(max-width:600px\)/);assert.match(html,/<details class="panel"><summary>Выбрать свои карты/);
+assert.match(html,/<details class="panel" id="rulesPanel"><summary>Правила раздачи/);
+for(const id of ['rc','tc','remaining','ranks','target','shuffleWarn','reset','edgeCompute','chipBankroll'])assert.ok(!html.includes('id="'+id+'"'),id+' must not remain in the trainer interface');
+console.log('PASS compact trainer: task and immediate hint first, optional rules, no shoe/count controls');
