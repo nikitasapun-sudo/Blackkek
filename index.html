@@ -2,143 +2,45 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0c1b24"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icons/icon.svg"><title>Blackjack Omega II v3.24 · Offline EV</title>
-<style>
-:root{color-scheme:dark;--bg:#0a1720;--panel:#132832;--border:#35515d;--ink:#eff9f8;--muted:#b1c7cc;--mint:#60dfbb;--gold:#ffda91;--red:#ff969d}*{box-sizing:border-box}body{margin:0;font:15px/1.45 system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:radial-gradient(ellipse at 45% -10%,#22545b 0%,#0b202b 40%,var(--bg) 80%)}button,input,select{font:inherit}button{color:var(--ink);background:#24424d;border:1px solid #52717a;border-radius:11px;padding:9px 11px;cursor:pointer;font-weight:700;touch-action:manipulation}button:hover{border-color:#9edfcc}button:focus-visible,select:focus-visible{outline:2px solid var(--mint);outline-offset:2px}button:disabled{opacity:.35;cursor:not-allowed}select{color:var(--ink);background:#102c36;border:1px solid var(--border);padding:8px;border-radius:9px;max-width:100%}.wrap{max-width:880px;margin:auto;padding:14px 12px 44px}header{display:flex;gap:12px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin:2px 0 12px}header h1{margin:0;font-size:clamp(21px,4.5vw,28px);letter-spacing:-.5px}header p{margin:3px 0 0;color:var(--muted);font-size:12px}.pill{font-size:11px;font-weight:800;background:#1d4846;border:1px solid #397768;color:#caffea;border-radius:999px;padding:5px 9px;white-space:nowrap}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.stat{background:#0f2a35;border:1px solid #315260;border-radius:12px;padding:10px 12px}.stat label{display:block;color:var(--muted);font-size:11px}.stat strong{display:block;font-size:clamp(19px,4vw,25px);line-height:1.22;margin:5px 0;font-variant-numeric:tabular-nums}.panel{background:linear-gradient(140deg,#152e38,#11232d);border:1px solid var(--border);border-radius:15px;padding:14px;margin-bottom:10px}.panel h2{font-size:16px;margin:0 0 9px}.hint,.small{font-size:12px;color:var(--muted)}.muted{color:var(--muted)}.modes{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.modes button{flex:1 0 auto;padding:7px;font-size:12px}.modes button.active{border-color:var(--mint);background:#286153;color:#fff}.cards{display:flex;gap:7px;flex-wrap:wrap;min-height:39px;margin:9px 0}.chip{position:relative;display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:46px;padding:0 8px;border-radius:9px;background:#f0f9f5;color:#17404a;border:1px solid #d4f2e4;font-size:18px;font-weight:900}.chip button{position:absolute;top:-8px;right:-8px;border:0;background:#3b5861;font-size:13px;padding:0;width:20px;height:20px;border-radius:50%}.ranks{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:4px}.ranks button{padding:10px 0;font-size:13px;border-radius:7px}.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.row button{font-size:12px}.row .spacer{flex:1}.signal{padding:12px;background:#123c38;border:1px solid #377d69;border-radius:12px}.signal b{font-size:19px;color:#c6ffe3}.explainer{margin-top:5px;font-size:13px;color:#d4f3e9}.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}.action{border:1px solid #375663;background:#112c38;border-radius:12px;padding:10px}.action b{font-size:14px}.action .status{display:inline-block;margin-left:5px;font-size:10px;font-weight:800;color:#aff4dc}.action .status.off{color:#edabb0}.action p{font-size:12px;color:#c4d8dc;margin:4px 0 0}.action ul{margin:7px 0 0;padding-left:18px}.action li+li{margin-top:4px}.numbers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.number{padding:9px;border:1px solid #2d4b55;border-radius:11px;background:#0e2630}.number strong{display:block;font-size:20px;font-variant-numeric:tabular-nums}.number span{font-size:11px;color:var(--muted)}.disclose{margin-top:13px;border-top:1px solid #36545e;padding-top:10px}summary{font-weight:700;cursor:pointer}.ranktable{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}.ranktable td{padding:6px;border-bottom:1px solid #2d4852}.ranktable td:last-child{text-align:right;font-variant-numeric:tabular-nums}.warn{background:#3e3426;color:#fbe5ac;border-left:3px solid var(--gold);border-radius:8px;padding:9px 10px;margin-top:10px;font-size:12px}.footer{font-size:12px;color:var(--muted);margin-top:17px}.inline-select{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.inline-select label{font-size:12px;color:var(--muted)}@media(max-width:500px){.wrap{padding:10px 8px 30px}.panel{padding:11px}.stats{gap:5px}.stat{padding:8px}.ranks{grid-template-columns:repeat(7,minmax(0,1fr))}.actions{grid-template-columns:1fr 1fr}.action{padding:8px}.numbers{gap:5px}.number{padding:7px}.number strong{font-size:17px}}
-
-.evsettings{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.evsettings label{display:block;font-size:11px;color:var(--muted);margin:0 0 4px}.evsettings select{width:100%}.evstatus{border:1px solid #385965;background:#102a35;border-radius:10px;padding:10px;color:var(--muted);font-size:12px;line-height:1.5;margin-top:10px}.evtable{width:100%;border-collapse:collapse;font-size:13px}.evtable td,.evtable th{padding:9px 7px;border-bottom:1px solid #35515d;text-align:left}.evtable td:nth-child(2),.evtable th:nth-child(2){text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.evtable td:last-child{font-size:11px;color:var(--muted)}.evtable th{color:#b6ccd0;font-size:11px}.evtable td strong{font-size:16px;color:#ebfffa}.evbutton{background:#275b51;border-color:#51a68a;color:white;width:100%;padding:11px 12px;margin-top:4px}.evfoot{font-size:11px;color:var(--muted);margin:9px 0 0}.evresult{overflow-x:auto;margin-top:9px}@media(max-width:500px){.evsettings{gap:6px}.evtable td,.evtable th{padding:7px 4px}.evtable td:last-child{max-width:132px}}
-
-.rule-accordion>summary{font-size:16px;line-height:1.5;color:var(--ink);padding:2px 0}.rule-accordion[open]>summary{margin-bottom:10px}.evsettings{grid-template-columns:repeat(2,minmax(0,1fr))}.evbutton{flex:1}.evresult .evtable{min-width:0}.evnote{font-size:12px;padding:10px;background:#0e303b;border:1px solid #42616e;border-radius:10px;margin-top:10px}.evpass{color:#9ef0d2}.evlimit{color:#ffdca1}@media(max-width:440px){.evsettings{grid-template-columns:1fr 1fr}.evsettings label{min-height:28px}.evtable td:last-child{max-width:115px}}
-</style>
+<meta name="theme-color" content="#0c1b24"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icons/icon.svg"><title>Blackjack Omega II v3.25 · 8 колод</title>
 <style id="compactUi">
-.evsettings{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-.panel{padding:12px;margin-bottom:8px}
-.panel h2{margin-bottom:7px}
-.row{gap:6px}
-.evnote{padding:8px}
-.disclose{margin-top:9px;padding-top:8px}
-@media(max-width:600px){
- body{font-size:14px}
- .wrap{padding:8px 7px 26px}
- header{margin-bottom:8px}
- header h1{font-size:21px}
- header p{font-size:11px}
- .stats{gap:4px;margin-bottom:8px}
- .stat{padding:7px 8px}
- .stat label{font-size:10px}
- .stat strong{font-size:18px;margin:3px 0}
- .panel{padding:9px;margin-bottom:7px;border-radius:12px}
- .panel h2{font-size:15px;margin-bottom:6px}
- .cards{gap:5px;min-height:34px;margin:6px 0}
- .chip{min-width:34px;height:40px;font-size:16px}
- .ranks{gap:3px}
- .ranks button{padding:7px 0;font-size:12px}
- .row{gap:5px}
- .row button,.row select,select{padding:6px 8px}
- .evsettings{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:7px 0}
- .evsettings label{font-size:10px}
- .evtable{font-size:12px}
- .evtable td,.evtable th{padding:6px 4px}
- .evtable td strong{font-size:14px}
- .evnote{padding:7px;margin-top:7px}
- .evstatus{padding:8px;margin-top:7px}
- .evfoot{margin:7px 0 0}
- .actions{gap:5px;margin-top:7px}
- .action{padding:7px}
- .action b{font-size:13px}
- .action ul{margin-top:5px;padding-left:15px}
- .action li+li{margin-top:3px}
-}
-@media(max-width:390px){
- .wrap{padding-left:5px;padding-right:5px}
- .actions{grid-template-columns:1fr}
- .evsettings{gap:4px}
- .evtable td:last-child{max-width:105px}
-}
+:root{color-scheme:dark;--bg:#0b1c25;--panel:#142d38;--line:#35535e;--text:#eff9f8;--muted:#b3cad0;--accent:#6de3bd}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#204c53,var(--bg) 55%);color:var(--text);font:15px/1.5 system-ui,sans-serif}main{max-width:700px;margin:auto;padding:20px 14px 35px}header{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:18px}h1{font-size:23px;letter-spacing:-.7px;margin:0}h2{font-size:16px;margin:0 0 10px}p{margin:6px 0 12px}.muted,.small,label{color:var(--muted)}.small{font-size:12px}.badge{color:#bdffe8;background:#214d46;border:1px solid #3b7c67;border-radius:20px;padding:4px 10px;font-size:12px;white-space:nowrap}.panel{background:linear-gradient(135deg,#173440,#112832);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}.row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}button,select{font:inherit;border-radius:10px;padding:10px 12px;color:var(--text);background:#244750;border:1px solid #53747b;max-width:100%}button{font-weight:700;cursor:pointer;touch-action:manipulation}button:disabled{opacity:.4;cursor:default}button.primary{background:#316c59;border-color:var(--accent);color:#fff}button:focus-visible,select:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}a{color:var(--accent)}.deal{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}.cards{display:flex;gap:6px;margin-top:8px;min-height:66px}.card{display:flex;justify-content:center;align-items:center;min-width:47px;height:66px;border-radius:9px;background:#f0f9f5;border:1px solid #d3ede6;color:#17404a;font-size:24px;font-weight:800;box-shadow:0 4px 0 #081d24}.card.back{background:repeating-linear-gradient(45deg,#245b58,#245b58 3px,#326d65 3px,#326d65 6px);border:2px solid #a6d6c7;color:#d9f7ec}.hint{background:#123e36;border:1px solid #4a9278;padding:14px;border-radius:12px;margin:12px 0}.hint strong{font-size:23px;display:block;color:#caffea}.status{font-size:13px;color:var(--muted);margin:10px 0}.warn{padding:11px;background:#3d3526;border:1px solid #7d6940;border-radius:10px;color:#ffe4ab;font-size:13px;margin-bottom:12px}[hidden]{display:none!important}summary{cursor:pointer;font-weight:700}details>summary{margin-bottom:0}details[open]>summary{margin-bottom:12px}.evsettings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0}.evsettings label{display:block;font-size:11px;margin-bottom:5px}.evsettings select{width:100%;font-size:12px;padding:8px}.evtable{width:100%;border-collapse:collapse;font-size:13px}.evtable th,.evtable td{padding:8px 4px;text-align:left;border-bottom:1px solid var(--line)}.evtable th{color:var(--muted);font-weight:400}.evtable td:last-child,.evtable th:last-child{text-align:right;font-variant-numeric:tabular-nums}.evtable tr.best td{color:var(--accent);font-weight:700}.evresult{overflow:auto}.feedback{font-size:14px;margin:10px 0}.footer{font-size:11px;color:var(--muted);margin-top:18px}.spacer{flex:1}#strategyStats{font-size:12px;color:var(--muted);margin-top:12px}#strategyAnswer{flex:1;min-width:150px}
+@media(max-width:600px){main{padding:12px 10px 26px}header{margin-bottom:12px}h1{font-size:21px}.panel{padding:12px;margin-bottom:9px}.evsettings{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card{height:60px;min-width:43px;font-size:22px}.cards{min-height:60px}.hint strong{font-size:21px}.deal{gap:8px}.row button{font-size:13px}#strategyNew{flex:1}.badge{font-size:11px;padding:3px 8px}}
 </style></head>
-<body><main class="wrap">
-<header><div><h1>♠ Blackjack Omega II <span class="muted">· v3.24</span></h1><p>Учебная finite-shoe модель · exact SPLIT/resplit · 8 колод</p></div><span class="pill">ОФЛАЙН · БЕЗ ДЕНЕГ</span></header>
-<div class="stats"><div class="stat"><label>Omega II RC</label><strong id="rc">0</strong></div><div class="stat"><label>True Count*</label><strong id="tc">0,00</strong></div><div class="stat"><label>Карт осталось</label><strong id="remaining">416</strong></div></div>
-<div class="warn" id="tabConflictNotice" role="status" aria-live="polite" hidden>Карты или правила изменены в другой вкладке. Старый расчёт очищен; сохранение из этой вкладки остановлено. Загрузка заменит её текущие данные сохранёнными.<button type="button" id="tabConflictReload">Загрузить сохранённые данные</button></div>
-<div class="warn" id="storageNotice" role="status" aria-live="polite" hidden></div>
-<section class="panel"><h2>1. Ввод карт</h2><div class="modes" id="target"><button class="active" data-target="player">Моя рука</button><button data-target="dealer">Дилер</button><button data-target="other">Остальные</button></div>
-<div class="cards" id="cards" aria-live="polite"></div><div class="ranks" id="ranks"></div>
-<div class="row" style="margin-top:11px"><button id="undo">↶ Отменить</button><button id="next">Новая рука</button><span class="spacer"></span><button id="reset">↻ Тасовка</button></div><div class="small" style="margin-top:8px">«Новая рука» сохраняет известные карты; «Тасовка» очищает историю и счёт. Карты дилера вводятся только после раскрытия.</div><div class="warn" id="shuffleWarn" hidden></div></section>
-<section class="panel"><h2>2. Учебные подсказки по действиям</h2><div id="guide"><div class="small">Введи две карты в «Моя рука» и одну открытую карту дилера.</div></div>
-<div class="inline-select" style="margin-top:12px"><label for="surrender">Сдача руки в модели:</label><select id="surrender"><option value="no">Не разрешена</option><option value="yes">Разрешена (учебное допущение)</option></select></div>
-<div class="inline-select" style="margin-top:8px"><label for="surrenderTiming">Тип сдачи:</label><select id="surrenderTiming"><option value="late">Поздняя (приоритет блэкджека дилера)</option><option value="early">Ранняя (до проверки)</option></select></div>
-<div class="inline-select" style="margin-top:8px"><label for="splitpolicy">Разделение:</label><select id="splitpolicy"><option value="rank">Одинаковый ранг</option><option value="value">Одинаковое значение</option></select></div>
-<p class="hint">Доступность действий зависит от настроек. Подсказки поясняют математику виртуальных рук, но не советуют размеры реальных ставок.</p></section>
-
-<section class="panel" id="evPanel"><h2>3. Finite-shoe EV · учебные сценарии</h2>
-<p class="small">Математическое ожидание результата на 1 условную единицу; карты извлекаются без возвращения. Скрытая карта дилера неизвестна и не используется при выборе продолжения.</p>
-<div class="evsettings">
-  <div><label for="evPeek">Проверка блэкджека</label><select id="evPeek"><option value="yes">Peek: дилер проверил</option><option value="no">Без peek · закрытая карта выдана</option></select></div>
-  <div><label for="evSoft">Правило дилера</label><select id="evSoft"><option value="s17">S17 · стоит на soft 17</option><option value="h17">H17 · берёт на soft 17</option></select></div>
-  <div><label for="evCharlie">Charlie (карт)</label><select id="evCharlie"><option value="6">6 карт</option><option value="7">7 карт</option><option value="0">Выключено</option></select></div>
-  <div><label for="evDoublePolicy">DOUBLE разрешено</label><select id="evDoublePolicy"><option value="any2">На любых двух картах</option><option value="9-11">При сумме 9–11</option><option value="10-11">При сумме 10–11</option></select></div>
-  <div><label for="evDealerBJSettlement">Без peek: натуральный BJ дилера</label><select id="evDealerBJSettlement"><option value="loseAll">Теряются все условные единицы</option><option value="originalOnly">Только первоначальная единица</option></select></div>
-  <div><label for="evBJPayout">Выплата за натуральный BJ</label><select id="evBJPayout"><option value="1.5">3:2 (+1,5)</option><option value="1.2">6:5 (+1,2)</option></select></div>
-  <div><label for="evDAS">Удвоение после SPLIT</label><select id="evDAS"><option value="no">Нет</option><option value="yes">Да (DAS)</option></select></div>
-  <div><label for="evSplitAces">Разделённые тузы</label><select id="evSplitAces"><option value="one">Одна карта на руку</option><option value="hit">Можно продолжать добор</option></select></div>
-  <div><label for="evCharlieSplit">Charlie после SPLIT</label><select id="evCharlieSplit"><option value="no">Нет</option><option value="yes">Да</option></select></div>
-  <div><label for="evResplit">Повторный SPLIT</label><select id="evResplit"><option value="no">Нет</option><option value="yes">Да, exact</option></select></div>
-  <div><label for="evMaxSplitHands">Максимум рук</label><select id="evMaxSplitHands"><option value="2">2 руки</option><option value="3" selected>3 руки</option><option value="4">4 руки</option></select></div>
-  <div><label for="evResplitAces">Повторно делить тузы</label><select id="evResplitAces"><option value="no">Нет</option><option value="yes">Да</option></select></div>
-  <div><label for="evUnit">Единицы</label><select id="evUnit" disabled><option>Виртуальные учебные очки</option></select></div>
-</div>
-<div class="row"><button type="button" class="evbutton" id="evCompute">Рассчитать все сценарии</button><button type="button" id="evDoubleCompute">Удвоить · расчёт</button><button type="button" id="evSplitCompute">SPLIT · расчёт</button><button type="button" id="evResplitCompute">SPLIT + resplit · exact</button><button type="button" id="evCancel" hidden>Прервать вычисление</button></div>
-<p class="small">Кнопки «Удвоить», «SPLIT» и «SPLIT + resplit» запускают математический расчёт <b>виртуальных сценариев</b>, а не реальные игровые действия. Полный resplit использует очередь рук, общий остаток колоды и единый исход дилера. Если exact-расчёт не укладывается в лимит, число не показывается.</p>
-<div class="row" style="margin-top:9px"><button type="button" id="selfTest">Проверить базовую математику</button><span class="small" id="selfTestResult" role="status">Это быстрая проверка, не доказательство точности всех сценариев.</span></div>
-<div class="evnote" id="appUpdateNotice" hidden role="status" aria-live="polite">
- Новая версия приложения установлена. Карты и учебные правила сохранены. Предыдущий расчёт очищен.
- <button type="button" id="appUpdateReload">Открыть новую версию</button>
-</div>
-<p class="small"><a href="./update.html">Проверить обновление приложения без удаления данных</a></p>
-<div id="evStatus" class="evstatus" role="status">Введи от 2 карт игрока и одну карту дилера. Точный SPLIT рассчитывается для двух рук; отдельная кнопка включает resplit до выбранного лимита.</div>
-<div class="row" style="margin-top:8px"><button type="button" id="evDiagnosticShow">Показать диагностику</button><button type="button" id="evDiagnosticCopy">Скопировать отчёт</button><span class="small" id="evDiagnosticState" role="status">Отчёт хранится только на устройстве и никуда не отправляется.</span></div>
-<textarea id="evDiagnosticText" readonly hidden aria-label="Диагностика последнего вычисления" style="width:100%;min-height:150px;margin-top:8px;padding:8px;border-radius:8px;background:#102c36;color:#eff9f8;border:1px solid #35515d;font:12px/1.45 monospace"></textarea>
-<div class="evresult" id="evResult"></div>
-<p class="evfoot"><b>Допущение модели:</b> «без peek» означает, что дилер уже получил закрытую карту, но не проверил её. Это не European no-hole-card. Ранняя сдача и EV после peek не сопоставляются в одной таблице; движок откажет в несовместимой конфигурации. Неподтверждённые правила мобильного приложения задаются вручную.</p>
-<p class="evfoot">При Charlie=нет продолжение после 6 карт разрешено. В тяжёлых состояниях точный расчёт может быть отменён по лимиту времени, без подстановки приблизительного ответа. <b>Late surrender и no-peek</b> учитывают возможный натуральный блэкджек дилера. Страховка имеет отдельный учебный EV и не смешивается с основным результатом.</p>
-<p class="evfoot">Сравнение математических сценариев — не инструкция по реальным ставкам. «Ещё карта»: после первого добора продолжение рассчитывается рекурсивно. Две разделённые руки могут добирать карты и удваивать (если разрешено); exact resplit включается отдельно и учитывает общий остаток и скрытую карту. Настройки — учебные допущения, а не подтверждённые правила конкретного мобильного приложения.</p>
+<body><main>
+<header><div><h1>♠ Blackjack Omega II</h1><div class="small">Тренажёр · свежие 8 колод в каждой задаче</div></div><span class="badge">v3.25 · офлайн</span></header>
+<div id="storageNotice" class="warn" role="status" aria-live="polite" hidden></div>
+<div id="appUpdateNotice" class="warn" role="status" hidden>Новая версия установлена. Открой её, чтобы продолжить.<button id="appUpdateReload" type="button">Открыть новую версию</button></div>
+<section class="panel" aria-labelledby="taskTitle"><div class="row"><h2 id="taskTitle">Учебная раздача</h2><span class="spacer"></span><span class="badge">8 колод</span></div>
+<p class="small">Каждая задача начинается заново. Предыдущие карты не влияют на следующую.</p>
+<div class="deal"><div><span class="small">Твоя рука</span><div id="playerCards" class="cards" aria-label="Карты игрока"></div></div><div><span class="small">Дилер</span><div id="dealerCards" class="cards" aria-label="Открытая карта дилера"></div></div></div>
+<div class="row"><button id="strategyNew" class="primary" type="button">Новая задача</button><button id="splitCompute" type="button" hidden>Сравнить SPLIT</button><button id="evCancel" type="button" hidden>Прервать</button></div>
+<div id="strategyStatus" class="status" role="status" aria-live="polite">Готовлю подсказку…</div>
+<div id="strategyHint" class="hint" aria-live="polite"><span class="small">Подсказка</span><strong id="bestAction">Считаю…</strong><span id="hintDetail" class="small"></span></div>
+<div class="row"><label class="small" for="strategyAnswer">Твоя попытка:</label><select id="strategyAnswer"><option value="">Можно не отвечать</option><option value="stand">Остановиться</option><option value="hit">Добрать</option><option value="double">Удвоить</option><option value="surrender">Сдаться</option><option value="split">Разделить</option></select><button id="strategyCheck" type="button">Проверить</button></div>
+<div id="strategyFeedback" class="feedback" role="status"></div><div id="strategyStats" role="status"></div>
+<details><summary>Математическое ожидание действий</summary><div id="strategyResult" class="evresult"></div><p class="small">Результат на одну условную единицу. Подсказка открыта сразу; отвечать необязательно.</p></details>
 </section>
-<details class="panel rule-accordion" id="rulePanel"><summary>4. Особые исходы: блэкджек, страховка, перебор</summary>
-<p class="small">Учебные примеры: правила завершения руки. Этот блок не меняет EV, не выбирает страховку и не подсказывает ставки.</p>
-<div class="evsettings">
- <div><label for="rulePlayer">Состояние игрока</label><select id="rulePlayer"><option value="bust">Перебор (22 и больше)</option><option value="20">Обычная сумма 20</option><option value="natural">Натуральный блэкджек</option><option value="charlie">6 карт без перебора (Charlie)</option></select></div>
- <div><label for="ruleDealer">Состояние дилера</label><select id="ruleDealer"><option value="bust">Перебор (22 и больше)</option><option value="20">Обычная сумма 20</option><option value="19">Обычная сумма 19</option><option value="natural">Натуральный блэкджек</option></select></div>
-</div>
-<div class="evnote" id="ruleOutcome" role="status"></div>
-<div class="evnote"><b>Страховка (учебное объяснение)</b><div id="insuranceLesson" class="small" style="margin-top:5px"></div>
-<div id="insuranceMath" class="small" style="margin-top:8px" aria-live="polite"></div>
-<p class="small">В распространённой модели страховая часть рассчитывается отдельно и выплачивается 2:1 только при натуральном блэкджеке дилера. Страховка не меняет исход основной руки, не превращает двойной перебор в ничью и <b>не включена в показанный выше EV</b>. Здесь нет подсказок о выборе страховки.</p></div>
-</details>
-<section class="panel"><h2>5. Следующая случайная карта</h2><div class="numbers"><div class="number"><strong id="bust">—</strong><span>Перебор при доборе</span></div><div class="number"><strong id="ten">—</strong><span>Карта со значением 10</span></div><div class="number"><strong id="charlie">—</strong><span>Charlie после добора</span></div></div><details class="disclose"><summary>Показать все вероятности</summary><div id="probTable"></div><p class="hint" id="probHint">Вероятности следующей публичной карты учитывают выбранный режим проверки дилера. Скрытая карта дилера остаётся неизвестной.</p></details></section>
-<section class="panel" id="betGuide"><h2>6. Когда ставку рассматривать, а когда пропустить</h2>
-<p class="small">Обязательной ставки не бывает. Показанный EV относится к одной условной единице в заданной раздаче и не является готовым расчётом преимущества для реальной ставки. Раздел помогает читать учебный EV и соблюдать заранее выбранные ограничения; приложение не выдаёт персональный сигнал, размер ставки или гарантию выигрыша.</p>
-<div class="actions">
- <div class="action"><b>Рассматривать виртуальную ставку</b><ul class="small"><li>правила стола и состав известных карт введены точно;</li><li>расчёт завершён и EV выше 0 для выбранной учебной модели;</li><li>лимит бюджета и времени заранее установлен, а решение принято до результата;</li><li>положительный EV понимается как свойство длинной серии, а не обещание выиграть эту раздачу.</li></ul></div>
- <div class="action"><b>От ставки отказаться</b><ul class="small"><li>EV отрицательный, равен нулю, неизвестен или расчёт прерван по лимиту;</li><li>правила не совпадают с моделью, состояние карт повреждено или есть конфликт вкладок;</li><li>достигнут лимит потерь/времени, хочется отыграться или для игры нужны заёмные либо необходимые деньги;</li><li>решение принимается в усталости, под давлением или после изменения условий.</li></ul></div>
-</div>
-<div class="evnote"><b>Практическое правило:</b> если хотя бы одно ключевое условие неизвестно, считай ожидание неопределённым и пропускай раздачу. Сначала проверь карты, правила и завершённый расчёт, затем сверяйся с личным лимитом.</div>
-<details class="disclose"><summary>Тренажёр стратегии по составу и счёту</summary>
-<p class="small">Сравнение использует конкретные карты, текущий остаток, S17/H17, peek, surrender и Charlie. Для готового сценария учитываются карты из истории и «Остальные», а показанные карты руки заменяются выбранным примером. Базовая линия — та же модель на свежем восьмиколодном башмаке; это учебная точка сравнения, а не универсальная таблица казино.</p>
-<div class="row"><button type="button" id="strategyNew">Новая случайная задача</button><label class="small" for="strategyScenario">Сценарий:</label><select id="strategyScenario"><option value="random">Случайная задача</option><option value="current">Текущая раздача</option><option value="hard16v10">10+6 против 10</option><option value="hard12v6">10+2 против 6</option><option value="soft18v9">A+7 против 9</option><option value="pair88v10">8+8 против 10</option><option value="hard11v6">5+6 против 6</option><option value="hard10v9">5+5 против 9</option><option value="soft17v2">A+6 против 2</option><option value="pair99v7">9+9 против 7</option></select><label class="small" for="strategyAnswer">Моя попытка:</label><select id="strategyAnswer"><option value="">Не отвечать</option><option value="stand">Остановиться</option><option value="hit">Добор</option><option value="double">Удвоение</option><option value="surrender">Сдача</option><option value="splitTwoCardStop">SPLIT</option></select><button type="button" id="strategyCheck">Проверить попытку</button><button type="button" id="edgeCompute">Рассчитать edge по составу башмака</button></div>
-<div id="strategyStatus" class="evstatus" role="status">Подсказка появится сразу после выбора сценария или нажатия «Новая случайная задача».</div>
-<div id="strategyResult" class="evresult"></div>
-<div id="strategyStats" class="evnote" role="status">Попыток: 0 · верно: 0 · среднее отставание EV: 0,000000</div>
-<details class="disclose"><summary>Рекомендация по виртуальным фишкам</summary>
-<p class="small">Это учебная схема для бесплатного режима. Она использует только aggregate edge до новой раздачи и не относится к EV уже выданной руки.</p>
-<div class="row"><label class="small" for="chipBankroll">Виртуальный банк:</label><input id="chipBankroll" type="number" min="1" max="1000000" step="1" value="100" inputmode="numeric" style="width:110px"><span class="small">фишек</span></div>
-<div id="chipRecommendation" class="evnote" role="status">Сначала рассчитай edge по текущему составу башмака.</div>
-<p class="evfoot">Правило тренажёра: при неположительном или неизвестном edge — 0 фишек; x1 рассматривается при положительном edge; x2 — только при edge от 1% и банке от 100 фишек. После проигрыша ставка не увеличивается.</p>
-</details>
-<p class="evfoot">Edge усредняет оптимальное одиночное решение по всем возможным двум картам игрока и upcard из текущего остатка. Карты текущей руки считаются уже изъятыми; для оценки следующей раздачи нажми «Новая рука». Edge учитывает момент до проверки дилера, количество оставшихся карт и выбранные правила; полный SPLIT в этот показатель не входит и считается отдельным режимом. Универсального порога True Count нет: edge пересчитывается по фактическому остатку, проникновению и правилам.</p>
-</details>
-</section>
-<p class="footer">* True Count = Running Count ÷ оставшиеся колоды. Без полного знания вышедших карт значение может быть недостоверным. Режим предназначен для самостоятельного изучения вероятностей с виртуальными картами; приложение не рассчитывает размер реальной ставки и не заменяет финансовую консультацию.</p>
-</main><script id="omegaCore">/* Blackjack Omega II: offline finite-shoe teaching calculation.
+<details class="panel"><summary>Выбрать свои карты</summary><p class="small">Только две карты игрока и открытая карта дилера. Основа расчёта всегда — новые 8 колод.</p><div class="evsettings"><div><label for="playerOne">Первая карта</label><select id="playerOne"></select></div><div><label for="playerTwo">Вторая карта</label><select id="playerTwo"></select></div><div><label for="dealerUp">Дилер</label><select id="dealerUp"></select></div></div><button id="customTask" type="button">Показать подсказку</button></details>
+<details class="panel" id="rulesPanel"><summary>Правила раздачи</summary><div class="evsettings">
+<div><label for="evSoft">Дилер</label><select id="evSoft"><option value="s17">S17</option><option value="h17">H17</option></select></div>
+<div><label for="evPeek">Проверка блэкджека</label><select id="evPeek"><option value="yes">Успешный peek</option><option value="no">Без peek</option></select></div>
+<div><label for="evCharlie">Charlie</label><select id="evCharlie"><option value="6">6 карт</option><option value="7">7 карт</option><option value="0">Выключен</option></select></div>
+<div><label for="evDoublePolicy">Удвоение</label><select id="evDoublePolicy"><option value="any2">Любые две карты</option><option value="9-11">Сумма 9–11</option><option value="10-11">Сумма 10–11</option></select></div>
+<div><label for="evBJPayout">Выплата blackjack</label><select id="evBJPayout"><option value="1.5">3:2</option><option value="1.2">6:5</option></select></div>
+<div><label for="evDealerBJSettlement">Natural дилера без peek</label><select id="evDealerBJSettlement"><option value="loseAll">Все единицы</option><option value="originalOnly">Исходная единица</option></select></div>
+<div><label for="surrender">Сдача</label><select id="surrender"><option value="no">Выключена</option><option value="yes">Разрешена</option></select></div>
+<div><label for="surrenderTiming">Когда сдача</label><select id="surrenderTiming"><option value="late">Поздняя</option><option value="early">Ранняя</option></select></div>
+<div><label for="splitpolicy">Пара для SPLIT</label><select id="splitpolicy"><option value="rank">Одинаковый ранг</option><option value="value">Одинаковое значение</option></select></div>
+<div><label for="evDAS">Удвоение после SPLIT</label><select id="evDAS"><option value="no">Нет</option><option value="yes">Да</option></select></div>
+<div><label for="evMaxSplitHands">Максимум рук</label><select id="evMaxSplitHands"><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
+<div><label for="evSplitAces">Разделённые тузы</label><select id="evSplitAces"><option value="one">Одна карта</option><option value="hit">Можно добирать</option></select></div>
+<div><label for="evResplitAces">Повторное разделение тузов</label><select id="evResplitAces"><option value="no">Нет</option><option value="yes">Да</option></select></div>
+<div><label for="evCharlieSplit">Charlie после SPLIT</label><select id="evCharlieSplit"><option value="no">Нет</option><option value="yes">Да</option></select></div>
+</div><p class="small">Без peek закрытая карта уже выдана дилеру. Ранняя сдача требует режима без peek. Если полный SPLIT не успевает рассчитаться точно, подсказка сравнивает только обычные действия.</p></details>
+<p class="footer">Учебные раздачи с виртуальными очками. Карты учитываются только внутри текущей задачи. <a href="./update.html">Проверить обновление</a></p>
+</main>
+<script id="omegaCore">/* Blackjack Omega II: offline finite-shoe teaching calculation.
    All player choices use PUBLIC information only; never peek at simulated dealer hole.
    No financial/betting integrations. */
 (function(root){
@@ -832,572 +734,100 @@ const API={solve,solveMoments,solveSplit,solveResplit,doubleAllowed,chooseBestAc
 if(typeof module!=='undefined'&&module.exports)module.exports=API;
 root.OmegaFiniteEV=API;
 })(typeof window!=='undefined'?window:globalThis);
-</script><script>
-(function(){'use strict';
+</script><script id="trainerApp">(function(){'use strict';
+const E=window.OmegaFiniteEV,$=id=>document.getElementById(id);
 const RANKS=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
-const TAG={A:0,'2':1,'3':1,'4':2,'5':2,'6':2,'7':1,'8':0,'9':-1,'10':-2,J:-2,Q:-2,K:-2};
-const KEY='omega-mini-edu-v1';
-const RULE_KEY='omega-mini-edu-ev-rules-v1';
-const STRATEGY_STATS_KEY='omega-mini-strategy-stats-v1';
-const SAVED_RULE_OPTIONS={
- evPeek:['yes','no'],evSoft:['s17','h17'],evCharlie:['0','6','7'],
- evDoublePolicy:['any2','9-11','10-11'],
- evDealerBJSettlement:['loseAll','originalOnly'],evBJPayout:['1.5','1.2'],
- evDAS:['no','yes'],evSplitAces:['one','hit'],evCharlieSplit:['no','yes'],
- evResplit:['no','yes'],evMaxSplitHands:['2','3','4'],evResplitAces:['no','yes'],
- surrenderTiming:['late','early']
-};
-const storageProblems=new Map();
-let cardsNeedReset=false,tabConflict=false;
-const observedStorage=new Map();
-function markTabConflict(){
- if(tabConflict)return;
- tabConflict=true;
- if(activeWorker)cancelEV('Данные изменены в другой вкладке — расчёт остановлен.');
- lastEVReport=null;
- $('evResult').innerHTML='';$('evDiagnosticText').value='';$('evDiagnosticText').hidden=true;
- $('strategyResult').innerHTML='';$('strategyStatus').textContent='Загрузи сохранённые данные перед новым сравнением или расчётом edge.';
- lastEdgeResult=null;renderChipRecommendation();
- $('evDiagnosticState').textContent='Отчёт устарел: данные изменены в другой вкладке.';
- $('evStatus').textContent='Загрузи сохранённые данные перед новым расчётом.';
- $('tabConflictNotice').hidden=false;
- updateActionAvailability();
+const RULE_KEY='omega-eight-deck-rules-v1',STATS_KEY='omega-eight-deck-stats-v1';
+const OPTIONS={evSoft:['s17','h17'],evPeek:['yes','no'],evCharlie:['6','7','0'],evDoublePolicy:['any2','9-11','10-11'],evBJPayout:['1.5','1.2'],evDealerBJSettlement:['loseAll','originalOnly'],surrender:['no','yes'],surrenderTiming:['late','early'],splitpolicy:['rank','value'],evDAS:['no','yes'],evMaxSplitHands:['2','3','4'],evSplitAces:['one','hit'],evResplitAces:['no','yes'],evCharlieSplit:['no','yes']};
+const PRESETS=[{player:['10','6'],up:'10'},{player:['10','2'],up:'6'},{player:['A','7'],up:'9'},{player:['8','8'],up:'10'},{player:['5','6'],up:'6'},{player:['5','5'],up:'9'},{player:['A','6'],up:'2'},{player:['9','9'],up:'7'}];
+const NAMES={stand:'Остановиться',hit:'Добрать',double:'Удвоить',surrender:'Сдаться',split:'Разделить'};
+const errors=new Map();let task=null,activeWorker=null,timer=null,serial=0,splitPending=false,updated=false;
+let stats={attempts:0,correct:0,gap:0};
+const fmt=n=>Number(n).toLocaleString('ru-RU',{minimumFractionDigits:6,maximumFractionDigits:6});
+function notice(key,message){if(message)errors.set(key,message);else errors.delete(key);$('storageNotice').textContent=[...errors.values()].join(' ');$('storageNotice').hidden=!errors.size;}
+function read(key){try{return localStorage.getItem(key);}catch(e){notice(key,'Не удалось прочитать сохранённые настройки. Можно продолжить в этой вкладке.');return null;}}
+function write(key,value){try{localStorage.setItem(key,JSON.stringify(value));notice(key,'');}catch(e){notice(key,'Не удалось сохранить данные. До закрытия вкладки можно продолжать тренировку.');}}
+function loadRules(raw=read(RULE_KEY)){
+ notice('rules','');
+ let saved={};try{saved=raw?JSON.parse(raw):{};if(!saved||typeof saved!=='object'||Array.isArray(saved))throw Error('format');}catch(e){saved={};notice('rules','Сохранённые правила повреждены. Выбраны стандартные.');}
+ for(const [id,values] of Object.entries(OPTIONS))$(id).value=values.includes(saved[id])?saved[id]:values[0];
 }
-function storageIsCurrent(){
- if(tabConflict)return false;
- try{
-  for(const [key,value] of observedStorage){
-   if(localStorage.getItem(key)!==value){markTabConflict();return false;}
+function loadStats(raw=read(STATS_KEY)){
+ try{const s=raw?JSON.parse(raw):null;if(s&&Number.isInteger(s.attempts)&&Number.isInteger(s.correct)&&Number.isFinite(s.gap)&&s.attempts>=0&&s.correct>=0&&s.correct<=s.attempts&&s.gap>=0)return {attempts:s.attempts,correct:s.correct,gap:s.gap};}catch(e){}
+ return {attempts:0,correct:0,gap:0};
+}
+function rules(){const max=Number($('evMaxSplitHands').value);return E.validateRules({s17:$('evSoft').value==='s17',peek:$('evPeek').value==='yes',charlieCards:Number($('evCharlie').value),doublePolicy:$('evDoublePolicy').value,blackjackPayout:Number($('evBJPayout').value),dealerBJSettlement:$('evDealerBJSettlement').value,surrender:$('surrender').value==='yes',surrenderTiming:$('surrenderTiming').value,splitPolicy:$('splitpolicy').value==='rank'?'sameRank':'sameValue',doubleAfterSplit:$('evDAS').value==='yes',maxSplitHands:max,resplit:max>2,splitAcesOneCard:$('evSplitAces').value==='one',resplitAces:$('evResplitAces').value==='yes',charlieAfterSplit:$('evCharlieSplit').value==='yes'});}
+// The only removed cards are the three on THIS task. Never read, import, or
+// append the old shoe/history key. Each task starts from the core's 416 cards.
+function input(){return {player:[...task.player],up:task.up,visible:[...task.player,task.up],rules:rules(),limitMs:22000};}
+function renderStats(){const avg=stats.attempts?stats.gap/stats.attempts:0;$('strategyStats').textContent='Попыток: '+stats.attempts+' · верно: '+stats.correct+' · среднее отставание EV: '+fmt(avg);}
+function stop(message){if(timer!==null){clearTimeout(timer);timer=null;}if(activeWorker){activeWorker.terminate();activeWorker=null;}splitPending=false;$('evCancel').hidden=true;$('splitCompute').disabled=updated;if(message)$('strategyStatus').textContent=message;}
+function best(){let value=E.chooseBestAction(task?.actions);if(Number.isFinite(task?.actions?.split)&&(!value||task.actions.split>value.value+1e-12))value={name:'split',value:task.actions.split};return value;}
+function renderResult(){
+ const chosen=best();if(!chosen)return;
+ $('bestAction').textContent=NAMES[chosen.name];
+ $('hintDetail').textContent=task.splitEligible&&!Number.isFinite(task.actions.split)?'Обычные действия. Пару можно отдельно сравнить со SPLIT.':'EV '+fmt(chosen.value)+' на одну условную единицу.';
+ $('strategyResult').innerHTML='<table class="evtable"><thead><tr><th>Действие</th><th>EV</th></tr></thead><tbody>'+Object.entries(NAMES).filter(([a])=>Number.isFinite(task.actions[a])).map(([a,name])=>'<tr'+(chosen.name===a?' class="best"':'')+'><td>'+name+'</td><td>'+fmt(task.actions[a])+'</td></tr>').join('')+'</tbody></table>';
+ for(const option of $('strategyAnswer').options)if(option.value)option.disabled=!Number.isFinite(task.actions[option.value]);
+ $('strategyCheck').disabled=updated;$("splitCompute").hidden=!task.splitEligible||Number.isFinite(task.actions.split);
+}
+function acceptBasic(v){task.actions=Object.fromEntries(['stand','hit','double','surrender'].filter(a=>Number.isFinite(v.actions[a])).map(a=>[a,v.actions[a]]));task.splitEligible=Boolean(v.splitEligible);renderResult();$('strategyStatus').textContent='Подсказка готова. Ответ можно выбрать по желанию.';}
+function calculate(split=false){
+ if(updated)return;stop();const id=++serial;let data;try{data=input();}catch(e){$('bestAction').textContent='Проверь правила';$('strategyStatus').textContent=e.message;return;}
+ const mode=split?(data.rules.resplit?'resplit':'split'):'single';splitPending=split;
+ $('strategyStatus').textContent=split?'Сравниваю полный SPLIT. Сложный расчёт может закончиться без результата.':'Готовлю подсказку…';
+ if(split){$('splitCompute').disabled=true;$('evCancel').hidden=false;}
+ const onError=message=>{stop();$('strategyStatus').textContent=(split?'SPLIT не рассчитан. Подсказка относится к обычным действиям. ':'Подсказка не рассчитана. ')+message;if(!split)$('bestAction').textContent='Нет результата';};
+ if(typeof Worker==='undefined'||location.protocol==='file:'){
+  try{if(split){onError('Для отдельного расчёта SPLIT открой PWA через HTTPS.');return;}acceptBasic(E.solve(data));}catch(e){onError(e.message);}return;
+ }
+ let worker;try{worker=new Worker('./omega_worker.js');}catch(e){onError('Не удалось запустить расчёт. '+e.message);return;}activeWorker=worker;
+ timer=setTimeout(()=>{if(activeWorker!==worker)return;serial++;onError('Достигнут лимит времени.');},30000);
+ worker.onmessage=event=>{
+  if(activeWorker!==worker||id!==serial)return;const m=event.data;
+  if(m.type==='basic'&&!split)acceptBasic(m.value);
+  if(m.type==='split'||m.type==='resplit'){
+   if(m.value.exact!==true||!Number.isFinite(m.value.ev)){onError('Точный результат не подтверждён.');return;}
+   task.actions.split=m.value.ev;renderResult();$('strategyStatus').textContent='Полный SPLIT сравнен с обычными действиями.';
   }
-  return true;
- }catch(e){storageNotice('sync','Не удалось проверить актуальность данных. Сохранение и новый расчёт остановлены; открой приложение заново.');return false;}
-}
-function storageNotice(key,message){
- if(message)storageProblems.set(key,message);else storageProblems.delete(key);
- const box=document.getElementById('storageNotice');
- if(box){box.textContent=[...storageProblems.values()].join(' ');box.hidden=storageProblems.size===0;}
-}
-function readSaved(key){
- try{const raw=localStorage.getItem(key);observedStorage.set(key,raw);return raw;}
- catch(e){storageNotice('read-'+key,'Не удалось прочитать сохранённые данные. Они не будут перезаписаны; попробуй открыть приложение заново.');return undefined;}
-}
-function writeSaved(key,value){
- if(tabConflict||storageProblems.has('read-'+key))return;
- const serialized=JSON.stringify(value);
- const failed=()=>storageNotice('write-'+key,'Не удалось сохранить '+(key===KEY?'карты':'правила')+'. Изменения доступны только в этой вкладке; не закрывай её до успешного сохранения.');
- const write=()=>{
-  if(!storageIsCurrent())return;
-  try{
-   localStorage.setItem(key,serialized);observedStorage.set(key,serialized);
-   storageNotice('write-'+key,'');
-  }catch(e){failed();}
+  if(m.type==='error')onError(m.message);
+  if(m.type==='done')stop();
  };
- // The comparison AND write share a lock across tabs of this origin.
- // Queued writes re-check both keys, so an external update cannot be overwritten.
- if(typeof navigator!=='undefined'&&navigator.locks){
-  navigator.locks.request('omega-mini-storage',write).catch(failed);
- }else{
-  if(typeof navigator!=='undefined')storageNotice('locks','Браузер не поддерживает защиту одновременных записей. Используй одну вкладку приложения.');
-  write();
- }
+ worker.onerror=event=>{if(activeWorker===worker&&id===serial)onError(event.message||'Ошибка расчёта');};
+ worker.postMessage({mode,input:data});
 }
-function restoreEVSettings(){
- const raw=readSaved(RULE_KEY);if(raw==null)return;
- try{
-  const saved=JSON.parse(raw);
-  if(!saved||typeof saved!=='object'||Array.isArray(saved))throw Error('format');
-  let repaired=false;
-  for(const [id,allowed] of Object.entries(SAVED_RULE_OPTIONS)){
-   if(Object.hasOwn(saved,id)){
-    if(allowed.includes(saved[id]))$(id).value=saved[id];else repaired=true;
-   }
-  }
-  if(repaired)storageNotice('rules','Некорректные настройки правил заменены стандартными. Проверь правила перед расчётом.');
- }catch(e){storageNotice('rules','Сохранённые правила повреждены. Используются стандартные настройки; проверь их перед расчётом.');}
+function setTask(scenario){
+ stop();serial++;const player=scenario.player,up=scenario.up;
+ if(!Array.isArray(player)||player.length!==2||!player.every(r=>RANKS.includes(r))||!RANKS.includes(up))throw Error('Для задачи нужны две карты игрока и одна карта дилера');
+ task={player:[...player],up,actions:{},recorded:false,splitEligible:false};
+ $('playerOne').value=player[0];$('playerTwo').value=player[1];$('dealerUp').value=up;
+ $('playerCards').innerHTML=player.map(r=>'<span class="card">'+r+'</span>').join('');$('dealerCards').innerHTML='<span class="card">'+up+'</span><span class="card back" aria-label="Скрытая карта">?</span>';
+ $('strategyAnswer').value='';$('strategyFeedback').textContent='';$('strategyResult').innerHTML='';$('bestAction').textContent='Считаю…';$('hintDetail').textContent='';$('strategyCheck').disabled=true;$('splitCompute').hidden=true;
+ calculate();
 }
-function saveEVSettings(){
- const saved=Object.fromEntries(Object.keys(SAVED_RULE_OPTIONS).map(id=>[id,$(id).value]));
- writeSaved(RULE_KEY,saved);
+function newTask(){let choices=PRESETS.filter(s=>!task||s.up!==task.up||s.player.join(',')!==task.player.join(','));setTask(choices[Math.floor(Math.random()*choices.length)]);}
+async function checkAnswer(){
+ if(updated||!task)return;const answer=$('strategyAnswer').value,chosen=best();
+ if(!answer){$('strategyFeedback').textContent='Подсказка уже показана. Можно продолжить без ответа.';return;}
+ if(!chosen||!Number.isFinite(task.actions[answer])){$('strategyFeedback').textContent='Для этого действия пока нет точного результата.';return;}
+ if(splitPending){$('strategyFeedback').textContent='Дождись сравнения SPLIT или прерви его перед проверкой.';return;}
+ const gap=Math.max(0,chosen.value-task.actions[answer]);$('strategyFeedback').textContent=gap<=1e-12?'Верно: выбрано лучшее из рассчитанных действий.':'Лучше: '+NAMES[chosen.name]+'. Разница EV: '+fmt(gap)+'.';
+ if(task.recorded)return;task.recorded=true;
+ const update=()=>{if(!errors.has(STATS_KEY)){const raw=read(STATS_KEY);if(raw!==null)stats=loadStats(raw);}stats.attempts++;if(gap<=1e-12)stats.correct++;stats.gap+=gap;write(STATS_KEY,stats);renderStats();};
+ try{if(typeof navigator!=='undefined'&&navigator.locks?.request)await navigator.locks.request('omega-eight-deck-stats',update);else update();}catch(e){notice('stats','Не удалось сохранить результат попытки.');}
 }
-const $=id=>document.getElementById(id);
-const initial=()=>({player:[],dealer:[],other:[],history:[],selected:'player',surrender:false,splitPolicy:'rank'});
-let state=initial();let undoStack=[];
-let strategyTask=null;
-let lastEdgeResult=null;
-let strategyStats=loadStrategyStats();
-function loadStrategyStats(){
- try{
-  const raw=localStorage.getItem(STRATEGY_STATS_KEY);if(!raw)return {attempts:0,correct:0,gap:0};
-  const value=JSON.parse(raw);
-  if(!value||!Number.isInteger(value.attempts)||!Number.isInteger(value.correct)||!Number.isFinite(value.gap)||value.attempts<0||value.correct<0||value.correct>value.attempts||value.gap<0)throw Error('format');
-  return {attempts:value.attempts,correct:value.correct,gap:value.gap};
- }catch(e){return {attempts:0,correct:0,gap:0};}
-}
-function saveStrategyStats(){
- try{localStorage.setItem(STRATEGY_STATS_KEY,JSON.stringify(strategyStats));}catch(e){}
-}
-function renderStrategyStats(){
- const box=$('strategyStats');if(!box)return;
- const avg=strategyStats.attempts?strategyStats.gap/strategyStats.attempts:0;
- box.textContent='Попыток: '+strategyStats.attempts+' · верно: '+strategyStats.correct+' · среднее отставание EV: '+fmt(avg,6);
-}
-renderStrategyStats();
-function renderChipRecommendation(){
- const box=$('chipRecommendation');if(!box)return;
- if(!lastEdgeResult){box.textContent='Сначала рассчитай edge по текущему составу башмака.';return;}
- const bankroll=Number($('chipBankroll')?.value);
- if(!Number.isFinite(bankroll)||bankroll<1){box.textContent='Укажи виртуальный банк не меньше 1 фишки.';return;}
- const edge=Number(lastEdgeResult.playerEdge);
- const m2=Number(lastEdgeResult.expectedSecondMoment),variance=Number(lastEdgeResult.variance),sigma=Number(lastEdgeResult.standardDeviation);
- if(!Number.isFinite(edge)||!Number.isFinite(m2)||!Number.isFinite(variance)||!Number.isFinite(sigma)){
-  box.textContent='Edge или variance не подтверждены — рекомендация отсутствует.';return;
- }
- const strong=edge>=0.01, x1=edge>0?'Рассматривать x1':'Пропустить', x2=strong&&bankroll>=100?'Рассматривать x2':edge>0?'Оставить x1':'Пропустить';
- const chips=strong&&bankroll>=100?2:edge>0?1:0;
- box.innerHTML='<table class="evtable"><thead><tr><th>Вариант</th><th>EV</th><th>M2</th><th>Var</th><th>σ</th><th>Решение</th></tr></thead><tbody>'
-  +'<tr><td>Ставка x1</td><td><strong>'+fmt(edge,6)+'</strong></td><td>'+fmt(m2,6)+'</td><td>'+fmt(variance,6)+'</td><td>'+fmt(sigma,6)+'</td><td>'+x1+'</td></tr>'
-  +'<tr><td>Ставка x2</td><td><strong>'+fmt(edge*2,6)+'</strong></td><td>'+fmt(m2*4,6)+'</td><td>'+fmt(variance*4,6)+'</td><td>'+fmt(sigma*2,6)+'</td><td>'+x2+'</td></tr>'
-  +'</tbody></table><p class="small">Edge: '+fmt(edge*100,3)+'%; variance и σ относятся к распределению результата до новой раздачи. Виртуальный банк: '+fmt(bankroll,0)+'; текущая рекомендация: <b>'+chips+' '+(chips===1?'фишка':'фишки')+'</b>. EV x2 = EV x1 × 2; M2 и variance умножаются на 4, σ — на 2. После проигрыша ставку не увеличивай.</p>';
-}
-function restoreCards(){
- const raw=readSaved(KEY);
- if(raw===undefined){cardsNeedReset=true;return;}
- if(raw===null)return;
- try{
-  const old=JSON.parse(raw);
-  if(!old||typeof old!=='object'||Array.isArray(old))throw Error('format');
-  const counts=Object.fromEntries(RANKS.map(r=>[r,0]));
-  // Never discard a card or invent a missing zone: the whole shoe depends on it.
-  for(const key of ['player','dealer','other','history']){
-   if(!Array.isArray(old[key])||old[key].length>416)throw Error('cards');
-   for(const rank of old[key])if(typeof rank!=='string'||!RANKS.includes(rank)||++counts[rank]>32)throw Error('rank');
-  }
-  if(old.player.length>21||old.dealer.length>11)throw Error('hand');
-  state={player:[...old.player],dealer:[...old.dealer],other:[...old.other],history:[...old.history],
-   selected:['player','dealer','other'].includes(old.selected)?old.selected:'player',
-   surrender:typeof old.surrender==='boolean'?old.surrender:false,
-   splitPolicy:['rank','value'].includes(old.splitPolicy)?old.splitPolicy:'rank'};
-  if(['selected','surrender','splitPolicy'].some(k=>Object.hasOwn(old,k)&&old[k]!==state[k]))
-   storageNotice('cards-settings','Некорректные настройки ввода заменены стандартными. Сохранённые карты восстановлены.');
- }catch(e){
-  cardsNeedReset=true;
-  storageNotice('cards','Сохранённые карты повреждены или неполны. Расчёт и ввод остановлены; исходная запись сохранена. Нажми «Тасовка», чтобы начать новый башмак.');
- }
-}
-restoreCards();
-function fmt(n,d=1){return Number(n).toLocaleString('ru-RU',{minimumFractionDigits:d,maximumFractionDigits:d})}
-function allKnown(){return [...state.history,...state.player,...state.dealer,...state.other]}
-function shoe(){const counts=Object.fromEntries(RANKS.map(r=>[r,32]));for(const r of allKnown()){if(counts[r]===undefined||counts[r]<=0)throw Error('Некорректный остаток карт');counts[r]--}return counts}
-function countTotal(counts){return RANKS.reduce((s,r)=>s+counts[r],0)}
-function hand(cards){let value=0,soft=0;for(const r of cards){if(r==='A'){value+=11;soft++}else value+=['10','J','Q','K'].includes(r)?10:Number(r);while(value>21&&soft){value-=10;soft--}}return {total:value,soft:soft>0,bust:value>21,natural:cards.length===2&&value===21}}
-function branches(counts){const n=countTotal(counts);return n?RANKS.filter(r=>counts[r]>0).map(r=>({rank:r,p:counts[r]/n,next:{...counts,[r]:counts[r]-1}})):[]}
-function canSplit(cards){if(cards.length!==2)return false;const [a,b]=cards;if(a===b)return true;return state.splitPolicy==='value'&&['10','J','Q','K'].includes(a)&&['10','J','Q','K'].includes(b)}
-// A visible draw occurs after the dealer's hidden card was reserved.
- // With a successful peek against A/ten, the hidden natural-completing rank
- // is ruled out, so P(public rank) must use the SAME conditional model as EV.
-function nextPublicCardBranches(counts){
- const n=countTotal(counts),hasHole=state.dealer.length===1;
- if(hasHole&&n<=1)return [];
- if(!hasHole)return branches(counts);
- const up=state.dealer[0],peek=$('evPeek').value==='yes';
- const noNatural=peek&&(up==='A'||['10','J','Q','K'].includes(up));
- if(!noNatural)return branches(counts);
- const excluded=up==='A'?['10','J','Q','K']:['A'];
- const allowed=n-excluded.reduce((sum,r)=>sum+counts[r],0);
- if(allowed<=0)return [];
- return RANKS.filter(r=>counts[r]>0).map(r=>{
-  const holeWeight=excluded.includes(r)?0:counts[r]/allowed;
-  const probability=(counts[r]-holeWeight)/(n-1);
-  return {rank:r,p:probability,next:{...counts,[r]:counts[r]-1}};
- }).filter(v=>v.p>0);
-}
-function stats(){const counts=shoe();const n=countTotal(counts),p=state.player,h=hand(p);const bs=nextPublicCardBranches(counts);let bust=0,charlie=0,ten=0;for(const b of bs){if(['10','J','Q','K'].includes(b.rank))ten+=b.p;const v=hand([...p,b.rank]);if(v.bust)bust+=b.p;else if(p.length===Number($("evCharlie").value)-1&&Number($("evCharlie").value)>0)charlie+=b.p}return {counts,n,p,h,bs,bust,charlie,ten,
-  canDraw:state.dealer.length===1?n>1:n>0,
-  peekConditioned:state.dealer.length===1&&$('evPeek').value==='yes'&&
-   (state.dealer[0]==='A'||['10','J','Q','K'].includes(state.dealer[0])),
-  rc:allKnown().reduce((a,r)=>a+TAG[r],0)}}
-function snapshot(){undoStack.push(JSON.stringify(state));if(undoStack.length>60)undoStack.shift()}
-function save(){if(!cardsNeedReset)writeSaved(KEY,state);}
-function add(r){if(cardsNeedReset||!storageIsCurrent())return;try{const c=shoe();if(c[r]<1)return;if(state.selected==='player'&&state.player.length>=21)return;if(state.selected==='dealer'&&state.dealer.length>=11)return;snapshot();state[state.selected].push(r);render()}catch(e){alert('Ошибка состава башмака: '+e.message)}}
-function remove(i){if(cardsNeedReset||!storageIsCurrent())return;const a=state[state.selected];if(i<0||i>=a.length)return;snapshot();a.splice(i,1);render()}
-function nextRound(){if(cardsNeedReset||!storageIsCurrent())return;snapshot();state.history.push(...state.player,...state.dealer,...state.other);state.player=[];state.dealer=[];state.other=[];render()}
-function reset(){if(!storageIsCurrent())return;if(!confirm('Начать новый восьмиколодный башмак и сбросить историю?'))return;if(!storageIsCurrent())return;if(cardsNeedReset)undoStack=[];else snapshot();cardsNeedReset=false;storageNotice('read-'+KEY,'');storageNotice('cards','');storageNotice('cards-settings','');state=initial();render()}
-function selectTarget(t){if(!storageIsCurrent())return;state.selected=t;render()}
-function renderGuide(x){const p=x.p,h=x.h;
- if(p.length<2){$('guide').innerHTML='<div class="small">Для анализа введи минимум две карты игрока. Карта дилера нужна только для обозначения учебного состояния.</div>';return}
- let text='',intro='';if(h.bust){intro='Перебор: учебная рука завершена.';text='Сумма превышает 21, дальнейшие действия не рассматриваются.'}
- else if(Number($('evCharlie').value)>0&&p.length>=Number($('evCharlie').value)){intro=p.length+' карт без перебора: Charlie.';text='Рука завершена согласно выбранной учебной модели.'}
- else if(h.natural){intro='Натуральные 21 на первых двух картах.';text='Обычные дополнительные действия не рассматриваются.'}
- else if(h.total===21){intro='Сумма 21.';text='Дополнительная карта может привести к перебору; здесь полезно изучить эффект остановки.'}
- else if(h.total<=11){intro='Сумма '+h.total+': немедленный перебор при одной карте невозможен.';text='Даже карта со значением 10 не превышает 21. Это свойство суммы, а не прогноз результата всей раздачи.'}
- else{intro='Сумма '+h.total+': риск перебора при одной карте — '+fmt(x.bust*100,2)+'%.';text='Остановка оставляет текущую сумму, добор меняет её. Для сравнения действий нужен полный расчёт исходов дилера, а не только риск перебора.'}
- const charlieLimit=Number($('evCharlie').value);const isCharlie=charlieLimit>0&&p.length>=charlieLimit&&!h.bust;const ended=h.bust||isCharlie||h.natural||h.total===21;
- const lines=[
- ['ЕЩЁ КАРТА',!ended&&p.length<21,'Добавляет случайную карту. '+(ended?'Рука уже завершена.':'Вероятность немедленного перебора: '+fmt(x.bust*100,2)+'%.')],
- ['ОСТАНОВИТЬСЯ',!h.bust&&!ended,'Фиксирует текущую сумму '+h.total+'; затем сравниваются результаты дилера и игрока.'],
- ['РАЗДЕЛИТЬ',!ended&&canSplit(p),'В учебной модели доступно для пары из двух карт согласно выбранному правилу.'],
- ['СДАТЬСЯ',!ended&&p.length===2&&state.surrender,'В учебной модели доступно только на первых двух картах, если такое правило включено.']
- ];
- $('guide').innerHTML=`<div class="signal"><b>${intro}</b><div class="explainer">${text}</div></div><div class="actions">${lines.map(([name,yes,description])=>`<div class="action"><b>${name}</b><span class="status ${yes?'':'off'}">${yes?'ДОСТУПНО':'НЕДОСТУПНО'}</span><p>${description}</p></div>`).join('')}</div>`
-}
-function renderRuleLesson(){
- const info=window.OmegaFiniteEV.terminalOutcome($('rulePlayer').value,$('ruleDealer').value);
- const name={loss:'Поражение',win:'Победа',push:'Ничья'}[info.kind];
- $('ruleOutcome').textContent=name+' · '+info.reason;
- $('insuranceLesson').textContent=window.OmegaFiniteEV.insuranceLesson(state.dealer.length===1?state.dealer[0]:null);
- try {
-  const calc=window.OmegaFiniteEV.insuranceScenario({up:state.dealer.length===1?state.dealer[0]:null,visible:allKnown()});
-  $('insuranceMath').textContent=calc.available
-   ? 'Учебный пример ДО peek: P(блэкджек дилера) = '+fmt(calc.probabilityDealerBlackjack*100,2)+'%; условный результат страховки: +'+fmt(calc.insurancePayoffIfBJ,2)+' / '+fmt(calc.insurancePayoffIfNoBJ,2)+' очка; отдельное EV = '+fmt(calc.expectedVirtualUnits,6)+' очка. Это не рекомендация.'
-   : 'Отдельный численный пример доступен при открытом тузе дилера.';
- } catch (e) { $('insuranceMath').textContent='Невозможно рассчитать пример: '+e.message; }
-}
-function render(){if(typeof activeWorker!=='undefined' && activeWorker)cancelEV('Карты изменены — предыдущий расчёт отменён.');invalidateStrategyExercise();let x; if($('evStatus')){$('evStatus').textContent='Карты или учебные правила изменены. Нажми «Рассчитать finite-shoe EV». ';$('evResult').innerHTML='';}try{x=stats()}catch(e){console.warn('Некорректный состав карт:',e);$('evStatus').textContent='Ошибка ввода/хранилища: '+e.message+'; исправь карты или нажми «Тасовка».';return;}
- $('rc').textContent=(x.rc>0?'+':'')+x.rc;$('tc').textContent=fmt(x.n?x.rc/(x.n/52):0,2);$('remaining').textContent=x.n;
- for(const btn of $('target').querySelectorAll('button'))btn.classList.toggle('active',btn.dataset.target===state.selected);
- const a=state[state.selected];$('cards').innerHTML=a.length?a.map((r,i)=>`<span class="chip">${r}<button type="button" data-remove="${i}" title="Удалить">×</button></span>`).join(''):'<span class="small">Добавь карты кнопками ниже</span>';
- for(const b of $('ranks').children)b.disabled=tabConflict||cardsNeedReset||x.counts[b.dataset.rank]<=0||(state.selected==='player'&&state.player.length>=21);
- $('surrender').value=state.surrender?'yes':'no';$('splitpolicy').value=state.splitPolicy==='value'?'value':'rank';
- $('bust').textContent=state.player.length&&x.canDraw?fmt(x.bust*100,1)+'%':'—';
- $('ten').textContent=x.canDraw?fmt(x.ten*100,1)+'%':'—';
- $('charlie').textContent=x.canDraw&&state.player.length===Number($('evCharlie').value)-1&&Number($('evCharlie').value)>0?fmt(x.charlie*100,1)+'%':'—';
- $('probHint').textContent=!x.canDraw
-  ?'Следующая публичная карта недоступна: неизвестная карта зарезервирована для дилера.'
-  :x.peekConditioned
-  ?'Условно на успешной проверке дилера (peek: натурального блэкджека нет). Закрытая карта остаётся неизвестной и не считается публичным добором.'
-  :state.dealer.length===1
-  ?'Вероятность следующей публичной карты после резервирования неизвестной закрытой карты дилера, без дополнительного условия успешного peek.'
-  :'Пока нет ровно одной открытой карты дилера, показано распределение случайной неизвестной карты из остатка башмака.';
- $('probTable').innerHTML=`<table class="ranktable"><tbody>${x.bs.map(v=>`<tr><td>${v.rank}</td><td>${x.counts[v.rank]} карт</td><td>${fmt(v.p*100,2)}%</td></tr>`).join('')}</tbody></table>`;
- renderGuide(x);renderRuleLesson();
- const used=416-x.n;$('shuffleWarn').hidden=used<208;$('shuffleWarn').textContent='Известно уже '+used+' карт. Если произошла тасовка, нажми «Тасовка»: иначе данные о составе башмака неверны.';
- updateActionAvailability();save()
-}
-for(const r of RANKS){const b=document.createElement('button');b.textContent=r;b.type='button';b.dataset.rank=r;b.addEventListener('click',()=>add(r));$('ranks').append(b)}
-$('cards').addEventListener('click',e=>{const b=e.target.closest('button[data-remove]');if(b)remove(Number(b.dataset.remove))});
-$('target').addEventListener('click',e=>{const b=e.target.closest('button[data-target]');if(b)selectTarget(b.dataset.target)});
-$('undo').onclick=()=>{if(!storageIsCurrent())return;const prev=undoStack.pop();if(prev){state=JSON.parse(prev);render()}};
-$('next').onclick=nextRound;$('reset').onclick=reset;
-$('surrender').onchange=e=>{snapshot();state.surrender=e.target.value==='yes';render()};
-$('splitpolicy').onchange=e=>{snapshot();state.splitPolicy=e.target.value;render()};
-$('surrenderTiming').addEventListener('change',()=>{saveEVSettings();if(activeWorker)cancelEV();$('evResult').innerHTML='';$('evStatus').textContent='Тип сдачи изменён: пересчитай EV.';});
-for(const id of ['rulePlayer','ruleDealer'])$(id).addEventListener('change',renderRuleLesson);
-
-let activeWorker=null,activeEVTimer=null,lastEVReport=null;
-$('tabConflictReload').addEventListener('click',()=>location.reload());
-if(window.addEventListener){
- window.addEventListener('storage',event=>{
-  if(event.storageArea!==localStorage)return;
-  if(event.key===null||event.key===KEY||event.key===RULE_KEY)storageIsCurrent();
- });
- window.addEventListener('focus',()=>storageIsCurrent());
- document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')storageIsCurrent();});
-}
-function onAppVersionChanged(){
- if(activeWorker)cancelEV('Новая версия готова: прежнее вычисление прервано.');
- lastEVReport=null;
- $('evResult').innerHTML='';
- $('evDiagnosticText').hidden=true;
- $('evDiagnosticState').textContent='Отчёт предыдущей версии очищен. Открой новую версию приложения.';
- $('evStatus').textContent='Новая версия установлена. Открой её, чтобы не смешивать результаты разных версий.';
- $('appUpdateNotice').hidden=false;
-}
+for(const id of ['playerOne','playerTwo','dealerUp'])for(const rank of RANKS){const option=document.createElement('option');option.value=rank;option.textContent=rank;$(id).append(option);}
+$('strategyNew').addEventListener('click',newTask);$('customTask').addEventListener('click',()=>setTask({player:[$('playerOne').value,$('playerTwo').value],up:$('dealerUp').value}));
+$('strategyCheck').addEventListener('click',checkAnswer);$('splitCompute').addEventListener('click',()=>calculate(true));$('evCancel').addEventListener('click',()=>{serial++;stop('SPLIT прерван. Подсказка относится к обычным действиям.');});
+for(const id of Object.keys(OPTIONS))$(id).addEventListener('change',()=>{notice('rules','');write(RULE_KEY,Object.fromEntries(Object.keys(OPTIONS).map(key=>[key,$(key).value])));setTask(task);});
+if(typeof window.addEventListener==='function')window.addEventListener('storage',event=>{
+ if(updated||event.storageArea&&event.storageArea!==localStorage)return;
+ if(event.key===RULE_KEY||event.key===null){loadRules();setTask(task);$('strategyStatus').textContent='Правила изменены в другой вкладке. Обновляю подсказку…';}
+ if(event.key===STATS_KEY||event.key===null){stats=loadStats();renderStats();}
+});
 $('appUpdateReload').addEventListener('click',()=>location.reload());
-if(typeof navigator!=='undefined'&&navigator.serviceWorker){
- let previousController=Boolean(navigator.serviceWorker.controller);
- navigator.serviceWorker.addEventListener('controllerchange',()=>{
-  if(previousController)onAppVersionChanged();
-  previousController=true;
- });
-}
-function diagnosticText(){
- if(!lastEVReport)return 'Диагностика ещё не создана. Запусти учебный расчёт.';
- const {startedAtMs,...safe}=lastEVReport;
- return JSON.stringify(safe,null,2);
-}
-$('evDiagnosticShow').addEventListener('click',()=>{
- $('evDiagnosticText').hidden=false;
- $('evDiagnosticText').value=diagnosticText();
- $('evDiagnosticState').textContent='Отчёт открыт. Можно выделить текст и скопировать.';
-});
-$('evDiagnosticCopy').addEventListener('click',async()=>{
- const text=diagnosticText(),box=$('evDiagnosticText');
- box.hidden=false;box.value=text;
- try{
-  if(!navigator.clipboard||!navigator.clipboard.writeText)throw Error('Clipboard unavailable');
-  await navigator.clipboard.writeText(text);
-  $('evDiagnosticState').textContent='Отчёт скопирован. Можешь вставить его в чат для диагностики.';
- }catch(e){
-  box.focus();box.select();
-  $('evDiagnosticState').textContent='Текст выделен. Скопируй его вручную и вставь в чат.';
- }
-});
-const EV_WATCHDOG_MS=30000;
-function armEVWatchdog(worker,hasBasic,timeoutMs=EV_WATCHDOG_MS,onTimeout=null){
- if(activeEVTimer!==null)clearTimeout(activeEVTimer);
- activeEVTimer=setTimeout(()=>{
-  if(activeWorker!==worker)return;
-  cancelEV(hasBasic
-   ?'Лимит времени ожидания SPLIT: точный результат не получен. Завершённые основные EV сохранены.'
-   :'Лимит времени ожидания: точный расчёт не завершён. Попробуй менее сложное учебное состояние.');
-  if(lastEVReport){lastEVReport.status='watchdog-timeout';lastEVReport.elapsedMs=Date.now()-lastEVReport.startedAtMs;}
-  if(onTimeout)onTimeout();
- },timeoutMs);
-}
-function cancelEV(message='Вычисление прервано.'){
- if(lastEVReport&&activeWorker){
-  lastEVReport.status='interrupted';
-  lastEVReport.message=message;
-  lastEVReport.elapsedMs=Date.now()-lastEVReport.startedAtMs;
- }
- if(activeEVTimer!==null){clearTimeout(activeEVTimer);activeEVTimer=null;}
- if(activeWorker){activeWorker.terminate();activeWorker=null;}
- $('evCompute').disabled=false;$('evCancel').hidden=true;
- updateActionAvailability();
- if(message)$('evStatus').textContent=message;
-}
-function renderEVTable(v,split,focus='all'){
- const actions={...(v?.actions||{})};const isResplit=Boolean(split?.assumptions?.resplit);if(split&&Number.isFinite(split.ev))actions[isResplit?'resplitFull':'splitFull']=split.ev;
- const labels={stand:'Остановиться',hit:'Добор с продолжением',double:'Удвоение',splitFull:'SPLIT · две полные руки',resplitFull:'SPLIT + resplit · exact',splitTwoCardStop:'SPLIT · по одной карте (ограниченный)',surrender:'Сдача'};
- const details={stand:'Без добора',hit:'Рекурсивное продолжение',double:'Одна карта; ×2',splitFull:'Без повторного SPLIT; совместный shoe',resplitFull:'Очередь до выбранного числа рук; общий shoe',splitTwoCardStop:'Каждая часть получает одну карту и останавливается; НЕ полный SPLIT',surrender:'Если разрешено'};
- const rows=Object.keys(labels).filter(k=>actions[k]!==undefined&&(focus==='all'||(focus==='split'&&(k==='splitFull'||k==='splitTwoCardStop'))||(focus==='resplit'&&(k==='resplitFull'||['stand','hit','double','surrender'].includes(k)))||(focus==='double'&&k==='double'))).map(k=>`<tr><td>${labels[k]}</td><td><strong>${actions[k]>=0?'+':''}${fmt(actions[k],6)}</strong></td><td>${details[k]}</td></tr>`).join('');
- const stateNote=split?`<div class="evnote evpass">${isResplit?'Exact resplit':'Полный SPLIT'} вычислен на общем конечном башмаке. Все карты и исход дилера учтены совместно. Время: ${fmt(split.stats.ms,0)} мс; узлов: ${fmt(split.stats.nodes||split.stats.first+split.stats.second,0)}.</div>`:'';
- $('evResult').innerHTML=`<table class="evtable"><thead><tr><th>Модель</th><th>EV</th><th>Условие</th></tr></thead><tbody>${rows}</tbody></table>`+(focus==='split'&&!split&&Number.isFinite(actions.splitTwoCardStop)?'<div class="evnote">Показан точный, но ОГРАНИЧЕННЫЙ сценарий: по одной карте каждой руке, затем остановка. Полный SPLIT с продолжением добора ещё не рассчитан.</div>':'')+stateNote;
-}
-const STRATEGY_SCENARIOS={
- hard16v10:{label:'10+6 против 10',player:['10','6'],up:'10'},
- hard12v6:{label:'10+2 против 6',player:['10','2'],up:'6'},
- soft18v9:{label:'A+7 против 9',player:['A','7'],up:'9'},
- pair88v10:{label:'8+8 против 10',player:['8','8'],up:'10'},
- hard11v6:{label:'5+6 против 6',player:['5','6'],up:'6'},
- hard10v9:{label:'5+5 против 9',player:['5','5'],up:'9'},
- soft17v2:{label:'A+6 против 2',player:['A','6'],up:'2'},
- pair99v7:{label:'9+9 против 7',player:['9','9'],up:'7'}
-};
-function evRules(){const resplit=$('evResplit').value==='yes',maxSplitHands=Number($('evMaxSplitHands').value);return {resplit,maxSplitHands:resplit?maxSplitHands:2,resplitAces:$('evResplitAces').value==='yes',s17:$('evSoft').value==='s17',doublePolicy:$('evDoublePolicy').value,dealerBJSettlement:$('evDealerBJSettlement').value,blackjackPayout:Number($('evBJPayout').value),peek:$('evPeek').value==='yes',charlieCards:Number($('evCharlie').value),surrender:state.surrender,surrenderTiming:$('surrenderTiming').value,splitPolicy:state.splitPolicy==='value'?'sameValue':'sameRank',doubleAfterSplit:$('evDAS').value==='yes',splitAcesOneCard:$('evSplitAces').value==='one',charlieAfterSplit:$('evCharlieSplit').value==='yes'};}
-function strategyRules(){return {...evRules(),resplit:false,maxSplitHands:2,resplitAces:false};}
-function strategyScenario(){
- const id=$('strategyScenario').value;
- if(id==='random'){
-  if(strategyTask?.scenario?.random)return strategyTask.scenario;
-  const base=[...state.history,...state.other];
-  const candidates=Object.entries(STRATEGY_SCENARIOS).filter(([,preset])=>{
-   try{window.OmegaFiniteEV.makeCounts([...base,...preset.player,preset.up]);return true;}catch(e){return false;}
-  });
-  if(!candidates.length)throw Error('В текущем остатке нет подходящей случайной задачи. Нажми «Тасовка» или убери лишние карты.');
-  const [randomId,preset]=candidates[Math.floor(Math.random()*candidates.length)];
-  return {id:randomId,label:preset.label,player:[...preset.player],up:preset.up,visible:[...base,...preset.player,preset.up],random:true};
- }
- if(id==='current')return {id,label:'Текущая раздача',player:[...state.player],up:state.dealer[0],visible:allKnown()};
- const preset=STRATEGY_SCENARIOS[id];
- if(!preset)throw Error('Неизвестный тренировочный сценарий');
- return {id,label:preset.label,player:[...preset.player],up:preset.up,visible:[...state.history,...state.other,...preset.player,preset.up]};
-}
-function strategyActionName(name){return {stand:'Остановиться',hit:'Добор',double:'Удвоение',surrender:'Сдача',splitTwoCardStop:'SPLIT (ограниченный)'}[name]||'Неизвестное действие';}
-function invalidateStrategyExercise(message='Подсказка появится сразу после выбора сценария.',clearAnswer=true){
- const answer=$('strategyAnswer'),result=$('strategyResult'),status=$('strategyStatus');
- if(answer&&clearAnswer)answer.value='';
- if(result)result.innerHTML='';
- if(clearAnswer)strategyTask=null;
- lastEdgeResult=null;renderChipRecommendation();
- if(status&&!tabConflict)status.textContent=message;
-}
-function renderStrategyComparison(v,answer,scenario){
- const m=v.metrics,a=v.compositionBest,b=v.baselineBest;
- const attempted=Boolean(answer)&&answer!=='splitTwoCardStop';
- const available=attempted&&Number.isFinite(v.currentActions?.[answer]);
- const difference=available?a.value-v.currentActions[answer]:null;
- const correct=available&&difference<=1e-12;
- const response=!attempted
-  ? '<div class="evnote evpass">Подсказка показана сразу. Если хочешь потренироваться, выбери действие и нажми «Проверить попытку».</div>'
-  : !available
-  ? '<div class="evnote">Выбранное действие недоступно для этой руки или текущих правил.</div>'
-  : correct
-   ? '<div class="evnote evpass">Верно: выбранное действие совпало с оптимальным для текущего состава.</div>'
-   : '<div class="evnote">Ответ отличается от оптимального действия для текущего состава. Сравни EV ниже и попробуй понять влияние остатка карт.</div>';
- const deviation=v.deviates
-  ? '<div class="evnote evpass">Есть отклонение от базовой линии: текущий состав меняет оптимальное действие.</div>'
-  : '<div class="evnote">Отклонения нет: для этой раздачи оптимальное действие совпало с базовой линией.</div>';
- $('strategyResult').innerHTML=`<p class="small"><b>Сценарий:</b> ${scenario.label}</p>${response}<table class="evtable"><tbody><tr><td>Оптимальное действие</td><td><strong>${strategyActionName(a.name)}</strong></td><td>EV ${fmt(a.value,6)}</td></tr><tr><td>Моя попытка</td><td><strong>${attempted?strategyActionName(answer):'не выбрана'}</strong></td><td>${available?'EV '+fmt(v.currentActions[answer],6):'—'}</td></tr><tr><td>Отставание от оптимума</td><td><strong>${available?fmt(difference,6):'—'}</strong></td><td>разница EV при текущем составе</td></tr><tr><td>Свежий 8-колодный baseline</td><td><strong>${strategyActionName(b.name)}</strong></td><td>EV ${fmt(b.value,6)}</td></tr><tr><td>Изменение EV между составами</td><td><strong>${v.EVDelta>=0?'+':''}${fmt(v.EVDelta,6)}</strong></td><td>${v.splitExcluded?'SPLIT сравнивается отдельно':''}</td></tr></tbody></table>${deviation}<p class="small">Running Count: ${m.runningCount>=0?'+':''}${m.runningCount}; True Count: ${fmt(m.trueCount,2)}; осталось карт: ${m.remaining} (${fmt(m.decksRemaining,2)} колод).</p>`;
-}
-function compareCurrentStrategy(){
- const status=$('strategyStatus'),result=$('strategyResult');result.innerHTML='';
- if(!storageIsCurrent()||cardsNeedReset)return;
- const answer=$('strategyAnswer').value;
- let scenario;
- try{scenario=strategyScenario();}catch(e){status.textContent=e.message;return;}
- if(scenario.id==='current'&&(scenario.player.length<2||state.dealer.length!==1)){status.textContent='Для текущей раздачи нужны две карты игрока и ровно одна открытая карта дилера.';return;}
- try{
-  const v=window.OmegaFiniteEV.compareStrategy({player:scenario.player,up:scenario.up,visible:scenario.visible,rules:strategyRules(),limitMs:22000});
-  const key=JSON.stringify([scenario.id,scenario.player,scenario.up,scenario.visible]);
-  if(!strategyTask||strategyTask.key!==key)strategyTask={key,scenario,v,recorded:false};
-  if(answer==='splitTwoCardStop')status.textContent='SPLIT рассчитывается отдельной кнопкой; подсказка одиночной руки показана ниже.';
-  else if(answer&&Number.isFinite(v.currentActions?.[answer])&&!strategyTask.recorded){
-   const gap=Math.max(0,v.compositionBest.value-v.currentActions[answer]);
-   strategyStats.attempts++;if(gap<=1e-12)strategyStats.correct++;strategyStats.gap+=gap;strategyTask.recorded=true;saveStrategyStats();renderStrategyStats();
-   status.textContent='Попытка проверена. Подсказка и True Count показаны ниже.';
-  }else status.textContent='Подсказка и True Count показаны ниже. Ответ можно выбрать добровольно.';
-  renderStrategyComparison(v,answer,scenario);
- }
- catch(e){status.textContent='Сравнение не рассчитано: '+e.message;}
-}
-function calculateEdge(){
- if(!storageIsCurrent()||cardsNeedReset)return;
- if(activeWorker)cancelEV('Предыдущий расчёт отменён.');
- const status=$('strategyStatus');$('strategyResult').innerHTML='';const known=allKnown();
- if(window.OmegaFiniteEV.numCards(window.OmegaFiniteEV.makeCounts(known))<4){status.textContent='Для edge нужны минимум четыре неизвестные карты: две карты новой руки, upcard и закрытая карта дилера.';return;}
- const input={visible:known,rules:strategyRules(),limitMs:90000};$('edgeCompute').disabled=true;$('strategyCheck').disabled=true;$('evCancel').hidden=false;
- status.textContent='Считается точный aggregate edge по начальным сценариям текущего состава…';
- const worker=new Worker('./omega_worker.js');activeWorker=worker;
- armEVWatchdog(worker,false,120000,()=>{status.textContent='Edge не подтверждён: расчёт превысил лимит времени.';});
- worker.onmessage=e=>{if(activeWorker!==worker)return;const m=e.data;
-  if(m.type==='progress')status.textContent='Считается edge: '+m.value.scenarios+'/'+m.value.expectedScenarios+' сценариев; '+fmt(m.value.elapsedMs/1000,1)+' с.';
-  else if(m.type==='edge'){const v=m.value;lastEdgeResult=v;renderChipRecommendation();const decision=v.playerEdge>0?'положительное учебное ожидание':'ставку по этой модели лучше пропустить';$('strategyResult').innerHTML=`<table class="evtable"><tbody><tr><td>Player edge</td><td><strong>${v.playerEdge>=0?'+':''}${fmt(v.playerEdge,6)}</strong></td><td>на 1 условную единицу</td></tr><tr><td>House edge</td><td><strong>${v.houseEdge>=0?'+':''}${fmt(v.houseEdge,6)}</strong></td><td>противоположный знак</td></tr><tr><td>Вероятность BJ дилера</td><td><strong>${fmt(v.dealerBJProbability*100,3)}%</strong></td><td>до peek</td></tr></tbody></table><div class="evnote">${decision}. Edge рассчитан по текущему составу, ${v.rules.s17?'S17':'H17'}, ${v.rules.peek?'peek':'без peek'}, Charlie=${v.rules.charlie?v.rules.charlieCards:'нет'}; SPLIT исключён.</div><p class="small">Running Count: ${v.metrics.runningCount>=0?'+':''}${v.metrics.runningCount}; True Count: ${fmt(v.metrics.trueCount,2)}; осталось ${v.metrics.remaining} карт (${fmt(v.metrics.decksRemaining,2)} колод). Сценариев: ${v.scenarios}. ${v.definition}</p>`;}
-  else if(m.type==='done'){cancelEV('Расчёт edge завершён.');status.textContent='Edge рассчитан точно для выбранного состава и правил.';}
-  else if(m.type==='error'){lastEdgeResult=null;renderChipRecommendation();cancelEV('Edge не рассчитан.');status.textContent='Edge не подтверждён: '+m.message;}
- };
- worker.onerror=e=>{if(activeWorker===worker){cancelEV('Ошибка Web Worker при расчёте edge.');status.textContent='Edge не рассчитан: '+(e.message||'ошибка Worker');}};
- worker.postMessage({mode:'edge',input});
-}
-function updateActionAvailability(){
- const hv=window.OmegaFiniteEV.handValue(state.player);
- const ready=!tabConflict&&!cardsNeedReset&&state.dealer.length===1&&hv.number===2&&hv.total<21&&!hv.natural;
- const remaining=window.OmegaFiniteEV.numCards(window.OmegaFiniteEV.makeCounts(allKnown()));
- $('evDoubleCompute').disabled=Boolean(activeWorker)||!ready||!window.OmegaFiniteEV.doubleAllowed(hv.total,$('evDoublePolicy').value);
- $('evSplitCompute').disabled=Boolean(activeWorker)||!ready||remaining<3||!canSplit(state.player);
- $('evResplitCompute').disabled=Boolean(activeWorker)||!ready||remaining<3||!canSplit(state.player)||$('evResplit').value!=='yes';
- $('evCompute').disabled=tabConflict||cardsNeedReset||Boolean(activeWorker);
- $('strategyCheck').disabled=tabConflict||cardsNeedReset||Boolean(activeWorker);
- $('strategyNew').disabled=tabConflict||cardsNeedReset||Boolean(activeWorker);
- $('edgeCompute').disabled=tabConflict||cardsNeedReset||Boolean(activeWorker);
- $('next').disabled=tabConflict||cardsNeedReset;$('undo').disabled=tabConflict||cardsNeedReset;
- $('reset').disabled=tabConflict;
- if(tabConflict){
-  for(const b of $('ranks').children)b.disabled=true;
-  for(const id of [...Object.keys(SAVED_RULE_OPTIONS),'surrender','splitpolicy'])$(id).disabled=true;
- }
-}
-function calculateEV(mode='all'){
- if(!storageIsCurrent())return;
- if(cardsNeedReset){$('evStatus').textContent='Восстанови состав карт: нажми «Тасовка» для нового башмака.';return;}
- if(!['all','double','split','resplit'].includes(mode))mode='all';
- if(activeWorker)cancelEV('Предыдущий расчёт отменён.');
- const status=$('evStatus'),result=$('evResult');result.innerHTML='';
- if(state.player.length<2||state.dealer.length!==1){status.textContent='Нужно от 2 карт игрока и РОВНО одна открытая карта дилера. Остальные раскрытые карты вводи отдельно.';return;}
- const configuredRules=evRules();
- const rules=mode==='resplit'?configuredRules:{...configuredRules,resplit:false,maxSplitHands:2,resplitAces:false};
- const input={player:[...state.player],up:state.dealer[0],visible:allKnown(),rules,limitMs:22000};
- try{
-  window.OmegaFiniteEV.validateRules(rules);window.OmegaFiniteEV.inputCounts(input);
-  const hv=window.OmegaFiniteEV.handValue(input.player);
-  if(mode!=='all'&&(hv.number!==2||hv.total>=21||hv.natural))
-   throw Error('Для выбранного сценария нужны две начальные карты без завершённой руки');
-  if(mode==='double'&&!window.OmegaFiniteEV.doubleAllowed(hv.total,rules.doublePolicy))
-   throw Error('Удвоение недоступно при выбранном ограничении суммы');
-  if(mode==='resplit'&&(rules.resplit!==true||rules.maxSplitHands<3))
-   throw Error('Для resplit выбери «Да, exact» и минимум 3 руки');
-  if(mode==='split'&&(window.OmegaFiniteEV.numCards(window.OmegaFiniteEV.inputCounts(input))<3||!canSplit(input.player)))
-   throw Error('SPLIT доступен только для пары по выбранному правилу');
- }catch(e){status.textContent='Несовместимые правила или карты: '+e.message;return;}
- const knownCounts=Object.fromEntries(window.OmegaFiniteEV.R.map(rank=>[rank,0]));
- for(const card of input.visible)knownCounts[window.OmegaFiniteEV.bucket(card)]++;
- lastEVReport={version:'3.24',mode,player:input.player,up:input.up,
-  visibleCounts:knownCounts,rules:input.rules,limitMs:input.limitMs,
-  knownRemaining:window.OmegaFiniteEV.numCards(window.OmegaFiniteEV.inputCounts(input)),
-  status:'running',stage:'created',startedAtMs:Date.now()};
- $('evDiagnosticText').hidden=true;
- $('evDiagnosticState').textContent='Отчёт о последнем расчёте доступен локально.';
- status.textContent=mode==='resplit'?'Расчёт exact resplit: очередь рук, общий остаток и единый исход дилера…':'Расчёт finite-shoe с выбранными правилами. Скрытая карта остаётся неизвестной. Сначала обычные сценарии, затем SPLIT…';
- $('evCompute').disabled=true;$('evDoubleCompute').disabled=true;$('evSplitCompute').disabled=true;$('evResplitCompute').disabled=true;$('evCancel').hidden=false;
- try{
-  // Cached same-origin Worker can import the locally cached mathematical module offline.
-  const worker=new Worker('./omega_worker.js');activeWorker=worker;
-  let basic=null,split=null;
-  armEVWatchdog(worker,false);
-  worker.onmessage=e=>{
-   if(activeWorker!==worker||!storageIsCurrent())return;
-   const m=e.data;
-   if(m.type==='progress'){
-    if(lastEVReport){lastEVReport.stage=m.value.stage;lastEVReport.progress=m.value;}
-    status.textContent='Идёт точный SPLIT, этап: '+m.value.stage+'; время '+fmt(m.value.elapsedMs/1000,1)+' с; состояний дилера '+m.value.counters.dealer+'.';
-   }else if(m.type==='basic'){
-    if(lastEVReport){lastEVReport.stage='basic-complete';lastEVReport.basicActions=m.value.actions;}
-    basic=m.value;renderEVTable(basic,null,mode);
-    if(basic.splitOneCardWarning)result.insertAdjacentHTML('beforeend','<p class="evnote">'+basic.splitOneCardWarning+'</p>');
-    if(basic.splitEligible&&(mode==='all'||mode==='split'||mode==='resplit'))armEVWatchdog(worker,true);
-    status.textContent=mode==='double'
-    ?'Виртуальное удвоение рассчитано: одна следующая карта, затем завершение с двумя условными единицами.'
-    :mode==='resplit'
-     ?'Основные EV готовы. Считается exact resplit до выбранного числа рук…'
-    :mode==='split'&&Number.isFinite(basic.actions.splitTwoCardStop)
-     ?'Точный ограниченный SPLIT (одна карта каждой руке) готов. Полный SPLIT с продолжением добора ещё вычисляется…'
-    :basic.splitEligible?'Основные EV готовы. Считается точный SPLIT двух рук (без resplit)…':'Расчёт обычных учебных сценариев готов; SPLIT недоступен для этих карт.';
-   }else if(m.type==='split'){
-    if(lastEVReport){lastEVReport.stage='split-complete';lastEVReport.splitEV=m.value.ev;lastEVReport.splitStats=m.value.stats;}
-    split=m.value;renderEVTable(basic||{actions:{}},split,mode);
-    status.textContent='Точный SPLIT рассчитан для выбранных правил без повторного разделения. Результат условен на заданной информации о скрытой карте.';
-   }else if(m.type==='resplit'){
-    if(lastEVReport){lastEVReport.stage='resplit-complete';lastEVReport.splitEV=m.value.ev;lastEVReport.splitStats=m.value.stats;}
-    split=m.value;renderEVTable(basic||{actions:{}},split,mode);
-    status.textContent='Exact resplit рассчитан для выбранного лимита рук. При изменении правил потребуется новый расчёт.';
-   }else if(m.type==='done'){
-    cancelEV('Расчёт завершён. Все числа относятся только к заданной учебной модели.');
-    if(lastEVReport)lastEVReport.status='complete';
-   }else if(m.type==='error'){
-    cancelEV('Точный расчёт прерван: '+m.message+(basic?(mode==='split'&&Number.isFinite(basic.actions.splitTwoCardStop)?' Точный ограниченный SPLIT сохранён, но полный SPLIT НЕ рассчитан.':' Основные EV уже показаны.') :''));
-    if(lastEVReport){
-     lastEVReport.status='error';lastEVReport.error=m.message;
-     if(m.diagnostics){lastEVReport.stage=m.diagnostics.stage;lastEVReport.timeoutDiagnostics=m.diagnostics;}
-    }
-   }
-  };
-  worker.onerror=e=>{if(activeWorker===worker)cancelEV('Ошибка Web Worker: '+(e.message||'недоступен'));};
-  worker.postMessage({mode,input});
- }catch(e){cancelEV('Не удалось запустить автономный Web Worker: '+e.message);}
-}
-function runSelfTest(){
- const E=window.OmegaFiniteEV, checks=[];
- const test=(name,pass)=>checks.push([name,Boolean(pass)]);
- const near=(a,b)=>Math.abs(a-b)<1e-12;
- try{
-  test('416 карт',E.numCards(E.makeCounts([]))===416);
-  const c=E.makeCounts(['10','5','7']),n=E.numCards(c);
-  test('413 после 10,5,7',n===413);
-  test('P(A)',near(c[9]/n,32/413));
-  test('P(10)',near(c[8]/n,127/413));
-  test('Перебор hard15',near((c[5]+c[6]+c[7]+c[8])/n,222/413));
-  test('Мягкая 17',E.handValue(['A','6']).soft);
-  test('Твёрдая 17',!E.handValue(['A','6','K']).soft);
-  test('Двойной перебор',E.terminalOutcome('bust','bust').kind==='loss');
-  test('Два блэкджека',E.terminalOutcome('natural','natural').kind==='push');
-  test('Страховка отдельно',E.insuranceScenario({up:'A',visible:['A','10']}).available);
-  let rejected=false;try{E.validateRules({peek:true,surrender:true,surrenderTiming:'early'});}catch(e){rejected=true;}
-  test('Нет сравнения до/после peek',rejected);
-  rejected=false;try{E.inputCounts({player:['5','K'],up:'7',visible:['5','K']});}catch(e){rejected=true;}
-  test('Известные карты учтены',rejected);
-  const good=checks.filter(v=>v[1]).length;
-  $('selfTestResult').textContent=good+'/'+checks.length+' быстрых проверок: '+(good===checks.length?'пройдены':'есть ошибки');
-  $('selfTestResult').style.color=good===checks.length?'#9ef0d2':'#ff969d';
- }catch(e){$('selfTestResult').textContent='Проверка прервана: '+e.message;}
-}
-$('selfTest').addEventListener('click',runSelfTest);
-$('evCompute').addEventListener('click',()=>calculateEV('all'));
-$('evDoubleCompute').addEventListener('click',()=>calculateEV('double'));
-$('evSplitCompute').addEventListener('click',()=>calculateEV('split'));
-$('evResplitCompute').addEventListener('click',()=>calculateEV('resplit'));
-$('strategyCheck').addEventListener('click',compareCurrentStrategy);
-$('strategyNew').addEventListener('click',()=>{if(!storageIsCurrent()||cardsNeedReset)return;strategyTask=null;$('strategyScenario').value='random';$('strategyAnswer').value='';compareCurrentStrategy();});
-$('strategyScenario').addEventListener('change',()=>{invalidateStrategyExercise('Считаю подсказку для нового сценария…');compareCurrentStrategy();});
-$('strategyAnswer').addEventListener('change',()=>{if($('strategyResult').innerHTML)$('strategyStatus').textContent='Попытка выбрана. Нажми «Проверить попытку» или продолжай без ответа.';});
-$('edgeCompute').addEventListener('click',calculateEdge);
-$('chipBankroll').addEventListener('input',renderChipRecommendation);
-$('evCancel').addEventListener('click',()=>cancelEV());
-for(const id of ['evSoft','evPeek','evCharlie','evDAS','evSplitAces','evCharlieSplit','evResplit','evMaxSplitHands','evResplitAces','evDoublePolicy','evDealerBJSettlement','evBJPayout'])$(id).addEventListener('change',()=>{
- saveEVSettings();if(activeWorker)cancelEV('Настройки изменены: старый расчёт остановлен.');
- $('evResult').innerHTML='';$('evStatus').textContent='Настройки изменены — выполни новый расчёт.';render();
-});
-restoreEVSettings();
-render();
-window.__OMEGA_MINI_TEST__={hand,branches,stats,calculateEV,renderRuleLesson,getState:()=>JSON.parse(JSON.stringify(state)),setState:s=>{state=s;render()}};
+if(typeof navigator!=='undefined'&&navigator.serviceWorker){let controlled=Boolean(navigator.serviceWorker.controller);navigator.serviceWorker.addEventListener('controllerchange',()=>{if(controlled){updated=true;serial++;stop();task.actions={};$('strategyResult').innerHTML='';$('bestAction').textContent='Открой новую версию';$('hintDetail').textContent='';$('strategyCheck').disabled=true;$('strategyNew').disabled=true;$('splitCompute').disabled=true;$('customTask').disabled=true;for(const id of Object.keys(OPTIONS))$(id).disabled=true;$('appUpdateNotice').hidden=false;}controlled=true;});}
+loadRules();stats=loadStats();renderStats();newTask();
+window.__OMEGA_TRAINER_TEST__={setTask,newTask,calculate,checkAnswer,input,getTask:()=>JSON.parse(JSON.stringify(task)),getStats:()=>({...stats}),stop};
 })();
 </script><script>if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(console.warn));</script></body></html>

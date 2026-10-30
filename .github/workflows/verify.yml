@@ -21,6 +21,7 @@ jobs:
           node-version: '22'
       - name: JavaScript syntax
         run: |
+          node --check tests/trainer_harness.cjs
           node --check omega_v34_core.js
           node --check sw.js
           node --check tests/v34.cjs

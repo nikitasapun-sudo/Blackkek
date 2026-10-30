@@ -101,11 +101,11 @@ async function request(url, method = 'GET', mode = 'cors') {
   // cache after the new release activated. A navigation must remove only
   // earlier Omega caches, never a concurrently installing *newer* release.
   entries.set('omega-ii-v314-recreated-after-activation',new Map());
-  entries.set('omega-ii-v325-installing',new Map());
+  entries.set('omega-ii-v326-installing',new Map());
   const queryHome=await request(origin+'?update=319','GET','navigate');
   const queryIndex=await request(origin+'index.html?update=319','GET','navigate');
   assert.equal(entries.has('omega-ii-v314-recreated-after-activation'),false);
-  assert.equal(entries.has('omega-ii-v325-installing'),true,
+  assert.equal(entries.has('omega-ii-v326-installing'),true,
     'An already installing newer release must not be deleted');
   assert.equal(queryHome.url,normalize('./index.html'));
   assert.equal(queryIndex.url,normalize('./index.html'));
@@ -123,8 +123,7 @@ async function request(url, method = 'GET', mode = 'cors') {
   networkOnline = true;
   assert.equal((await request(origin + 'uncached-file.txt')).source, 'network');
   assert.equal(fetchCalls, 3, 'Two intentional offline missing paths plus one online fallback');
-  assert.ok(html.includes("intro=p.length+' карт без перебора: Charlie.'"),
-    'Charlie label must reflect selected six/seven-card rule');
+  assert.ok(html.includes('свежие 8 колод в каждой задаче'),'Trainer must describe fresh eight-deck tasks');
 
   console.log('PASS PWA: offline shell, non-destructive cache upgrade, origin/method filtering, UI label');
 })().catch(error => { console.error(error); process.exitCode = 1; });

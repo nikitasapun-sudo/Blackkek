@@ -16,11 +16,11 @@ a{color:#a6f8dd;display:inline-block}a[hidden]{display:none}
 <body>
 <main>
 <h1>Проверка обновления Omega II</h1>
-<p>Эта страница принудительно проверяет обновление приложения. Введённые карты и настройки не удаляются.</p>
+<p>Эта страница принудительно проверяет обновление приложения. Настройки и статистика тренировок не удаляются.</p>
 <p id="status" role="status" aria-live="polite">Проверка новой версии…</p>
 <button type="button" id="retry">Проверить снова</button>
 <a href="./index.html" id="open" hidden>Открыть обновлённое приложение</a>
-<p><small>Не очищайте данные сайта в настройках Chrome: это может удалить сохранённые карты и правила. Проверка требует подключения к интернету.</small></p>
+<p><small>Не очищайте данные сайта в настройках Chrome: это может удалить настройки и статистику. Проверка требует подключения к интернету.</small></p>
 </main>
 <script>
 'use strict';
@@ -78,7 +78,7 @@ async function checkUpdate(){
         }
         if(!cachedHtml.includes('Blackjack Omega II '+label))
           throw Error('Новая версия не появилась в офлайн-кэше.');
-        statusElement.textContent='Готово: проверена '+label+' в офлайн-кэше. Карты и настройки сохранены.';
+        statusElement.textContent='Готово: проверена '+label+' в офлайн-кэше. Настройки и статистика сохранены.';
         openLink.hidden=false;
         return;
       }

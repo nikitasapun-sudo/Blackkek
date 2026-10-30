@@ -31,3 +31,10 @@ jobs:
           node tests/browser_update_recovery.cjs
           node tests/browser_storage.cjs
           node tests/browser_tabs.cjs
+      - name: Upload trainer screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: trainer-mobile
+          path: test-artifacts/
+          if-no-files-found: ignore
